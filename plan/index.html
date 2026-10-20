@@ -49,7 +49,7 @@ nav.toc a:hover{color:var(--acc);border-color:var(--acc)}
 <h2 id="principles">1. Principles</h2>
 <div class="grid">
 <div class="card"><h3>Campaign is the unit</h3>Everything a user configures lives on a campaign. Many campaigns run at once. Only suppression, mailboxes and the do-not-contact list are global.</div>
-<div class="card"><h3>Free to run</h3>No paid data or verification APIs required. Costs are Cloudflare plus model tokens. Paid data keys are optional plug-ins, never needed.</div>
+<div class="card"><h3>Pay as you go</h3>Setup costs under $10. After that the buyer pays Cloudflare and their model provider only for what runs. No paid data or verification APIs required; paid data keys are optional plug-ins.</div>
 <div class="card"><h3>Lift, don't copy</h3>The engine's 13k-line <code>index.js</code> does not come across. We lift proven modules by name into a slim new Worker.</div>
 <div class="card"><h3>SaaS-ready, not SaaS</h3>A <code>workspace_id</code> on every row and every secret, no hardcoded config. Nothing else multi-tenant gets built now.</div>
 </div>
@@ -115,13 +115,19 @@ nav.toc a:hover{color:var(--acc);border-color:var(--acc)}
 <div class="tw"><table>
 <tr><th>Integration</th><th>Required</th><th>How it connects</th><th>Notes</th></tr>
 <tr><td><b>Cloudflare</b></td><td>Yes</td><td>Done by the installer (<code>wrangler login</code> in the browser). Card shows Worker, database and usage</td><td>Workers Paid ($5/mo) recommended: crawling needs more CPU than the free plan allows</td></tr>
-<tr><td><b>Google (Gmail + Calendar)</b></td><td>Yes</td><td>One "Sign in with Google" consent for send, read and calendar. Several mailboxes allowed; each campaign picks one</td><td>See the Google app note below</td></tr>
+<tr><td><b>Email inbox (any provider)</b></td><td>Yes</td><td>The buyer connects it themselves, three ways:<br>1. <b>Sign in with Google</b> (Google Workspace): send, read and Calendar in one consent<br>2. <b>Sign in with Microsoft</b> (Microsoft 365, Outlook): send, read and Calendar via Microsoft Graph<br>3. <b>Any other inbox</b> (personal gmail.com, Zoho, Fastmail, custom domains): SMTP to send and IMAP to read, with an app password. Calendar then uses a booking link<br>Several inboxes allowed; each campaign picks one</td><td>See the email note below</td></tr>
 <tr><td><b>AI model</b></td><td>Yes</td><td>Default: Cloudflare Workers AI, no key needed. Or paste a key for any OpenAI-compatible provider (OpenRouter, Groq, Gemini). Test button sends one prompt</td><td>Per-task model choice: cheap model for extraction and classification, better model for writing</td></tr>
 <tr><td><b>Booking link</b></td><td>If not using Calendar</td><td>Paste URL</td><td>Cal.com, Calendly, Google appointment page</td></tr>
 <tr><td><b>Lead data keys</b></td><td>No</td><td>Paste key</td><td>Apollo, Hunter. Only to add volume. Off by default</td></tr>
 <tr><td><b>Notifications</b></td><td>No</td><td>Email (default, via the connected Gmail to yourself) or a Slack webhook URL</td><td>Hand-offs, incidents, daily digest</td></tr>
 </table></div>
-<div class="call warn"><b>Google app note (the one tricky part).</b> Gmail send and read are "restricted" scopes. A shared public Google app needs Google's security review, which only makes sense for the SaaS later. For the self-hosted bundle, each buyer creates their own Google OAuth client, and the integrations page walks them through it in 6 screenshots. On Google Workspace this is an <b>Internal</b> app: no review, tokens don't expire. On a personal gmail.com account a test-mode app's sign-in expires every 7 days, so v1 supports <b>Workspace mailboxes only</b>, which is also what we'd advise for cold email (a separate sending domain). Done-for-you setup handles this for the buyer.</div>
+<div class="call warn"><b>Email note (the one tricky part).</b>
+<ul>
+<li><b>Google Workspace:</b> Gmail send and read are "restricted" scopes, so one shared Google app would need Google's security review (a SaaS-stage job). In the bundle each buyer creates their own <b>Internal</b> Google app, guided by 6 screenshots: no review, sign-in never expires.</li>
+<li><b>Personal gmail.com:</b> an Internal app isn't possible and a test-mode app's sign-in expires every 7 days, so personal Gmail connects through path 3 (app password over SMTP and IMAP). Needs 2-step verification on the account.</li>
+<li><b>Microsoft 365 / Outlook:</b> Microsoft is retiring password-based sending, so it goes through Sign in with Microsoft with the buyer's own app registration (same guided setup, no review for a single organisation).</li>
+<li><b>Advice shown in the UI:</b> send cold email from a separate domain, not your main one. Done-for-you setup handles all of this for the buyer.</li>
+</ul></div>
 
 <h2 id="fork">5. Fork map: what comes from the creator engine</h2>
 <div class="tw"><table>
@@ -146,7 +152,8 @@ nav.toc a:hover{color:var(--acc);border-color:var(--acc)}
 <li><code>sources/</code>: job feeds, OpenStreetMap, registries, Common Crawl, CSV import</li>
 <li><code>findemail.js</code>: published, pattern learning per domain, guess</li>
 <li><code>verify/</code>: DNS-over-HTTPS MX, catch-all flag, bounce learning from the inbox</li>
-<li><code>calendar.js</code>: free/busy, 3 slots, create invite</li>
+<li><code>channels/</code>: one mailbox interface with three drivers: Gmail API (lifted), Microsoft Graph, SMTP + IMAP over Cloudflare TCP sockets</li>
+<li><code>calendar.js</code>: free/busy, 3 slots, create invite (Google or Microsoft); booking link otherwise</li>
 <li><code>model.js</code>: one adapter, Workers AI or any OpenAI-compatible endpoint, per-task model</li>
 <li><code>brief.js</code>: URL to brief, segments, FAQ, offer (also powers the landing page preview)</li>
 <li><code>campaigns</code> API and wizard, integrations hub, auth, installer, license</li>
@@ -165,7 +172,7 @@ nav.toc a:hover{color:var(--acc);border-color:var(--acc)}
 <li><b>One Worker, one database, one cron.</b> No queues, no KV, no Durable Objects in v1. The cron does small batches each tick; the engine already works this way.</li>
 <li><b>Secrets</b>: refresh tokens and API keys stored in D1, encrypted with a key set at install time as a Worker secret.</li>
 <li><b>Auth</b>: one admin password, signed session cookie.</li>
-<li><b>Cost</b>: Workers Paid $5/mo flat (CPU for crawling). D1 and Workers AI usage at this volume fit inside included limits; if the model free allowance runs out, the user points the writing task at a free-tier key.</li>
+<li><b>Cost, pay as you go</b>: setup under $10 (Workers Paid $5 for crawling CPU, plus optional model credit). After that the buyer pays Cloudflare and their model provider only for usage; D1 and Workers AI at this volume mostly fit inside included limits.</li>
 </ul>
 
 <h2 id="data">7. Data model (lean)</h2>
@@ -173,7 +180,7 @@ nav.toc a:hover{color:var(--acc);border-color:var(--acc)}
 <tr><th>Table</th><th>Holds</th></tr>
 <tr><td><code>workspaces</code></td><td>One row now. Timezone, compliance footer, emergency stop</td></tr>
 <tr><td><code>integrations</code></td><td>Type, status, encrypted credential, last test result</td></tr>
-<tr><td><code>mailboxes</code></td><td>Address, from-name, signature, daily cap, ramp day, health</td></tr>
+<tr><td><code>mailboxes</code></td><td>Address, provider (google, microsoft, smtp_imap), from-name, signature, daily cap, ramp day, health</td></tr>
 <tr><td><code>campaigns</code></td><td>Name, objective, status, mailbox, approval mode, caps, window, stop conditions</td></tr>
 <tr><td><code>campaign_versions</code></td><td>Brief, segments, FAQ, offer, tone, never-say, ceilings, hand-off triggers (JSON, versioned)</td></tr>
 <tr><td><code>companies</code></td><td>Domain, name, crawl snapshot, email pattern, catch-all flag</td></tr>
@@ -222,7 +229,7 @@ nav.toc a:hover{color:var(--acc);border-color:var(--acc)}
 <div class="tw"><table>
 <tr><th>#</th><th>Milestone</th><th>Done when</th></tr>
 <tr><td>S</td><td><b>Sourcing spike</b> (parallel, first)</td><td>For 3 sample businesses, free sources plus crawl return at least 40 verified-or-published contacts per day each, with yield and bounce numbers recorded. This is the biggest risk, so it goes first</td></tr>
-<tr><td>M1</td><td><b>Skeleton</b>: repo, slim Worker, schema, auth, model adapter, integrations hub, Google connect, send and poll</td><td>Send and read a test email from the dashboard</td></tr>
+<tr><td>M1</td><td><b>Skeleton</b>: repo, slim Worker, schema, auth, model adapter, integrations hub, email connect (Google first, then SMTP/IMAP, then Microsoft), send and poll</td><td>Send and read a test email from the dashboard on all three drivers</td></tr>
 <tr><td>M2</td><td><b>Campaigns</b>: wizard, URL to brief, segments, FAQ, versions</td><td>Create a campaign from a URL with no typing beyond edits</td></tr>
 <tr><td>M3</td><td><b>Lead engine</b>: sources, crawl, find email, verify, fit, CSV import, dedupe</td><td>A live campaign fills its daily lead budget unattended</td></tr>
 <tr><td>M4</td><td><b>Outreach and conversations</b>: drafting, gates, approval queue, sending, classifier, replies, concessions, booking, lanes</td><td>End to end: lead found to call on calendar, with no human step in autopilot mode. <b>Brevo instance goes live here</b></td></tr>
@@ -238,7 +245,6 @@ nav.toc a:hover{color:var(--acc);border-color:var(--acc)}
 <li>CRM sync (CSV export covers it; HubSpot later)</li>
 <li>Mailbox rotation and pooled warm inboxes (SaaS feature)</li>
 <li>A/B test framework beyond segment auto-pause</li>
-<li>Personal gmail.com mailboxes</li>
 <li>File uploads for context (paste text instead)</li>
 </ul>
 
@@ -247,18 +253,19 @@ nav.toc a:hover{color:var(--acc);border-color:var(--acc)}
 <tr><th>Risk</th><th>Answer</th></tr>
 <tr><td>Free sourcing yields too few leads for some niches</td><td>Spike first. Bring-your-own CSV and optional data keys as the valve. Niche-specific sources added as small plug-ins</td></tr>
 <tr><td>Bounces damage the buyer's domain</td><td>Published emails first, guesses only after a domain proves its pattern, low caps with ramp, auto-pause a mailbox above a bounce threshold, advise a separate sending domain</td></tr>
-<tr><td>Google OAuth friction</td><td>Workspace-only Internal app with a screenshot guide; done-for-you does it for them; SaaS later uses one verified app</td></tr>
+<tr><td>Email connection friction</td><td>Guided setup per provider with screenshots and a Test button; app-password path for anything without OAuth; done-for-you does it for them; SaaS later uses one verified Google and Microsoft app</td></tr>
 <tr><td>Free model quality for writing</td><td>Per-task model choice; writing task can point at a better free-tier key; fact-check and gates stay deterministic</td></tr>
 <tr><td>Buyers get the code</td><td>Accepted. License key, updates and support are the value; SaaS is the hosted option</td></tr>
 </table></div>
 
-<h2 id="decide">12. Decisions needed from Farooq</h2>
-<ol>
-<li><b>Running-cost claim</b>: "$5 a month flat" (Workers Paid) instead of "under $5". Recommended, because crawling needs Workers Paid CPU.</li>
-<li><b>Workspace-only mailboxes in v1</b> (no personal gmail.com). Recommended.</li>
-<li><b>Brevo's first campaign</b>: which objective and audience runs on the internal instance at M4.</li>
-<li><b>Product name</b>, so the repo and installer can be named.</li>
-</ol>
+<h2 id="decide">12. Decisions</h2>
+<div class="tw"><table>
+<tr><th>Decision</th><th>Status</th></tr>
+<tr><td>Running-cost claim</td><td><span class="tag acc">decided 20 Oct</span> "Pay as you go. Setup under $10."</td></tr>
+<tr><td>Which inboxes</td><td><span class="tag acc">decided 20 Oct</span> Any provider, connected by the buyer themselves (Google, Microsoft, or SMTP/IMAP)</td></tr>
+<tr><td>Brevo's first campaign</td><td><span class="tag warn">brief pending</span> Book calls to land agency partnerships with ecommerce/D2C agencies</td></tr>
+<tr><td>Product name</td><td><span class="tag warn">open</span> Shortlist sent 20 Oct</td></tr>
+</table></div>
 </main>
 </body>
 </html>
