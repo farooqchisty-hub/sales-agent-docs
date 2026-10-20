@@ -1,0 +1,424 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Closefast App Screens</title>
+<style>
+:root{--bg:#0a0c0b;--panel:#111413;--panel2:#161a18;--line:#232826;--ink:#ecefe9;--mute:#8e968f;--dim:#5f6762;--acc:#c3f25f;--accbg:rgba(195,242,95,.1);--warn:#f3c86b;--warnbg:rgba(243,200,107,.1);--bad:#f37b6b;--badbg:rgba(243,123,107,.1);--teal:#5fd4c0;--mono:ui-monospace,SFMono-Regular,Menlo,monospace}
+@media (prefers-color-scheme: light){:root:not([data-theme="dark"]){--bg:#f4f5f1;--panel:#fff;--panel2:#f8f9f6;--line:#e1e4de;--ink:#141816;--mute:#5d655f;--dim:#8a918b;--acc:#4f8a12;--accbg:rgba(79,138,18,.1);--warn:#9a6a00;--warnbg:rgba(154,106,0,.1);--bad:#b23a2a;--badbg:rgba(178,58,42,.08);--teal:#11806f}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.55 Inter,system-ui,-apple-system,Segoe UI,sans-serif}
+main{max-width:1180px;margin:0 auto;padding:40px 16px 80px}
+h1{font-size:30px;line-height:1.2;margin:0 0 8px}
+h2{font-size:22px;margin:56px 0 6px;padding-top:18px;border-top:1px solid var(--line)}
+h3{font-size:15px;margin:18px 0 6px}
+.sub{color:var(--mute);margin:0 0 18px;max-width:760px}
+.tag{display:inline-block;font:11px var(--mono);padding:2px 8px;border:1px solid var(--line);border-radius:99px;color:var(--mute);margin-right:6px;white-space:nowrap}
+.tag.acc{color:var(--acc);border-color:var(--acc)}.tag.warn{color:var(--warn);border-color:var(--warn)}.tag.bad{color:var(--bad);border-color:var(--bad)}.tag.teal{color:var(--teal);border-color:var(--teal)}
+nav.toc{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}
+nav.toc a{font:12px var(--mono);color:var(--mute);text-decoration:none;border:1px solid var(--line);padding:3px 9px;border-radius:99px}
+nav.toc a:hover{color:var(--acc);border-color:var(--acc)}
+.why{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));margin:10px 0 16px}
+.why div{border-left:2px solid var(--acc);padding:4px 12px;color:var(--mute)}
+.why b{color:var(--ink)}
+/* app frame */
+.app{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--bg);box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.scroll{overflow-x:auto}
+.inner{min-width:1080px;display:grid;grid-template-columns:200px 1fr}
+.side{background:var(--panel);border-right:1px solid var(--line);padding:14px 10px;font-size:13px}
+.brand{display:flex;align-items:center;gap:8px;font-weight:700;margin:2px 6px 16px}
+.brand i{width:12px;height:12px;border-radius:3px;background:var(--acc);display:inline-block}
+.side a{display:flex;justify-content:space-between;padding:6px 8px;border-radius:7px;color:var(--mute);text-decoration:none;margin-bottom:2px}
+.side a.on{background:var(--accbg);color:var(--ink)}
+.side .n{font:11px var(--mono);color:var(--acc)}
+.side .lbl{font:10px var(--mono);color:var(--dim);letter-spacing:.08em;text-transform:uppercase;margin:14px 8px 6px}
+.stop{margin-top:18px;border:1px dashed var(--bad);color:var(--bad);text-align:center;padding:7px;border-radius:8px;font:11px var(--mono)}
+.body{padding:16px 18px;min-width:0}
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;gap:10px}
+.top h4{margin:0;font-size:17px}
+.live{font:11px var(--mono);color:var(--acc);display:flex;gap:6px;align-items:center}
+.live:before{content:"";width:7px;height:7px;border-radius:50%;background:var(--acc);box-shadow:0 0 8px var(--acc)}
+.btn{font:12px Inter,system-ui;padding:6px 11px;border-radius:8px;border:1px solid var(--line);background:var(--panel2);color:var(--ink);white-space:nowrap}
+.btn.p{background:var(--acc);color:#0a0c0b;border-color:var(--acc);font-weight:600}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.g{display:grid;gap:12px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:12px 14px;min-width:0}
+.ct{display:flex;justify-content:space-between;align-items:center;font:11px var(--mono);color:var(--mute);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+.kpi b{display:block;font:600 24px var(--mono);color:var(--ink)}
+.kpi b.a{color:var(--acc)}
+.kpi span{font-size:12px;color:var(--mute)}
+.kpi em{font-style:normal;font:11px var(--mono);color:var(--acc)}
+.feed div{display:grid;grid-template-columns:44px 1fr;gap:8px;font:12px/1.5 var(--mono);padding:4px 0;border-bottom:1px dashed var(--line);color:var(--mute)}
+.feed div:last-child{border:0}
+.feed .t{color:var(--dim)}
+.feed .h{color:var(--acc)}
+.need{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--line)}
+.need:last-child{border:0}
+.dot{width:8px;height:8px;border-radius:50%;margin-top:6px;flex:none}
+.dot.a{background:var(--acc)}.dot.w{background:var(--warn)}.dot.b{background:var(--bad)}.dot.t{background:var(--teal)}
+.need p{margin:0;font-size:13px}
+.need small{color:var(--mute);font-size:12px}
+.need .btn{margin-left:auto}
+table.t{width:100%;border-collapse:collapse;font-size:12.5px}
+table.t th{font:10.5px var(--mono);color:var(--dim);text-transform:uppercase;letter-spacing:.06em;text-align:left;padding:6px 8px;border-bottom:1px solid var(--line)}
+table.t td{padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:middle}
+.bar{height:6px;border-radius:9px;background:var(--line);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--acc)}
+.pill{font:10.5px var(--mono);padding:2px 7px;border-radius:99px;border:1px solid var(--line);color:var(--mute);white-space:nowrap}
+.pill.a{color:var(--acc);border-color:var(--acc);background:var(--accbg)}
+.pill.w{color:var(--warn);border-color:var(--warn);background:var(--warnbg)}
+.pill.b{color:var(--bad);border-color:var(--bad);background:var(--badbg)}
+.pill.t{color:var(--teal);border-color:var(--teal)}
+.funnel{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
+.funnel div{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:8px}
+.funnel b{display:block;font:600 18px var(--mono)}
+.funnel span{font-size:11px;color:var(--mute)}
+.funnel div.w{border-color:var(--acc);background:var(--accbg)}
+.cal{display:grid;grid-template-columns:34px repeat(5,1fr);gap:4px;font:10.5px var(--mono);color:var(--dim)}
+.cal div{height:24px;border-radius:5px;background:var(--panel2);border:1px solid var(--line);display:flex;align-items:center;padding:0 5px;overflow:hidden;white-space:nowrap}
+.cal div.l{background:none;border:0}
+.cal div.b{background:var(--accbg);border-color:var(--acc);color:var(--ink)}
+.cal div.h{background:none;border:0;justify-content:center}
+.mail{background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:12px;font-size:13px}
+.mail mark{background:var(--accbg);color:var(--ink);border-bottom:1px solid var(--acc);padding:0 2px}
+.mail sup{color:var(--acc);font:10px var(--mono)}
+.bubble{padding:8px 11px;border-radius:10px;font-size:13px;max-width:82%;margin-bottom:6px}
+.bubble.in{background:var(--panel2);border:1px solid var(--line)}
+.bubble.out{background:var(--accbg);border:1px solid rgba(195,242,95,.35);margin-left:auto}
+.kv{display:grid;grid-template-columns:96px 1fr;gap:4px 10px;font-size:12.5px}
+.kv span{color:var(--mute);font:11px var(--mono)}
+.gate{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.prep h5{margin:0 0 6px;font-size:13px}
+.prep ul{margin:0;padding-left:16px;font-size:12.5px;color:var(--mute)}
+.prep li b{color:var(--ink);font-weight:500}
+.kan{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.kan .col{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:8px}
+.kan .col>div:first-child{font:11px var(--mono);color:var(--mute);display:flex;justify-content:space-between;margin-bottom:6px}
+.deal{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:7px 9px;margin-bottom:6px;font-size:12.5px}
+.deal small{display:block;color:var(--mute);font:11px var(--mono)}
+.spark{display:flex;align-items:flex-end;gap:3px;height:46px}
+.spark i{flex:1;background:var(--acc);opacity:.75;border-radius:2px 2px 0 0}
+.gauge{width:92px;height:92px;border-radius:50%;background:conic-gradient(var(--acc) 0 68%,var(--line) 68% 100%);display:grid;place-items:center}
+.gauge div{width:72px;height:72px;border-radius:50%;background:var(--panel);display:grid;place-items:center;text-align:center;font:600 18px var(--mono)}
+.gauge small{display:block;font:10px var(--mono);color:var(--mute)}
+.list{margin:6px 0 0;padding-left:18px;color:var(--mute)}
+.list li{margin:3px 0}
+.list b{color:var(--ink)}
+.phone{width:300px;border:1px solid var(--line);border-radius:28px;padding:14px;background:var(--panel)}
+.flex{display:flex;gap:24px;flex-wrap:wrap;align-items:flex-start}
+</style>
+</head>
+<body>
+<main>
+<span class="tag acc">APP SCREENS v1</span><span class="tag">Closefast</span><span class="tag">20 Oct 2026</span>
+<h1>Closefast: the app</h1>
+<p class="sub">The screens a buyer lives in after install. Built around one question a founder asks every morning: <b>did it book calls, and does it need me?</b> Everything creator-specific (fees, followers, payouts, negotiation rounds) is gone; deals, meetings, objections, deliverability and pipeline value replace it. Sample data uses the landing page's running example, Brightline Studio.</p>
+<nav class="toc">
+<a href="#map">Screen map</a><a href="#mc">1 Mission Control</a><a href="#inbox">2 Inbox</a><a href="#approvals">3 Approvals</a><a href="#meetings">4 Meetings</a><a href="#pipeline">5 Pipeline</a><a href="#campaign">6 Campaign</a><a href="#leads">7 Leads</a><a href="#deliv">8 Deliverability</a><a href="#mobile">9 Mobile + digest</a><a href="#diff">What changed vs the creator engine</a>
+</nav>
+
+<h2 id="map">Screen map</h2>
+<table class="t" style="max-width:900px">
+<tr><th>Screen</th><th>Job</th><th>Opens when</th></tr>
+<tr><td><b>Mission Control</b></td><td>Did it work, does it need me, is it healthy</td><td>Every login (default)</td></tr>
+<tr><td><b>Inbox</b></td><td>Every reply across campaigns, with the agent's next move</td><td>A reply needs a human, or you want to read conversations</td></tr>
+<tr><td><b>Approvals</b></td><td>Approve, edit or reject drafts; edits teach the agent</td><td>Approval mode is on (default for first 20 emails)</td></tr>
+<tr><td><b>Meetings</b></td><td>Booked calls with a prep brief, no-shows, outcome logging</td><td>Before and after each call</td></tr>
+<tr><td><b>Pipeline</b></td><td>Deals after the call: proposal, won, lost, value</td><td>Weekly review; feeds "pipeline value" on Mission Control</td></tr>
+<tr><td><b>Campaigns</b> (list + detail)</td><td>Funnel, segments, brief and rules, leads, activity</td><td>Tuning, launching, pausing</td></tr>
+<tr><td><b>Leads</b></td><td>Every person found, why they fit, where the email came from</td><td>Spot checks, CSV import or export</td></tr>
+<tr><td><b>Deliverability</b></td><td>Inbox health, caps, ramp, bounces, auto-pauses</td><td>When Mission Control shows a health warning</td></tr>
+<tr><td>Integrations, Settings, Wizard</td><td>As specced in the plan (sections 2, 4)</td><td>Setup and changes</td></tr>
+</table>
+
+<!-- 1 MISSION CONTROL -->
+<h2 id="mc">1. Mission Control</h2>
+<div class="why">
+<div><b>Outcomes first.</b> The top strip is calls, replies, pipeline and cost per call, not "emails sent".</div>
+<div><b>Needs you</b> is the only list that asks for action. Empty means the agent is fine on its own.</div>
+<div><b>Proof it's alive.</b> The live feed and the "next run" clock answer "is it actually working?"</div>
+</div>
+<div class="app"><div class="scroll"><div class="inner">
+<aside class="side">
+<div class="brand"><i></i>Closefast</div>
+<a class="on" href="#mc">Mission Control</a>
+<a href="#inbox">Inbox <span class="n">4</span></a>
+<a href="#approvals">Approvals <span class="n">6</span></a>
+<a href="#meetings">Meetings <span class="n">3</span></a>
+<a href="#pipeline">Pipeline</a>
+<div class="lbl">Campaigns</div>
+<a href="#campaign">Clinics Q4 <span class="n">live</span></a>
+<a href="#campaign">Physio chains <span class="n">live</span></a>
+<a href="#campaign" style="color:var(--dim)">Med spas <span style="font:11px var(--mono)">paused</span></a>
+<a href="#campaign" style="color:var(--dim)">+ New campaign</a>
+<div class="lbl">System</div>
+<a href="#leads">Leads</a>
+<a href="#deliv">Deliverability</a>
+<a href="#">Integrations</a>
+<a href="#">Settings</a>
+<div class="stop">■ EMERGENCY STOP</div>
+</aside>
+<section class="body">
+<div class="top"><h4>Good morning, Rob</h4><div class="row"><span class="live">Agent running · next run 09:35 · sending window open</span><span class="btn">This week ▾</span><span class="btn p">+ New campaign</span></div></div>
+<div class="g" style="grid-template-columns:repeat(5,1fr)">
+<div class="card kpi"><div class="ct">Calls booked</div><b class="a">9</b><span>this week</span> <em>+4 vs last</em></div>
+<div class="card kpi"><div class="ct">Positive replies</div><b>17</b><span>of 41 replies</span> <em>41%</em></div>
+<div class="card kpi"><div class="ct">Pipeline value</div><b>$58,400</b><span>6 open deals</span> <em>1 won $11,400</em></div>
+<div class="card kpi"><div class="ct">Cost per call</div><b>$0.35</b><span>$3.12 spent this month</span></div>
+<div class="card kpi"><div class="ct">Send health</div><b class="a">98.6%</b><span>delivered · 1.1% bounce</span> <em>all inboxes ok</em></div>
+</div>
+<div class="g" style="grid-template-columns:1.25fr 1fr;margin-top:12px">
+<div class="card">
+<div class="ct">Needs you <span class="pill w">5</span></div>
+<div class="need"><span class="dot w"></span><div><p><b>Dr. Elena Ruiz</b> asked for a contract and NDA</p><small>Hand-off trigger: legal · Clinics Q4 · 12 min ago</small></div><span class="btn p">Take over</span></div>
+<div class="need"><span class="dot a"></span><div><p>6 drafts waiting for approval</p><small>Approval mode: first 20 emails · 14 of 20 done</small></div><span class="btn">Review</span></div>
+<div class="need"><span class="dot t"></span><div><p><b>Megan Ortiz</b> wants 15% off; your ceiling is 10%</p><small>Agent drafted a 10% offer and is holding it for you</small></div><span class="btn">Decide</span></div>
+<div class="need"><span class="dot b"></span><div><p>Bounce rate on <span style="font-family:var(--mono)">rob@brightline-mail.com</span> hit 4.2% today</p><small>Guesses paused for corestaff.io and 2 other domains automatically</small></div><span class="btn">See why</span></div>
+<div class="need"><span class="dot a"></span><div><p>Log outcome for yesterday's call with <b>Tom Becker</b></p><small>Held? Interested? Value? Feeds the learning loop</small></div><span class="btn">Log</span></div>
+</div>
+<div class="card">
+<div class="ct">Live agent feed <span class="live">live</span></div>
+<div class="feed">
+<div><span class="t">09:31</span><span>Sent 12 first emails · Clinics Q4</span></div>
+<div><span class="t">09:28</span><span>Verified 31 of 38 emails (published 19, pattern 12)</span></div>
+<div><span class="t">09:22</span><span>Found 38 owners and practice managers · dental groups</span></div>
+<div><span class="t">09:16</span><span>Paused segment Med spas: 0.8% replies after 120 sends</span></div>
+<div><span class="t">08:57</span><span>Follow-up 2 sent · Motion PT</span></div>
+<div><span class="t">08:40</span><span>Opt-out honored forever · info@clearsmile.co</span></div>
+<div><span class="t">08:12</span><span class="h">Booked Thu 15:00 · Dr. Anil Shah · Shah Family Dental</span></div>
+</div>
+</div>
+</div>
+<div class="g" style="grid-template-columns:1fr 1.35fr;margin-top:12px">
+<div class="card">
+<div class="ct">This week's calls <span class="pill a">9 booked</span></div>
+<div class="cal">
+<div class="h"></div><div class="h">Mon</div><div class="h">Tue</div><div class="h">Wed</div><div class="h">Thu</div><div class="h">Fri</div>
+<div class="l">9a</div><div></div><div class="b">Rivera</div><div></div><div></div><div class="b">Hale</div>
+<div class="l">11a</div><div class="b">Kim</div><div></div><div class="b">Ortiz</div><div></div><div></div>
+<div class="l">1p</div><div></div><div class="b">Becker</div><div></div><div class="b">Park</div><div></div>
+<div class="l">3p</div><div></div><div></div><div class="b">Lee</div><div class="b">Dr. Shah</div><div></div>
+</div>
+</div>
+<div class="card">
+<div class="ct">Campaigns</div>
+<table class="t">
+<tr><th>Campaign</th><th>Objective</th><th>Found</th><th>Contacted</th><th>Replied</th><th>Booked</th><th>Cost / call</th><th></th></tr>
+<tr><td><b>Clinics Q4</b></td><td>Book calls</td><td>412</td><td>286</td><td>41</td><td><b style="color:var(--acc)">9</b></td><td>$0.35</td><td><span class="pill a">live</span></td></tr>
+<tr><td><b>Physio chains</b></td><td>Book calls</td><td>198</td><td>120</td><td>14</td><td>3</td><td>$0.41</td><td><span class="pill a">live</span></td></tr>
+<tr><td><b>Med spas</b></td><td>Capture leads</td><td>140</td><td>120</td><td>1</td><td>0</td><td>n/a</td><td><span class="pill">paused</span></td></tr>
+</table>
+</div>
+</div>
+</section>
+</div></div></div>
+
+<!-- 2 INBOX -->
+<h2 id="inbox">2. Inbox</h2>
+<div class="why">
+<div><b>Three panes:</b> filter by intent, the thread, and the lead's context. One glance shows why the agent said what it said.</div>
+<div><b>Intent labels</b> replace creator stages: interested, question, objection, not now, no, out of office, unsubscribe.</div>
+<div><b>Every draft shows its gates</b> (fact-check, ceiling, salutation, banned words) before you approve.</div>
+</div>
+<div class="app"><div class="scroll"><div style="min-width:1080px;display:grid;grid-template-columns:220px 1fr 300px">
+<aside class="side">
+<div class="lbl" style="margin-top:0">Replies</div>
+<a class="on">Needs you <span class="n">4</span></a>
+<a>Interested <span class="n">17</span></a>
+<a>Questions <span class="n">6</span></a>
+<a>Objections <span class="n">5</span></a>
+<a>Not now <span class="n">8</span></a>
+<a>No <span class="n">3</span></a>
+<a>Out of office <span class="n">2</span></a>
+<a>Booked <span class="n">9</span></a>
+<div class="lbl">Objection types</div>
+<a>Price <span class="n">3</span></a><a>Timing <span class="n">1</span></a><a>Already have a vendor <span class="n">1</span></a>
+</aside>
+<section class="body">
+<div class="top"><h4>Megan Ortiz · CorePhysio Group</h4><div class="row"><span class="pill t">objection: price</span><span class="btn">Take over</span></div></div>
+<div class="bubble out">Hi Megan, saw CorePhysio's booking page asks for insurance details before showing times. With 6 clinics that's a lot of drop-off... <span style="color:var(--mute)">(first email, Mon 09:12)</span></div>
+<div class="bubble in">This is relevant actually. But $8k is more than we budgeted this quarter. Could you do 15% off?</div>
+<div class="card" style="margin-top:10px;border-color:var(--warn)">
+<div class="ct">Agent draft, held for you <span class="pill w">above ceiling</span></div>
+<div class="mail">Totally fair, Megan. 15% is more than I can do, but if you start this quarter I can take 10% off and include three months of hosting. Want to walk through the audit Thursday at 2?</div>
+<div class="gate"><span class="pill a">✓ facts from brief</span><span class="pill a">✓ salutation matches</span><span class="pill a">✓ no banned words</span><span class="pill w">asked 15%, ceiling 10%</span><span class="pill a">✓ one clear ask</span></div>
+<div class="row" style="margin-top:10px"><span class="btn p">Approve and send</span><span class="btn">Edit</span><span class="btn">Raise to 15% once</span><span class="btn">Reject + teach</span></div>
+</div>
+</section>
+<aside class="side" style="border-left:1px solid var(--line);border-right:0">
+<div class="lbl" style="margin-top:0">Lead</div>
+<div class="kv">
+<span>Role</span><div>Operations Director</div>
+<span>Company</span><div>CorePhysio Group · 6 clinics · Denver</div>
+<span>Segment</span><div>Physio chains · fit 87%</div>
+<span>Fit reason</span><div>Multi-site, booking page friction, site 4+ years old</div>
+<span>Email</span><div>published on /team <span class="pill a">verified</span></div>
+<span>Lane</span><div>Negotiation</div>
+<span>Campaign</span><div>Physio chains</div>
+</div>
+<div class="lbl">Facts the agent used</div>
+<ul class="list" style="font-size:12px"><li>Booking page asks insurance first (their site)</li><li>6 locations (their locations page)</li><li>Harbor Dental case study (your proof)</li></ul>
+</aside>
+</div></div></div>
+
+<!-- 3 APPROVALS -->
+<h2 id="approvals">3. Approvals</h2>
+<div class="why">
+<div><b>A stack, not a table.</b> One draft at a time, keyboard shortcuts (A approve, E edit, R reject), built to clear 20 in five minutes.</div>
+<div><b>Citations visible.</b> Each highlighted claim links to the page it came from, so trust is earned fast.</div>
+<div><b>Reject teaches.</b> A rejection reason becomes a learned rule for that campaign, shown back as "rule added".</div>
+</div>
+<div class="app"><div class="scroll"><div style="min-width:1080px;padding:16px 18px;display:grid;grid-template-columns:1.5fr 1fr;gap:12px">
+<div class="card">
+<div class="ct">Draft 15 of 20 · first email · Clinics Q4 <span class="row"><span class="pill">A approve</span><span class="pill">E edit</span><span class="pill">R reject</span></span></div>
+<div class="kv" style="margin-bottom:10px"><span>To</span><div>Priya Raman, Practice Manager · Smile Co Dental · Austin</div><span>Subject</span><div>Smile Co's booking button on mobile</div></div>
+<div class="mail">Hi Priya,<br><br>I was on smileco.dental from my phone and the "Book now" button sits under <mark>three photo carousels</mark><sup>1</sup>. With <mark>four Austin locations</mark><sup>2</sup>, that's a lot of patients scrolling past before they book.<br><br>We rebuilt sites for <mark>Harbor Dental and NorthPoint Ortho</mark><sup>3</sup>. Want a free homepage audit? I'll send a 5-minute video with the three fixes I'd make first.<br><br>Rob, Brightline Studio</div>
+<div class="gate"><span class="pill a">✓ 3 facts, 3 sources</span><span class="pill a">✓ 74 words</span><span class="pill a">✓ one ask</span><span class="pill a">✓ compliance footer</span></div>
+<div class="row" style="margin-top:12px"><span class="btn p">Approve</span><span class="btn">Edit</span><span class="btn">Reject</span><span class="btn">Approve all remaining like this</span></div>
+</div>
+<div class="g">
+<div class="card"><div class="ct">Sources</div><ul class="list" style="font-size:12.5px"><li><b>1</b> smileco.dental, mobile homepage</li><li><b>2</b> smileco.dental/locations</li><li><b>3</b> your proof points (ticked)</li></ul></div>
+<div class="card"><div class="ct">Learned rules · Clinics Q4</div><ul class="list" style="font-size:12.5px"><li>Never mention patient outcomes <span class="pill">from reject #3</span></li><li>Say "practice", not "business" <span class="pill">from edit #7</span></li><li>Offer the audit, not a call, in email 1 <span class="pill">from edit #11</span></li></ul></div>
+<div class="card"><div class="ct">Progress</div><div class="bar"><i style="width:70%"></i></div><p style="font-size:12.5px;color:var(--mute);margin:8px 0 0">14 of 20 reviewed. After 20, this campaign switches to autopilot (change in Guardrails).</p></div>
+</div>
+</div></div></div>
+
+<!-- 4 MEETINGS -->
+<h2 id="meetings">4. Meetings</h2>
+<div class="why">
+<div><b>The new sales-only screen.</b> The agent's job ends at a booked call, but the buyer's job starts there.</div>
+<div><b>Prep brief per call:</b> who they are, why they fit, what they said, the objection to expect, a suggested opener.</div>
+<div><b>Outcome logging</b> (held, no-show, interested, deal value) closes the loop so segments are judged on deals, not replies.</div>
+</div>
+<div class="app"><div class="scroll"><div style="min-width:1080px;padding:16px 18px;display:grid;grid-template-columns:330px 1fr;gap:12px">
+<div class="card">
+<div class="ct">Upcoming <span class="pill a">3 today</span></div>
+<table class="t">
+<tr><td><b>Thu 15:00</b><br><span style="color:var(--mute)">Dr. Anil Shah · Shah Family Dental</span></td><td><span class="pill a">confirmed</span></td></tr>
+<tr><td><b>Thu 16:30</b><br><span style="color:var(--mute)">Lena Park · Park Recruiting</span></td><td><span class="pill">invite sent</span></td></tr>
+<tr><td><b>Fri 09:00</b><br><span style="color:var(--mute)">Marcus Hale · Peak Physio</span></td><td><span class="pill w">not confirmed</span></td></tr>
+</table>
+<div class="ct" style="margin-top:14px">Needs outcome</div>
+<table class="t">
+<tr><td><b>Wed 13:00</b> · Tom Becker</td><td><span class="btn">Log</span></td></tr>
+<tr><td><b>Tue 11:00</b> · Lauren Kim</td><td><span class="pill b">no-show</span></td></tr>
+</table>
+<p style="font-size:12px;color:var(--mute)">No-shows get two reschedule emails automatically.</p>
+</div>
+<div class="card prep">
+<div class="ct">Call prep · Thu 15:00 · Google Meet <span class="row"><span class="btn">Join</span><span class="btn">Reschedule</span></span></div>
+<div class="g" style="grid-template-columns:1fr 1fr">
+<div><h5>Who</h5><ul><li><b>Dr. Anil Shah</b>, owner, Shah Family Dental</li><li>4 locations, Columbus OH, site built 2019</li><li>Segment: multi-location dental groups, fit 91%</li></ul></div>
+<div><h5>What they said</h5><ul><li>"Looks interesting. What does a rebuild usually cost?"</li><li>Pushed back on price; accepted 6% + 3 months hosting</li><li>Picked Thursday from 3 offered slots</li></ul></div>
+<div><h5>Expect</h5><ul><li><b>Objection:</b> timing, they mentioned a busy Q1</li><li><b>Agreed so far:</b> free audit, 6% concession</li><li><b>Never offer:</b> above 10% (your ceiling)</li></ul></div>
+<div><h5>Suggested opener</h5><ul><li>Open with the mobile booking audit, show the 3 fixes, then ask which location books worst.</li></ul></div>
+</div>
+<div class="row" style="margin-top:12px;border-top:1px solid var(--line);padding-top:10px"><span style="font:11px var(--mono);color:var(--mute)">AFTER THE CALL</span><span class="btn">Held</span><span class="btn">No-show</span><span class="btn">Interested · add deal value</span><span class="btn">Not a fit</span></div>
+</div>
+</div></div></div>
+
+<!-- 5 PIPELINE -->
+<h2 id="pipeline">5. Pipeline</h2>
+<div class="why">
+<div><b>Lightweight on purpose.</b> Five columns after the call, a value per deal. Not a CRM: CSV export and a HubSpot sync later.</div>
+<div><b>Feeds the top strip</b> (pipeline value, won) and the segment table (revenue per segment).</div>
+<div><b>The agent keeps working the deal</b> only if you set it: proposal follow-ups use the same lanes and guardrails.</div>
+</div>
+<div class="app"><div class="scroll"><div style="min-width:1080px;padding:16px 18px">
+<div class="kan">
+<div class="col"><div><span>Call held</span><span>3 · $24k</span></div><div class="deal">Shah Family Dental<small>$9,000 · Thu</small></div><div class="deal">Becker Orthodontics<small>$8,000</small></div><div class="deal">Peak Physio<small>$7,000</small></div></div>
+<div class="col"><div><span>Proposal sent</span><span>2 · $22k</span></div><div class="deal">CorePhysio Group<small>$12,000 · follow-up Fri</small></div><div class="deal">Northgate Dental<small>$10,000</small></div></div>
+<div class="col"><div><span>Negotiating</span><span>1 · $12.4k</span></div><div class="deal">Harborview Dental<small>$12,400 · 8% asked</small></div></div>
+<div class="col"><div><span style="color:var(--acc)">Won</span><span>1 · $11.4k</span></div><div class="deal" style="border-color:var(--acc)">Dr. Elena Ruiz Clinics<small>$11,400 · from Clinics Q4</small></div></div>
+<div class="col"><div><span>Lost</span><span>2</span></div><div class="deal" style="opacity:.6">BrightSmile<small>went with agency</small></div><div class="deal" style="opacity:.6">Motion PT<small>budget</small></div></div>
+</div>
+</div></div></div>
+
+<!-- 6 CAMPAIGN -->
+<h2 id="campaign">6. Campaign detail</h2>
+<div class="why">
+<div><b>Tabs:</b> Overview, Leads, Conversations, Approvals, Brief and rules, Activity.</div>
+<div><b>The segment table is the brain made visible:</b> fit, reply rate, calls, revenue, cost per lead, and the agent's decision (scaling, working, paused) with its reason.</div>
+<div><b>Brief and rules</b> keeps versions, so "what changed before replies dropped?" has an answer.</div>
+</div>
+<div class="app"><div class="scroll"><div style="min-width:1080px;padding:16px 18px">
+<div class="top"><h4>Clinics Q4 <span class="pill a" style="margin-left:6px">live</span> <span class="pill">Book calls</span> <span class="pill">autopilot after 20</span></h4><div class="row"><span class="btn">Pause</span><span class="btn">Clone</span><span class="btn p">Edit brief</span></div></div>
+<div class="row" style="border-bottom:1px solid var(--line);margin-bottom:12px;font-size:13px;gap:18px;padding-bottom:6px"><b>Overview</b><span style="color:var(--mute)">Leads 412</span><span style="color:var(--mute)">Conversations 41</span><span style="color:var(--mute)">Approvals 6</span><span style="color:var(--mute)">Brief and rules v4</span><span style="color:var(--mute)">Activity</span></div>
+<div class="funnel">
+<div><b>412</b><span>Found</span></div><div><b>356</b><span>Verified</span></div><div><b>286</b><span>Contacted</span></div><div><b>41</b><span>Replied · 14%</span></div><div><b>17</b><span>Interested</span></div><div class="w"><b style="color:var(--acc)">9</b><span>Booked · 3.1%</span></div>
+</div>
+<div class="card" style="margin-top:12px">
+<div class="ct">Segments · the agent shifts daily budget to winners</div>
+<table class="t">
+<tr><th>Segment</th><th>Fit</th><th>Sent</th><th>Reply rate</th><th>Calls</th><th>Revenue</th><th>Cost / lead</th><th>Decision</th></tr>
+<tr><td><b>Multi-location dental groups</b></td><td>91%</td><td>142</td><td><div class="bar" style="width:90px;display:inline-block"><i style="width:68%"></i></div> 6.8%</td><td>6</td><td>$11,400</td><td>$0.04</td><td><span class="pill a">scaling</span></td></tr>
+<tr><td><b>Orthodontists</b></td><td>84%</td><td>86</td><td><div class="bar" style="width:90px;display:inline-block"><i style="width:42%"></i></div> 4.2%</td><td>3</td><td>$0</td><td>$0.06</td><td><span class="pill t">working</span></td></tr>
+<tr><td><b>Pediatric dentists</b></td><td>80%</td><td>58</td><td><div class="bar" style="width:90px;display:inline-block"><i style="width:30%"></i></div> 3.0%</td><td>0</td><td>$0</td><td>$0.05</td><td><span class="pill t">testing · 42 left</span></td></tr>
+<tr><td style="color:var(--mute)">Veterinary groups</td><td>72%</td><td>50</td><td><div class="bar" style="width:90px;display:inline-block"><i style="width:4%"></i></div> 0.4%</td><td>0</td><td>$0</td><td>$0.09</td><td><span class="pill">paused · low fit</span></td></tr>
+</table>
+</div>
+</div></div></div>
+
+<!-- 7 LEADS -->
+<h2 id="leads">7. Leads</h2>
+<div class="why">
+<div><b>Email confidence is a first-class column:</b> published, pattern, or guess, plus verification. This is how free sourcing stays safe.</div>
+<div><b>Every lead has a reason:</b> why it fits, or why it was dropped. Disqualified leads stay visible with the reason.</div>
+<div><b>Import and export</b> CSV from here; imported leads run through the same gates.</div>
+</div>
+<div class="app"><div class="scroll"><div style="min-width:1080px;padding:16px 18px">
+<div class="row" style="margin-bottom:10px"><span class="btn">Campaign: all ▾</span><span class="btn">Segment ▾</span><span class="btn">Stage ▾</span><span class="btn">Email: any ▾</span><span class="btn">Show disqualified</span><span style="margin-left:auto" class="row"><span class="btn">Import CSV</span><span class="btn">Export</span></span></div>
+<table class="t">
+<tr><th>Person</th><th>Company</th><th>Segment</th><th>Fit</th><th>Email</th><th>Source</th><th>Stage</th><th>Next step</th></tr>
+<tr><td><b>Priya Raman</b><br><span style="color:var(--mute)">Practice Manager</span></td><td>Smile Co Dental · 4 sites</td><td>Dental groups</td><td>91%</td><td style="font-family:var(--mono);font-size:12px">p•••@smileco.dental</td><td><span class="pill a">published</span></td><td>Contacted</td><td>Follow-up 1 · Wed</td></tr>
+<tr><td><b>Tom Becker</b><br><span style="color:var(--mute)">Owner</span></td><td>Becker Orthodontics</td><td>Orthodontists</td><td>84%</td><td style="font-family:var(--mono);font-size:12px">t•••@beckerortho.com</td><td><span class="pill t">pattern</span></td><td>Call held</td><td>Log outcome</td></tr>
+<tr><td><b>Jordan Wells</b><br><span style="color:var(--mute)">Clinic Director</span></td><td>Wells Pediatric Dental</td><td>Pediatric</td><td>80%</td><td style="font-family:var(--mono);font-size:12px">j•••@wellspd.com</td><td><span class="pill w">guess · held</span></td><td>Queued</td><td>Waits for domain proof</td></tr>
+<tr style="opacity:.55"><td><b>Sam Ortega</b><br><span style="color:var(--mute)">Receptionist</span></td><td>Bright Paws Vet</td><td>Vet groups</td><td>41%</td><td>n/a</td><td><span class="pill">role mismatch</span></td><td>Disqualified</td><td>Not a decision maker</td></tr>
+</table>
+</div></div></div>
+
+<!-- 8 DELIVERABILITY -->
+<h2 id="deliv">8. Deliverability</h2>
+<div class="why">
+<div><b>Sending from the buyer's own inbox</b> makes reputation the product's biggest risk, so it gets its own screen.</div>
+<div><b>Ramp, caps and auto-pauses</b> are shown, not hidden, with the reason for every pause.</div>
+<div><b>Fix buttons</b> link to the exact setting (DNS records, cap, separate domain guide).</div>
+</div>
+<div class="app"><div class="scroll"><div style="min-width:1080px;padding:16px 18px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+<div class="card"><div class="ct">rob@brightline-mail.com <span class="pill a">healthy</span></div><div class="row" style="gap:16px"><div class="gauge"><div>34<small>of 50 today</small></div></div><div class="kv" style="grid-template-columns:80px 1fr"><span>Ramp</span><div>day 18 of 21</div><span>Delivered</span><div>98.6%</div><span>Bounce</span><div>1.1%</div><span>SPF/DKIM</span><div><span class="pill a">pass</span></div></div></div></div>
+<div class="card"><div class="ct">Bounces, last 14 days</div><div class="spark"><i style="height:20%"></i><i style="height:15%"></i><i style="height:25%"></i><i style="height:10%"></i><i style="height:18%"></i><i style="height:12%"></i><i style="height:30%"></i><i style="height:22%"></i><i style="height:14%"></i><i style="height:10%"></i><i style="height:16%"></i><i style="height:12%"></i><i style="height:84%;background:var(--bad)"></i><i style="height:20%"></i></div><p style="font-size:12px;color:var(--mute);margin:8px 0 0">Spike on day 13: pattern guesses on corestaff.io. Guesses paused for that domain; 2 patterns corrected.</p></div>
+<div class="card"><div class="ct">Safety log</div><div class="feed"><div><span class="t">Tue</span><span>Paused guesses · corestaff.io</span></div><div><span class="t">Mon</span><span>Opt-out · 2 addresses, all campaigns</span></div><div><span class="t">Sun</span><span>Quiet day · no sends</span></div><div><span class="t">Fri</span><span>Rule sweep clean · 0 fixes</span></div></div></div>
+</div></div></div>
+
+<!-- 9 MOBILE -->
+<h2 id="mobile">9. Mobile and the daily digest</h2>
+<p class="sub">Founders check this from a phone. Mobile is not a shrunken dashboard: it's two things, the morning digest and a one-thumb approvals and hand-offs view.</p>
+<div class="flex">
+<div class="phone">
+<div class="row" style="justify-content:space-between;margin-bottom:10px"><b>Closefast</b><span class="live">running</span></div>
+<div class="card kpi" style="margin-bottom:8px"><div class="ct">Today</div><b class="a">2 calls booked</b><span>11 replies · 4 need you</span></div>
+<div class="need"><span class="dot w"></span><div><p><b>Dr. Ruiz</b> wants an NDA</p><small>Hand-off</small></div><span class="btn p">Open</span></div>
+<div class="need"><span class="dot a"></span><div><p>6 drafts to approve</p><small>Swipe right to approve</small></div><span class="btn">Go</span></div>
+<div class="need"><span class="dot t"></span><div><p>Thu 15:00 Dr. Shah</p><small>Prep brief ready</small></div><span class="btn">Read</span></div>
+</div>
+<div class="card" style="max-width:520px">
+<div class="ct">Daily digest email · 08:00 local</div>
+<div style="font-size:13px"><b>Closefast · Tuesday</b><br><br>Yesterday: <b>2 calls booked</b> (Dr. Shah Thu 15:00, Lena Park Thu 16:30), 11 replies, 4 positive.<br>Needs you: 1 hand-off (NDA request), 6 drafts.<br>Health: all inboxes healthy, bounce 1.1%.<br>Agent decisions: paused Med spas (0.8% replies), raised Dental groups budget to 60%.<br>Spend this month: $3.12.<br><br><span class="btn p">Open Mission Control</span></div>
+</div>
+</div>
+
+<h2 id="diff">What changed vs the creator engine</h2>
+<table class="t" style="max-width:960px">
+<tr><th>Creator engine</th><th>Closefast</th></tr>
+<tr><td>Creators, followers, engagement rate</td><td>People and companies, roles, fit score with reason, segments</td></tr>
+<tr><td>Fee asks, negotiation rounds, budget ceiling</td><td>Objections by type, concession ceiling, hand-off triggers</td></tr>
+<tr><td>Accepted / won = paid creator</td><td>Booked call, then a light pipeline with deal value</td></tr>
+<tr><td>Delivery chase, Tolt payouts</td><td>Meeting confirm, no-show reschedule, outcome logging, call prep brief</td></tr>
+<tr><td>Instagram, LinkedIn, Instantly channels</td><td>One channel: the buyer's own inbox, with a deliverability screen</td></tr>
+<tr><td>Nine operator pages built for one team</td><td>Six daily screens built for a founder who checks in once a day</td></tr>
+</table>
+<p class="sub" style="margin-top:14px">Back to the <a href="../plan/" style="color:var(--acc)">fork plan</a>.</p>
+</main>
+</body>
+</html>
