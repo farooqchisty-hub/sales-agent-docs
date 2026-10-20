@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Sales Agent Fork Plan</title>
+<title>Closefast Fork Plan</title>
 <style>
 :root{--bg:#0d0f10;--panel:#15181a;--line:#262a2d;--ink:#eceeea;--mute:#9aa19c;--acc:#b6f36b;--warn:#f3c86b;--bad:#f37b6b;--mono:ui-monospace,SFMono-Regular,Menlo,monospace}
 @media (prefers-color-scheme: light){:root:not([data-theme="dark"]){--bg:#f7f7f4;--panel:#fff;--line:#e2e3de;--ink:#15181a;--mute:#5d645f;--acc:#3f7d12;--warn:#9a6a00;--bad:#b23a2a}}
@@ -38,13 +38,25 @@ nav.toc a:hover{color:var(--acc);border-color:var(--acc)}
 </head>
 <body>
 <main>
-<span class="tag acc">PLAN v1</span><span class="tag">20 Oct 2026</span><span class="tag">product name TBD</span>
-<h1>Sales Agent: fork plan</h1>
-<p class="sub">Fork the creator outreach engine into a self-hosted sales agent that runs many campaigns, each with its own brief, audience, rules and guardrails. Sold as a one-time bundle first, built so it can become SaaS later without a rewrite. Brevo runs the first instance.</p>
+<span class="tag acc">PLAN v1</span><span class="tag">20 Oct 2026</span><span class="tag acc">Closefast</span>
+<h1>Closefast: fork plan</h1>
+<p class="sub">Closefast: fork the creator outreach engine into a self-hosted sales agent that runs many campaigns, each with its own brief, audience, rules and guardrails. Sold as a one-time bundle first, built so it can become SaaS later without a rewrite. Brevo runs the first instance.</p>
 
 <nav class="toc">
-<a href="#principles">Principles</a><a href="#inputs">Campaign inputs</a><a href="#features">Features</a><a href="#integrations">Integrations</a><a href="#fork">Fork map</a><a href="#arch">Architecture</a><a href="#data">Data model</a><a href="#ui">UI</a><a href="#milestones">Milestones</a><a href="#cut">Not in v1</a><a href="#risks">Risks</a><a href="#decide">Decisions</a>
+<a href="#offer">Offer</a><a href="#principles">Principles</a><a href="#inputs">Campaign inputs</a><a href="#features">Features</a><a href="#integrations">Integrations</a><a href="#fork">Fork map</a><a href="#arch">Architecture</a><a href="#data">Data model</a><a href="#ui">UI</a><a href="#milestones">Milestones</a><a href="#cut">Not in v1</a><a href="#risks">Risks</a><a href="#decide">Decisions</a>
 </nav>
+
+<h2 id="offer">0. Offer</h2>
+<div class="grid">
+<div class="card"><h3>Closefast License</h3><b>$49 one-time</b> (launch price, rises after 500 licenses). Lifetime license, all features, unlimited campaigns, updates. Self-installed on the buyer's Cloudflare.</div>
+<div class="card"><h3>1:1 setup</h3><b>$99 one-time.</b> A live 60-minute call: deploy, connect inbox and calendar, write the brief and guardrails together, launch the first campaign before the call ends.</div>
+<div class="card"><h3>Add-on agents</h3>Performance marketing, creator outreach, video ad, backlink, Reddit engagement. Each sold separately with its own page; they plug into the same core.</div>
+<div class="card"><h3>Running cost</h3>Pay as you go. Setup under $10 (Cloudflare Workers Paid $5, optional model credit), then usage only, paid to Cloudflare and the model provider.</div>
+</div>
+<h3>Guarantee: "No Calls, No Pay"</h3>
+<p>Page headline: "No booked call in 30 days? Full refund." with a short "Conditions apply, see Terms" link under it and in the refund FAQ. Draft clause for the Terms:</p>
+<div class="call">A refund under the No Calls, No Pay guarantee is available when all of the following hold: (a) the request is made within 30 days of purchase; (b) Closefast was installed and connected as described in the setup guide, with a connected inbox that stayed active for the period; (c) at least one campaign ran in autopilot or with approvals cleared for at least 21 of those days; (d) at least 300 first emails were sent; (e) no call or meeting was booked through Closefast in that period; and (f) the buyer shares read-only access to the Closefast dashboard so we can confirm (b) to (e). Refunds cover the license fee only; Cloudflare, model and 1:1 setup fees are not refundable.</div>
+<p class="sub">Note: US consumer-protection rules expect the material conditions of a guarantee to be disclosed clearly where the guarantee is made, so the page keeps that short "Conditions apply" link next to it rather than leaving the conditions only in the Terms.</p>
 
 <h2 id="principles">1. Principles</h2>
 <div class="grid">
@@ -235,7 +247,7 @@ nav.toc a:hover{color:var(--acc);border-color:var(--acc)}
 <tr><td>M4</td><td><b>Outreach and conversations</b>: drafting, gates, approval queue, sending, classifier, replies, concessions, booking, lanes</td><td>End to end: lead found to call on calendar, with no human step in autopilot mode. <b>Brevo instance goes live here</b></td></tr>
 <tr><td>M5</td><td><b>Safety and learning</b>: takeover, emergency stop, bounce learning, rule sweep, learned rules, segment auto-pause, digest</td><td>Rule sweep runs clean for 7 days on the Brevo instance</td></tr>
 <tr><td>M6</td><td><b>Packaging</b>: installer, license key, update command, docs, setup video</td><td>A fresh Cloudflare account goes from zero to a running campaign using only the docs</td></tr>
-<tr><td>M7</td><td><b>Launch</b>: landing page with live URL preview (reuses <code>brief.js</code>), checkout, done-for-you booking</td><td>First paid license</td></tr>
+<tr><td>M7</td><td><b>Launch</b>: landing page with live URL preview (reuses <code>brief.js</code>), checkout, done-for-you booking</td><td>First paid $49 license</td></tr>
 </table></div>
 
 <h2 id="cut">10. Deliberately not in v1</h2>
@@ -264,7 +276,9 @@ nav.toc a:hover{color:var(--acc);border-color:var(--acc)}
 <tr><td>Running-cost claim</td><td><span class="tag acc">decided 20 Oct</span> "Pay as you go. Setup under $10."</td></tr>
 <tr><td>Which inboxes</td><td><span class="tag acc">decided 20 Oct</span> Any provider, connected by the buyer themselves (Google, Microsoft, or SMTP/IMAP)</td></tr>
 <tr><td>Brevo's first campaign</td><td><span class="tag warn">brief pending</span> Book calls to land agency partnerships with ecommerce/D2C agencies</td></tr>
-<tr><td>Product name</td><td><span class="tag warn">open</span> Shortlist sent 20 Oct</td></tr>
+<tr><td>Product name</td><td><span class="tag acc">decided 20 Oct</span> Closefast (closefast.com, .ai, .co are registered by others; getclosefast.com and closefast.io look free)</td></tr>
+<tr><td>Prices</td><td><span class="tag acc">decided 20 Oct</span> License $49 one-time (launch), 1:1 setup $99</td></tr>
+<tr><td>Guarantee</td><td><span class="tag acc">decided 20 Oct</span> "No Calls, No Pay", conditional, conditions in the Terms (section 0)</td></tr>
 </table></div>
 </main>
 </body>
