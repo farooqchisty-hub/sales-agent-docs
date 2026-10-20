@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sales Agent Fork Plan</title>
+<style>
+:root{--bg:#0d0f10;--panel:#15181a;--line:#262a2d;--ink:#eceeea;--mute:#9aa19c;--acc:#b6f36b;--warn:#f3c86b;--bad:#f37b6b;--mono:ui-monospace,SFMono-Regular,Menlo,monospace}
+@media (prefers-color-scheme: light){:root:not([data-theme="dark"]){--bg:#f7f7f4;--panel:#fff;--line:#e2e3de;--ink:#15181a;--mute:#5d645f;--acc:#3f7d12;--warn:#9a6a00;--bad:#b23a2a}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 Inter,system-ui,-apple-system,Segoe UI,sans-serif}
+main{max-width:1040px;margin:0 auto;padding:40px 16px 80px}
+h1{font-size:30px;line-height:1.2;margin:0 0 8px}
+h2{font-size:21px;margin:48px 0 12px;padding-top:16px;border-top:1px solid var(--line)}
+h3{font-size:16px;margin:24px 0 8px}
+p,li{color:var(--ink)}
+.sub{color:var(--mute);margin:0 0 24px}
+.tag{display:inline-block;font:12px var(--mono);padding:2px 8px;border:1px solid var(--line);border-radius:99px;color:var(--mute);margin-right:6px}
+.tag.acc{color:var(--acc);border-color:var(--acc)}
+.tag.warn{color:var(--warn);border-color:var(--warn)}
+.tag.bad{color:var(--bad);border-color:var(--bad)}
+.grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px}
+.card h3{margin-top:0}
+.card ul{margin:0;padding-left:18px}
+table{width:100%;border-collapse:collapse;margin:8px 0 16px;font-size:14px}
+th,td{text-align:left;vertical-align:top;padding:8px 10px;border-bottom:1px solid var(--line)}
+th{color:var(--mute);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.04em}
+.tw{overflow-x:auto}
+code,.mono{font-family:var(--mono);font-size:13px}
+.call{border-left:3px solid var(--acc);background:var(--panel);padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0}
+.call.warn{border-color:var(--warn)}
+.wf{background:var(--panel);border:1px dashed var(--line);border-radius:10px;padding:14px;font:13px/1.5 var(--mono);color:var(--mute);white-space:pre;overflow-x:auto}
+nav.toc{display:flex;flex-wrap:wrap;gap:6px;margin:16px 0 8px}
+nav.toc a{font:12px var(--mono);color:var(--mute);text-decoration:none;border:1px solid var(--line);padding:3px 9px;border-radius:99px}
+nav.toc a:hover{color:var(--acc);border-color:var(--acc)}
+</style>
+</head>
+<body>
+<main>
+<span class="tag acc">PLAN v1</span><span class="tag">20 Oct 2026</span><span class="tag">product name TBD</span>
+<h1>Sales Agent: fork plan</h1>
+<p class="sub">Fork the creator outreach engine into a self-hosted sales agent that runs many campaigns, each with its own brief, audience, rules and guardrails. Sold as a one-time bundle first, built so it can become SaaS later without a rewrite. Brevo runs the first instance.</p>
+
+<nav class="toc">
+<a href="#principles">Principles</a><a href="#inputs">Campaign inputs</a><a href="#features">Features</a><a href="#integrations">Integrations</a><a href="#fork">Fork map</a><a href="#arch">Architecture</a><a href="#data">Data model</a><a href="#ui">UI</a><a href="#milestones">Milestones</a><a href="#cut">Not in v1</a><a href="#risks">Risks</a><a href="#decide">Decisions</a>
+</nav>
+
+<h2 id="principles">1. Principles</h2>
+<div class="grid">
+<div class="card"><h3>Campaign is the unit</h3>Everything a user configures lives on a campaign. Many campaigns run at once. Only suppression, mailboxes and the do-not-contact list are global.</div>
+<div class="card"><h3>Free to run</h3>No paid data or verification APIs required. Costs are Cloudflare plus model tokens. Paid data keys are optional plug-ins, never needed.</div>
+<div class="card"><h3>Lift, don't copy</h3>The engine's 13k-line <code>index.js</code> does not come across. We lift proven modules by name into a slim new Worker.</div>
+<div class="card"><h3>SaaS-ready, not SaaS</h3>A <code>workspace_id</code> on every row and every secret, no hardcoded config. Nothing else multi-tenant gets built now.</div>
+</div>
+
+<h2 id="inputs">2. User inputs per campaign</h2>
+<p>The wizard asks for the URL first and drafts everything else from it. The user edits, never starts from a blank page. <span class="tag acc">req</span> means required to launch.</p>
+<div class="tw"><table>
+<tr><th>Group</th><th>Input</th><th>How it's filled</th></tr>
+<tr><td rowspan="4"><b>1. Goal</b></td><td>Campaign name <span class="tag acc">req</span></td><td>Typed</td></tr>
+<tr><td>Objective <span class="tag acc">req</span></td><td>Pick: Book calls, Book demos, Capture leads (qualified reply), Close B2B deals, Land partnerships, Custom (one line)</td></tr>
+<tr><td>What counts as a win</td><td>Defaults from objective (e.g. "event on calendar"). Editable</td></tr>
+<tr><td>Booking method <span class="tag acc">req for calls</span></td><td>Book on my Google Calendar (agent proposes slots) or paste a booking link (Cal.com, Calendly, Google appointment page). Meeting length, buffer, working hours</td></tr>
+<tr><td rowspan="4"><b>2. Business</b></td><td>Website URL <span class="tag acc">req</span></td><td>Pasted. Or "I don't have a website" opens a describe-your-offer box</td></tr>
+<tr><td>Business brief</td><td>Auto-drafted from the site: what you sell, who for, outcomes, proof, pricing you're happy to share. Editable</td></tr>
+<tr><td>Proof points</td><td>Auto-pulled case studies, logos, numbers. User ticks which may be quoted (fact-check only lets ticked facts through)</td></tr>
+<tr><td>Extra context</td><td>Free text: positioning, competitors, anything not on the site</td></tr>
+<tr><td rowspan="6"><b>3. Audience</b></td><td>Segments</td><td>Agent proposes 3 to 6 buyer segments with fit scores from the site. User keeps, edits or adds</td></tr>
+<tr><td>Roles to reach</td><td>Titles and seniority (Owner, Founder, Head of Marketing...). Suggested per segment</td></tr>
+<tr><td>Company filters</td><td>Size band, countries/regions (include and exclude), keywords, tech or hiring signals</td></tr>
+<tr><td>Exclusions</td><td>Competitors, existing customers, domains (paste or CSV). Merged with the global do-not-contact list</td></tr>
+<tr><td>Bring your own leads</td><td>Optional CSV upload. Same enrichment, verification and gates as sourced leads</td></tr>
+<tr><td>Lead budget</td><td>Max new leads per day, and a stop at N total (optional)</td></tr>
+<tr><td rowspan="6"><b>4. Message</b></td><td>Offer / call to action <span class="tag acc">req</span></td><td>Suggested from site (e.g. "free homepage audit", "20-minute demo"). Editable</td></tr>
+<tr><td>Sender</td><td>Mailbox, from-name, signature</td></tr>
+<tr><td>Tone</td><td>Two sliders: formal to casual, short to detailed. Language</td></tr>
+<tr><td>Example email (optional)</td><td>One email they like, used as a style reference, never copied</td></tr>
+<tr><td>FAQ and objection answers</td><td>Auto-drafted Q&amp;A pairs from the site. The agent may only answer from these plus the brief</td></tr>
+<tr><td>Never say</td><td>Banned words, claims, competitor names. Pre-filled with the engine's banned-copy list</td></tr>
+<tr><td rowspan="7"><b>5. Guardrails</b></td><td>Approval mode <span class="tag acc">req</span></td><td>Review every email, Review first 20 then autopilot, Full autopilot. Default: review first 20</td></tr>
+<tr><td>Send window</td><td>Days, hours, timezone. Default: weekdays 9 to 5 in the lead's timezone</td></tr>
+<tr><td>Daily caps</td><td>New emails per day per mailbox (default 30 with a ramp), replies per day</td></tr>
+<tr><td>Concession ceiling</td><td>What the agent may offer: max discount %, free trial length, extras. Blank means it offers nothing</td></tr>
+<tr><td>Hand-off triggers</td><td>Pre-ticked: asks for a human, legal or contract, angry, price above X, enterprise deal. Plus custom phrases. Hand-off alerts go to an email</td></tr>
+<tr><td>Follow-up ladder</td><td>Defaults from the engine's five lanes. Advanced users can change counts and gaps</td></tr>
+<tr><td>Stop conditions</td><td>Stop after N wins, or a date, or lead budget used</td></tr>
+</table></div>
+<div class="call"><b>Launch gate.</b> Before a campaign goes live the wizard shows a preview: 10 real sourced leads with their fit reason, and 3 drafted emails. The user approves or tweaks. This is also the landing page's free preview, same code.</div>
+
+<h3>Global settings (once per workspace)</h3>
+<ul>
+<li>Workspace name, default timezone</li>
+<li>Compliance footer: physical business address and opt-out line (required by US anti-spam law, CAN-SPAM)</li>
+<li>Global do-not-contact list, suppression list (bounces and opt-outs, automatic)</li>
+<li>Emergency stop (all campaigns, all mailboxes)</li>
+<li>Notification email for hand-offs and daily digest</li>
+</ul>
+
+<h2 id="features">3. Feature set (v1)</h2>
+<div class="grid">
+<div class="card"><h3>A. Campaigns</h3><ul><li>Create via wizard, from URL</li><li>Many campaigns live at once</li><li>Pause, resume, clone, archive</li><li>Brief versions with diff (from <code>campaign_brief_versions</code>)</li></ul></div>
+<div class="card"><h3>B. Lead engine (free)</h3><ul><li>Sources: hiring-platform job feeds, OpenStreetMap, company registries, Common Crawl, directory pages, CSV</li><li>Crawl site: home, about, team, contact</li><li>Model extracts people, roles, emails, hooks</li><li>Email finding: published, then domain pattern, then guess</li><li>Free verification: syntax, MX via DNS-over-HTTPS, disposable and role lists, catch-all flag</li><li>Fit score with reason, disqualify with reason</li><li>Dedupe across campaigns</li></ul></div>
+<div class="card"><h3>C. Outreach</h3><ul><li>First email grounded in crawled facts</li><li>Fact-check: no claim not in brief or ticked proof</li><li>Quality gates: salutation match, banned copy, no dashes, length</li><li>Send via Gmail API, threaded</li><li>Caps, ramp, send window, jitter</li><li>Published emails go first, guesses only after the domain proves out</li></ul></div>
+<div class="card"><h3>D. Conversations</h3><ul><li>Poll Gmail, match to lead</li><li>Classify: interested, question, objection, not now, no, out of office, unsubscribe, bounce</li><li>Draft reply from brief and FAQ only</li><li>Concessions inside ceiling, else hand off</li><li>Booking: offer 3 free slots, create invite on confirm, or send booking link</li></ul></div>
+<div class="card"><h3>E. Follow-up lanes</h3><ul><li>No reply: 3 follow-ups, 2 days apart</li><li>Went quiet: 3 nudges</li><li>Not now: wake on the date given</li><li>No: 2 win-backs, then stop for good</li><li>Booked: confirm day before, reschedule no-shows</li><li>One cadence per person, across campaigns</li></ul></div>
+<div class="card"><h3>F. Safety</h3><ul><li>Approval queue with edit and approve</li><li>Emergency stop, per-campaign pause</li><li>Manual takeover per thread (checked on every send path)</li><li>Opt-out is permanent, all campaigns</li><li>Bounce learning: suppress address, fix domain pattern, pause mailbox if bounce rate spikes</li><li>Daily rule sweep (subtractive only)</li><li>Incidents list</li></ul></div>
+<div class="card"><h3>G. Learning (simple)</h3><ul><li>Every edit or rejection in the approval queue becomes a learned rule for that campaign</li><li>Segment table: after 50 sends, segments under a reply-rate floor auto-pause; best segment gets more of the daily budget</li></ul></div>
+<div class="card"><h3>H. Reporting</h3><ul><li>Per-campaign funnel: found, verified, contacted, replied, interested, won</li><li>Segment performance and cost per lead</li><li>Live activity feed</li><li>Daily digest email</li><li>CSV export of leads and outcomes</li></ul></div>
+<div class="card"><h3>I. Packaging</h3><ul><li>One-command installer</li><li>Single admin login</li><li>License key check (install + weekly)</li><li>One-command updates with schema migrations</li><li>Setup docs and a 5-minute video</li></ul></div>
+</div>
+
+<h2 id="integrations">4. Integrations hub</h2>
+<p>One page. Each integration is a card with a status light, what it is used for, what it costs, a <b>Test</b> button and a <b>Reconnect</b> button. A setup checklist on Home stays visible until all required cards are green.</p>
+<div class="tw"><table>
+<tr><th>Integration</th><th>Required</th><th>How it connects</th><th>Notes</th></tr>
+<tr><td><b>Cloudflare</b></td><td>Yes</td><td>Done by the installer (<code>wrangler login</code> in the browser). Card shows Worker, database and usage</td><td>Workers Paid ($5/mo) recommended: crawling needs more CPU than the free plan allows</td></tr>
+<tr><td><b>Google (Gmail + Calendar)</b></td><td>Yes</td><td>One "Sign in with Google" consent for send, read and calendar. Several mailboxes allowed; each campaign picks one</td><td>See the Google app note below</td></tr>
+<tr><td><b>AI model</b></td><td>Yes</td><td>Default: Cloudflare Workers AI, no key needed. Or paste a key for any OpenAI-compatible provider (OpenRouter, Groq, Gemini). Test button sends one prompt</td><td>Per-task model choice: cheap model for extraction and classification, better model for writing</td></tr>
+<tr><td><b>Booking link</b></td><td>If not using Calendar</td><td>Paste URL</td><td>Cal.com, Calendly, Google appointment page</td></tr>
+<tr><td><b>Lead data keys</b></td><td>No</td><td>Paste key</td><td>Apollo, Hunter. Only to add volume. Off by default</td></tr>
+<tr><td><b>Notifications</b></td><td>No</td><td>Email (default, via the connected Gmail to yourself) or a Slack webhook URL</td><td>Hand-offs, incidents, daily digest</td></tr>
+</table></div>
+<div class="call warn"><b>Google app note (the one tricky part).</b> Gmail send and read are "restricted" scopes. A shared public Google app needs Google's security review, which only makes sense for the SaaS later. For the self-hosted bundle, each buyer creates their own Google OAuth client, and the integrations page walks them through it in 6 screenshots. On Google Workspace this is an <b>Internal</b> app: no review, tokens don't expire. On a personal gmail.com account a test-mode app's sign-in expires every 7 days, so v1 supports <b>Workspace mailboxes only</b>, which is also what we'd advise for cold email (a separate sending domain). Done-for-you setup handles this for the buyer.</div>
+
+<h2 id="fork">5. Fork map: what comes from the creator engine</h2>
+<div class="tw"><table>
+<tr><th>Engine module</th><th>Verdict</th><th>Becomes</th></tr>
+<tr><td><code>lib.js</code> (stage machine, quotas, suppression, send gates, send schedule, inbound classifier, banned copy, incidents, audit)</td><td><span class="tag acc">lift</span></td><td><code>core/</code>. Creator stages renamed to sales stages. Instagram and IG-specific helpers dropped</td></tr>
+<tr><td><code>gmail.js</code></td><td><span class="tag acc">lift</span></td><td><code>channels/gmail.js</code>, refresh token per mailbox from the DB, not env</td></tr>
+<tr><td><code>factcheck.js</code>, <code>salutation.js</code>, <code>exceptions.js</code></td><td><span class="tag acc">lift</span></td><td>As is, protected facts come from the campaign brief</td></tr>
+<tr><td><code>emailquality.js</code></td><td><span class="tag acc">lift</span></td><td><code>verify/</code> base. Affiliate and link-hub rules dropped. MX check moves to DNS-over-HTTPS</td></tr>
+<tr><td><code>rulesweep.js</code></td><td><span class="tag acc">lift</span></td><td>Structural checks only in v1 (subtractive autofix). Model-judged audit stays optional</td></tr>
+<tr><td>Pursuit lanes and <code>wakeups</code> (inside <code>index.js</code>)</td><td><span class="tag warn">extract</span></td><td><code>core/lanes.js</code>. Delivery chase becomes booking confirm and no-show</td></tr>
+<tr><td>Learned rules (inside <code>index.js</code>)</td><td><span class="tag warn">extract</span></td><td><code>core/learn.js</code>, scoped per campaign</td></tr>
+<tr><td><code>draft.js</code>, <code>opener.js</code></td><td><span class="tag warn">adapt</span></td><td><code>write/</code>. Keep the scaffolding (context packing, retries, stripDashes). Rewrite prompts for sales. Model call goes through the adapter</td></tr>
+<tr><td><code>negotiation.js</code> (1,045 lines)</td><td><span class="tag warn">adapt</span></td><td><code>concessions.js</code>, small: ceiling check, escalation triggers, yes/no/soft-no classifiers. Fee maths dropped</td></tr>
+<tr><td><code>qualify.js</code></td><td><span class="tag warn">adapt</span></td><td><code>fit.js</code>. Keep the shape (subscores, evidence, reason, hard gates). New scoring against the campaign's segments</td></tr>
+<tr><td><code>targeting.js</code></td><td><span class="tag warn">adapt</span></td><td><code>segments.js</code>: per-segment reply rate, auto-pause, budget shift</td></tr>
+<tr><td><code>enrich.js</code></td><td><span class="tag warn">replace</span></td><td><code>crawl.js</code>: site crawl plus model extraction. No ScrapeCreators</td></tr>
+<tr><td><code>pricing.js</code>, <code>budget.js</code>, <code>tolt.js</code>, <code>instantly.js</code>, <code>partners.js</code>, <code>market.js</code>, <code>cream.js</code>, <code>motion.js</code>, <code>reoffer.js</code>, <code>tags.js</code>, <code>sequences.js</code>, <code>onboarding.js</code>, <code>runner/</code></td><td><span class="tag bad">drop</span></td><td>Creator, Instantly, Instagram, LinkedIn and payout specific</td></tr>
+<tr><td>Dashboard <code>assets/</code></td><td><span class="tag bad">drop</span></td><td>New UI (section 8). Reuse CSS tokens and the feed component only</td></tr>
+</table></div>
+<h3>Net new code</h3>
+<ul>
+<li><code>sources/</code>: job feeds, OpenStreetMap, registries, Common Crawl, CSV import</li>
+<li><code>findemail.js</code>: published, pattern learning per domain, guess</li>
+<li><code>verify/</code>: DNS-over-HTTPS MX, catch-all flag, bounce learning from the inbox</li>
+<li><code>calendar.js</code>: free/busy, 3 slots, create invite</li>
+<li><code>model.js</code>: one adapter, Workers AI or any OpenAI-compatible endpoint, per-task model</li>
+<li><code>brief.js</code>: URL to brief, segments, FAQ, offer (also powers the landing page preview)</li>
+<li><code>campaigns</code> API and wizard, integrations hub, auth, installer, license</li>
+</ul>
+
+<h2 id="arch">6. Architecture</h2>
+<div class="wf">Buyer's Cloudflare account
+ ├─ Worker  (API + dashboard via static assets + cron every 5 min)
+ │    cron tick ─▶ for each live campaign:
+ │       source ▶ crawl ▶ find email ▶ verify ▶ fit ▶ draft ▶ gates ▶ approve? ▶ send
+ │       poll Gmail ▶ classify ▶ reply / book / hand off / suppress
+ │       lanes due ▶ follow-ups      daily 02:00 ▶ rule sweep + digest
+ ├─ D1      (all state, workspace_id on every table)
+ └─ Workers AI (default model)        Google APIs (Gmail, Calendar)    optional: other model / data keys</div>
+<ul>
+<li><b>One Worker, one database, one cron.</b> No queues, no KV, no Durable Objects in v1. The cron does small batches each tick; the engine already works this way.</li>
+<li><b>Secrets</b>: refresh tokens and API keys stored in D1, encrypted with a key set at install time as a Worker secret.</li>
+<li><b>Auth</b>: one admin password, signed session cookie.</li>
+<li><b>Cost</b>: Workers Paid $5/mo flat (CPU for crawling). D1 and Workers AI usage at this volume fit inside included limits; if the model free allowance runs out, the user points the writing task at a free-tier key.</li>
+</ul>
+
+<h2 id="data">7. Data model (lean)</h2>
+<div class="tw"><table>
+<tr><th>Table</th><th>Holds</th></tr>
+<tr><td><code>workspaces</code></td><td>One row now. Timezone, compliance footer, emergency stop</td></tr>
+<tr><td><code>integrations</code></td><td>Type, status, encrypted credential, last test result</td></tr>
+<tr><td><code>mailboxes</code></td><td>Address, from-name, signature, daily cap, ramp day, health</td></tr>
+<tr><td><code>campaigns</code></td><td>Name, objective, status, mailbox, approval mode, caps, window, stop conditions</td></tr>
+<tr><td><code>campaign_versions</code></td><td>Brief, segments, FAQ, offer, tone, never-say, ceilings, hand-off triggers (JSON, versioned)</td></tr>
+<tr><td><code>companies</code></td><td>Domain, name, crawl snapshot, email pattern, catch-all flag</td></tr>
+<tr><td><code>people</code></td><td>Company, name, role, email, email source (published, pattern, guess), verification state</td></tr>
+<tr><td><code>leads</code></td><td>Person x campaign: segment, fit score and reason, stage, lane, next step at</td></tr>
+<tr><td><code>messages</code></td><td>Lead, direction, Gmail thread and message ids, body, status (draft, needs approval, queued, sent), gate results</td></tr>
+<tr><td><code>meetings</code></td><td>Lead, start, calendar event id, status (booked, confirmed, no-show, held)</td></tr>
+<tr><td><code>suppression</code></td><td>Address or domain, reason (opt-out, bounce, do-not-contact), global</td></tr>
+<tr><td><code>learned_rules</code></td><td>Campaign, rule text, source edit, status</td></tr>
+<tr><td><code>source_jobs</code></td><td>Campaign, source, cursor, found count</td></tr>
+<tr><td><code>events</code>, <code>incidents</code>, <code>daily_quotas</code></td><td>Audit feed, problems needing a human, send counters</td></tr>
+</table></div>
+
+<h2 id="ui">8. UI</h2>
+<p>Six screens. Same "mission control" look as the landing page. Every list has a "needs you" filter on by default.</p>
+<div class="grid">
+<div class="card"><h3>Home</h3>Setup checklist (until green), calls booked this week, needs-you count, live feed across campaigns, campaign cards with mini funnels.</div>
+<div class="card"><h3>New campaign wizard</h3>URL, Goal, Audience, Message, Guardrails, Preview and launch. Auto-filled at each step.</div>
+<div class="card"><h3>Campaign</h3>Tabs: Overview (funnel, segments, cost per lead), Leads, Conversations, Approvals, Brief and rules (edit, versions), Activity.</div>
+<div class="card"><h3>Inbox</h3>All replies across campaigns. Needs-you first. Thread view with the agent's draft, Approve, Edit, Take over.</div>
+<div class="card"><h3>Integrations</h3>Cards as in section 4, each with status, test, reconnect, guide.</div>
+<div class="card"><h3>Settings</h3>Workspace, compliance footer, do-not-contact, emergency stop, notifications, license, update.</div>
+</div>
+<h3>Wireframe: wizard step 3 (Audience)</h3>
+<div class="wf">┌ New campaign ─────────────────────────── 1 Goal · 2 Business · <b>3 Audience</b> · 4 Message · 5 Guardrails · 6 Preview ┐
+│ We read brightline.studio. These look like your best buyers:                                                │
+│  [x] Multi-location dental groups   fit 91%   Owner, Practice Manager     US, UK      [edit]                 │
+│  [x] Physio chains                  fit 87%   Founder, Ops Director       US          [edit]                 │
+│  [ ] Med spas                       fit 78%   Owner                       US          [edit]                 │
+│  + Add segment                                                                                               │
+│ Exclude: [competitors.csv] [existing-customers.csv]   Bring your own leads: [Upload CSV]                         │
+│ New leads per day: [ 40 ]   Stop after: [ 500 ] leads                                     [Back]  [Next ▸]   │
+└──────────────────────────────────────────────────────────────────────────────────────────────────────────────┘</div>
+<h3>Wireframe: Integrations</h3>
+<div class="wf">┌ Integrations ─────────────────────────────────────────────────────────────────────────┐
+│ ● Cloudflare      Connected · Workers Paid · 3% of CPU today              [Usage]          │
+│ ● Google          sam@brightline-mail.com · Gmail + Calendar      [Test] [Reconnect] [+ Add] │
+│ ● AI model        Workers AI (default) · writing: llama-3.3-70b   [Test] [Change]           │
+│ ○ Booking link    Not needed (using Calendar)                                              │
+│ ○ Lead data keys  Optional · Apollo, Hunter                       [Add key]                 │
+│ ● Notifications   Email to sam@brightline.studio                  [Test] [Add Slack]        │
+└────────────────────────────────────────────────────────────────────────────────────────────┘</div>
+
+<h2 id="milestones">9. Milestones</h2>
+<p>Ordered by dependency. M1 and the sourcing spike run in parallel; everything after M3 is usable by Brevo internally.</p>
+<div class="tw"><table>
+<tr><th>#</th><th>Milestone</th><th>Done when</th></tr>
+<tr><td>S</td><td><b>Sourcing spike</b> (parallel, first)</td><td>For 3 sample businesses, free sources plus crawl return at least 40 verified-or-published contacts per day each, with yield and bounce numbers recorded. This is the biggest risk, so it goes first</td></tr>
+<tr><td>M1</td><td><b>Skeleton</b>: repo, slim Worker, schema, auth, model adapter, integrations hub, Google connect, send and poll</td><td>Send and read a test email from the dashboard</td></tr>
+<tr><td>M2</td><td><b>Campaigns</b>: wizard, URL to brief, segments, FAQ, versions</td><td>Create a campaign from a URL with no typing beyond edits</td></tr>
+<tr><td>M3</td><td><b>Lead engine</b>: sources, crawl, find email, verify, fit, CSV import, dedupe</td><td>A live campaign fills its daily lead budget unattended</td></tr>
+<tr><td>M4</td><td><b>Outreach and conversations</b>: drafting, gates, approval queue, sending, classifier, replies, concessions, booking, lanes</td><td>End to end: lead found to call on calendar, with no human step in autopilot mode. <b>Brevo instance goes live here</b></td></tr>
+<tr><td>M5</td><td><b>Safety and learning</b>: takeover, emergency stop, bounce learning, rule sweep, learned rules, segment auto-pause, digest</td><td>Rule sweep runs clean for 7 days on the Brevo instance</td></tr>
+<tr><td>M6</td><td><b>Packaging</b>: installer, license key, update command, docs, setup video</td><td>A fresh Cloudflare account goes from zero to a running campaign using only the docs</td></tr>
+<tr><td>M7</td><td><b>Launch</b>: landing page with live URL preview (reuses <code>brief.js</code>), checkout, done-for-you booking</td><td>First paid license</td></tr>
+</table></div>
+
+<h2 id="cut">10. Deliberately not in v1</h2>
+<ul>
+<li>LinkedIn, X, Instagram channels; Instantly; Tolt; fee pricing</li>
+<li>Multi-user, roles, teams; SaaS billing; hosted multi-tenant</li>
+<li>CRM sync (CSV export covers it; HubSpot later)</li>
+<li>Mailbox rotation and pooled warm inboxes (SaaS feature)</li>
+<li>A/B test framework beyond segment auto-pause</li>
+<li>Personal gmail.com mailboxes</li>
+<li>File uploads for context (paste text instead)</li>
+</ul>
+
+<h2 id="risks">11. Risks and the answer to each</h2>
+<div class="tw"><table>
+<tr><th>Risk</th><th>Answer</th></tr>
+<tr><td>Free sourcing yields too few leads for some niches</td><td>Spike first. Bring-your-own CSV and optional data keys as the valve. Niche-specific sources added as small plug-ins</td></tr>
+<tr><td>Bounces damage the buyer's domain</td><td>Published emails first, guesses only after a domain proves its pattern, low caps with ramp, auto-pause a mailbox above a bounce threshold, advise a separate sending domain</td></tr>
+<tr><td>Google OAuth friction</td><td>Workspace-only Internal app with a screenshot guide; done-for-you does it for them; SaaS later uses one verified app</td></tr>
+<tr><td>Free model quality for writing</td><td>Per-task model choice; writing task can point at a better free-tier key; fact-check and gates stay deterministic</td></tr>
+<tr><td>Buyers get the code</td><td>Accepted. License key, updates and support are the value; SaaS is the hosted option</td></tr>
+</table></div>
+
+<h2 id="decide">12. Decisions needed from Farooq</h2>
+<ol>
+<li><b>Running-cost claim</b>: "$5 a month flat" (Workers Paid) instead of "under $5". Recommended, because crawling needs Workers Paid CPU.</li>
+<li><b>Workspace-only mailboxes in v1</b> (no personal gmail.com). Recommended.</li>
+<li><b>Brevo's first campaign</b>: which objective and audience runs on the internal instance at M4.</li>
+<li><b>Product name</b>, so the repo and installer can be named.</li>
+</ol>
+</main>
+</body>
+</html>
