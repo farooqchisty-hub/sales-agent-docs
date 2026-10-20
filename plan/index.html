@@ -98,7 +98,7 @@ nav.toc a:hover{color:var(--acc);border-color:var(--acc)}
 <tr><td>Follow-up ladder</td><td>Defaults from the engine's five lanes. Advanced users can change counts and gaps</td></tr>
 <tr><td>Stop conditions</td><td>Stop after N wins, or a date, or lead budget used</td></tr>
 </table></div>
-<div class="call"><b>Launch gate.</b> Before a campaign goes live the wizard shows a preview: 10 real sourced leads with their fit reason, and 3 drafted emails. The user approves or tweaks. This is also the landing page's free preview, same code.</div>
+<div class="call"><b>Launch gate.</b> Before a campaign goes live the wizard shows a preview: the Source Plan, 10 real sourced leads with their fit reason, and 3 drafted emails. The user approves or tweaks. If the segment cannot produce 10 provable leads, the gate says which fix unlocks it (search key, verifier key or CSV) before the user commits. This is also the landing page's free preview, same code.</div>
 
 <h3>Global settings (once per workspace)</h3>
 <ul>
@@ -112,7 +112,7 @@ nav.toc a:hover{color:var(--acc);border-color:var(--acc)}
 <h2 id="features">3. Feature set (v1)</h2>
 <div class="grid">
 <div class="card"><h3>A. Campaigns</h3><ul><li>Create via wizard, from URL</li><li>Many campaigns live at once</li><li>Pause, resume, clone, archive</li><li>Brief versions with diff (from <code>campaign_brief_versions</code>)</li></ul></div>
-<div class="card"><h3>B. Lead engine (free)</h3><ul><li>Sources: hiring-platform job feeds, OpenStreetMap, company registries, Common Crawl, directory pages, CSV</li><li>Crawl site: home, about, team, contact</li><li>Model extracts people, roles, emails, hooks</li><li>Email finding: published, then domain pattern, then guess</li><li>Free verification: syntax, MX via DNS-over-HTTPS, disposable and role lists, catch-all flag</li><li>Fit score with reason, disqualify with reason</li><li>Dedupe across campaigns</li></ul></div>
+<div class="card"><h3>B. Lead engine (dynamic, free first)</h3><ul><li>No fixed lead database: each campaign gets a <b>Source Plan</b> written by the model from the buyer's own segment description (industry, geography, size, roles)</li><li>Plan picks generic source adapters and fills their parameters: web search, maps (OpenStreetMap), company registries, licence registries, domain lists plus tech fingerprint, hiring boards, directory pages, LinkedIn via the buyer's own session (optional), CSV</li><li>Probe then commit: each planned source runs about 20 companies end to end; budget moves to the best usable contacts per company; planner proposes the next source when one runs dry</li><li>Shared contact layer for every segment: resolve domain, crawl home, about, team, contact and sitemap, model extracts people, roles, hooks; registry people (officers, licence holders) merged in</li><li>Email proof ladder: published, then a pattern the domain proved, then web evidence, then optional verifier key. Guesses stored, never sent unproved</li><li>Free checks: syntax, MX via DNS-over-HTTPS, disposable and role lists, catch-all flag</li><li>Fit score with reason, dedupe across campaigns, yield ledger per source and step</li></ul></div>
 <div class="card"><h3>C. Outreach</h3><ul><li>First email grounded in crawled facts</li><li>Fact-check: no claim not in brief or ticked proof</li><li>Quality gates: salutation match, banned copy, no dashes, length</li><li>Send via Gmail API, threaded</li><li>Caps, ramp, send window, jitter</li><li>Published emails go first, guesses only after the domain proves out</li></ul></div>
 <div class="card"><h3>D. Conversations</h3><ul><li>Poll Gmail, match to lead</li><li>Classify: interested, question, objection, not now, no, out of office, unsubscribe, bounce</li><li>Draft reply from brief and FAQ only</li><li>Concessions inside ceiling, else hand off</li><li>Booking: offer 3 free slots, create invite on confirm, or send booking link</li></ul></div>
 <div class="card"><h3>E. Follow-up lanes</h3><ul><li>No reply: 3 follow-ups, 2 days apart</li><li>Went quiet: 3 nudges</li><li>Not now: wake on the date given</li><li>No: 2 win-backs, then stop for good</li><li>Booked: confirm day before, reschedule no-shows</li><li>One cadence per person, across campaigns</li></ul></div>
@@ -130,6 +130,9 @@ nav.toc a:hover{color:var(--acc);border-color:var(--acc)}
 <tr><td><b>Email inbox (any provider)</b></td><td>Yes</td><td>The buyer connects it themselves, three ways:<br>1. <b>Sign in with Google</b> (Google Workspace): send, read and Calendar in one consent<br>2. <b>Sign in with Microsoft</b> (Microsoft 365, Outlook): send, read and Calendar via Microsoft Graph<br>3. <b>Any other inbox</b> (personal gmail.com, Zoho, Fastmail, custom domains): SMTP to send and IMAP to read, with an app password. Calendar then uses a booking link<br>Several inboxes allowed; each campaign picks one</td><td>See the email note below</td></tr>
 <tr><td><b>AI model</b></td><td>Yes</td><td>Default: Cloudflare Workers AI, no key needed. Or paste a key for any OpenAI-compatible provider (OpenRouter, Groq, Gemini). Test button sends one prompt</td><td>Per-task model choice: cheap model for extraction and classification, better model for writing</td></tr>
 <tr><td><b>Booking link</b></td><td>If not using Calendar</td><td>Paste URL</td><td>Cal.com, Calendly, Google appointment page</td></tr>
+<tr><td><b>Web search key</b></td><td>No, recommended</td><td>Paste key (Google Programmable Search, Brave Search API; free tiers exist)</td><td>Domain resolution, directory discovery, "@domain" pattern evidence. The spike showed scraped search blocks after 3 to 5 queries, so the planner uses this key when present</td></tr>
+<tr><td><b>Email verifier key</b></td><td>No, recommended for volume</td><td>Paste key (any pay-as-you-go verifier)</td><td>Turns guessed addresses into sendable ones. The single fix that moved all three spike campaigns. About 1,200 to 2,400 checks a month at 40 leads a day</td></tr>
+<tr><td><b>Free registry keys</b></td><td>No</td><td>Paste key, suggested by the planner when a plan uses that registry</td><td>Example: UK Companies House (free registration, 600 requests per 5 minutes)</td></tr>
 <tr><td><b>Lead data keys</b></td><td>No</td><td>Paste key</td><td>Apollo, Hunter. Only to add volume. Off by default</td></tr>
 <tr><td><b>Notifications</b></td><td>No</td><td>Email (default, via the connected Gmail to yourself) or a Slack webhook URL</td><td>Hand-offs, incidents, daily digest</td></tr>
 </table></div>
@@ -161,8 +164,9 @@ nav.toc a:hover{color:var(--acc);border-color:var(--acc)}
 </table></div>
 <h3>Net new code</h3>
 <ul>
-<li><code>sources/</code>: job feeds, OpenStreetMap, registries, Common Crawl, CSV import</li>
-<li><code>findemail.js</code>: published, pattern learning per domain, guess</li>
+<li><code>planner.js</code>: segment brief to Source Plan (source types, queries, filters, roles, fit rules), probe then commit, reallocation by yield</li>
+<li><code>sources/</code>: generic adapters (web search, OpenStreetMap, company registries, licence registries, domain list plus tech fingerprint, hiring boards, directory pages, CSV import). Prototypes in <code>sales-agent/spike/sources.py</code></li>
+<li><code>findemail.js</code>: proof ladder (published, proved pattern, web evidence, optional verifier), guesses kept but never sent unproved</li>
 <li><code>verify/</code>: DNS-over-HTTPS MX, catch-all flag, bounce learning from the inbox</li>
 <li><code>channels/</code>: one mailbox interface with three drivers: Gmail API (lifted), Microsoft Graph, SMTP + IMAP over Cloudflare TCP sockets</li>
 <li><code>calendar.js</code>: free/busy, 3 slots, create invite (Google or Microsoft); booking link otherwise</li>
@@ -175,7 +179,7 @@ nav.toc a:hover{color:var(--acc);border-color:var(--acc)}
 <div class="wf">Buyer's Cloudflare account
  ├─ Worker  (API + dashboard via static assets + cron every 5 min)
  │    cron tick ─▶ for each live campaign:
- │       source ▶ crawl ▶ find email ▶ verify ▶ fit ▶ draft ▶ gates ▶ approve? ▶ send
+ │       plan ▶ source ▶ crawl ▶ find email ▶ verify ▶ fit ▶ draft ▶ gates ▶ approve? ▶ send
  │       poll Gmail ▶ classify ▶ reply / book / hand off / suppress
  │       lanes due ▶ follow-ups      daily 02:00 ▶ rule sweep + digest
  ├─ D1      (all state, workspace_id on every table)
@@ -202,7 +206,8 @@ nav.toc a:hover{color:var(--acc);border-color:var(--acc)}
 <tr><td><code>meetings</code></td><td>Lead, start, calendar event id, status (booked, confirmed, no-show, held)</td></tr>
 <tr><td><code>suppression</code></td><td>Address or domain, reason (opt-out, bounce, do-not-contact), global</td></tr>
 <tr><td><code>learned_rules</code></td><td>Campaign, rule text, source edit, status</td></tr>
-<tr><td><code>source_jobs</code></td><td>Campaign, source, cursor, found count</td></tr>
+<tr><td><code>source_plans</code></td><td>Campaign, segment brief, planned sources with parameters, status (probing, committed, exhausted)</td></tr>
+<tr><td><code>source_jobs</code></td><td>Campaign, source, cursor, yield ledger (companies, crawled, fit, people, decision makers, published, pattern, guess, usable)</td></tr>
 <tr><td><code>events</code>, <code>incidents</code>, <code>daily_quotas</code></td><td>Audit feed, problems needing a human, send counters</td></tr>
 </table></div>
 
@@ -240,10 +245,10 @@ nav.toc a:hover{color:var(--acc);border-color:var(--acc)}
 <p>Ordered by dependency. M1 and the sourcing spike run in parallel; everything after M3 is usable by Brevo internally.</p>
 <div class="tw"><table>
 <tr><th>#</th><th>Milestone</th><th>Done when</th></tr>
-<tr><td>S</td><td><b>Sourcing spike</b> (parallel, first)</td><td>For 3 sample businesses, free sources plus crawl return at least 40 verified-or-published contacts per day each, with yield and bounce numbers recorded. This is the biggest risk, so it goes first</td></tr>
+<tr><td>S</td><td><b>Sourcing spike</b> <span class="tag acc">done 20 Oct</span></td><td>Result (<a href="../spike/" style="color:var(--acc)">report</a>): free discovery works for every niche; free email proof does not (7, 0 and 10 usable contacts from 140, 118 and 40 companies). Led to the dynamic Source Plan and the two optional keys. Bounce numbers wait for real sends</td></tr>
 <tr><td>M1</td><td><b>Skeleton</b>: repo, slim Worker, schema, auth, model adapter, integrations hub, email connect (Google first, then SMTP/IMAP, then Microsoft), send and poll</td><td>Send and read a test email from the dashboard on all three drivers</td></tr>
 <tr><td>M2</td><td><b>Campaigns</b>: wizard, URL to brief, segments, FAQ, versions</td><td>Create a campaign from a URL with no typing beyond edits</td></tr>
-<tr><td>M3</td><td><b>Lead engine</b>: sources, crawl, find email, verify, fit, CSV import, dedupe</td><td>A live campaign fills its daily lead budget unattended</td></tr>
+<tr><td>M3</td><td><b>Lead engine</b>: Source Plan, adapters, probe then commit, crawl, email proof ladder, verify, fit, CSV import, dedupe, yield ledger</td><td>A live campaign fills its daily lead budget unattended from a plan written from its segment brief</td></tr>
 <tr><td>M4</td><td><b>Outreach and conversations</b>: drafting, gates, approval queue, sending, classifier, replies, concessions, booking, lanes</td><td>End to end: lead found to call on calendar, with no human step in autopilot mode. <b>Brevo instance goes live here</b></td></tr>
 <tr><td>M5</td><td><b>Safety and learning</b>: takeover, emergency stop, bounce learning, rule sweep, learned rules, segment auto-pause, digest</td><td>Rule sweep runs clean for 7 days on the Brevo instance</td></tr>
 <tr><td>M6</td><td><b>Packaging</b>: installer, license key, update command, docs, setup video</td><td>A fresh Cloudflare account goes from zero to a running campaign using only the docs</td></tr>
@@ -263,7 +268,7 @@ nav.toc a:hover{color:var(--acc);border-color:var(--acc)}
 <h2 id="risks">11. Risks and the answer to each</h2>
 <div class="tw"><table>
 <tr><th>Risk</th><th>Answer</th></tr>
-<tr><td>Free sourcing yields too few leads for some niches</td><td>Spike first. Bring-your-own CSV and optional data keys as the valve. Niche-specific sources added as small plug-ins</td></tr>
+<tr><td>Free sourcing yields too few leads for some niches</td><td>Spike done: discovery is free everywhere, email proof is the gap. Dynamic Source Plan per segment, optional search and verifier keys, bring-your-own CSV, launch gate names the missing fix up front</td></tr>
 <tr><td>Bounces damage the buyer's domain</td><td>Published emails first, guesses only after a domain proves its pattern, low caps with ramp, auto-pause a mailbox above a bounce threshold, advise a separate sending domain</td></tr>
 <tr><td>Email connection friction</td><td>Guided setup per provider with screenshots and a Test button; app-password path for anything without OAuth; done-for-you does it for them; SaaS later uses one verified Google and Microsoft app</td></tr>
 <tr><td>Free model quality for writing</td><td>Per-task model choice; writing task can point at a better free-tier key; fact-check and gates stay deterministic</td></tr>
@@ -278,6 +283,7 @@ nav.toc a:hover{color:var(--acc);border-color:var(--acc)}
 <tr><td>Brevo's first campaign</td><td><span class="tag warn">brief pending</span> Book calls to land agency partnerships with ecommerce/D2C agencies</td></tr>
 <tr><td>Product name</td><td><span class="tag acc">decided 20 Oct</span> Closefast (closefast.com, .ai, .co are registered by others; getclosefast.com and closefast.io look free)</td></tr>
 <tr><td>Prices</td><td><span class="tag acc">decided 20 Oct</span> License $49 one-time (launch), 1:1 setup $99</td></tr>
+<tr><td>Lead sourcing approach</td><td><span class="tag acc">decided 20 Oct</span> Dynamic per segment: the model writes a Source Plan from the buyer's input. No standard lead database</td></tr>
 <tr><td>Guarantee</td><td><span class="tag acc">decided 20 Oct</span> "No Calls, No Pay", conditional, conditions in the Terms (section 0)</td></tr>
 </table></div>
 </main>
