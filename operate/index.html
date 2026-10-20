@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Closefast Operator Guide</title>
+<style>
+:root{--bg:#0a0c0b;--panel:#111413;--panel2:#161a18;--line:#232826;--ink:#ecefe9;--mute:#8e968f;--dim:#5f6762;--acc:#c3f25f;--accbg:rgba(195,242,95,.1);--warn:#f3c86b;--warnbg:rgba(243,200,107,.1);--bad:#f37b6b;--badbg:rgba(243,123,107,.1);--teal:#5fd4c0;--mono:ui-monospace,SFMono-Regular,Menlo,monospace}
+@media (prefers-color-scheme: light){:root:not([data-theme="dark"]){--bg:#f4f5f1;--panel:#fff;--panel2:#f8f9f6;--line:#e1e4de;--ink:#141816;--mute:#5d655f;--dim:#8a918b;--acc:#4f8a12;--accbg:rgba(79,138,18,.1);--warn:#9a6a00;--warnbg:rgba(154,106,0,.1);--bad:#b23a2a;--badbg:rgba(178,58,42,.08);--teal:#11806f}}
+:root[data-theme="dark"]{--bg:#0a0c0b;--panel:#111413;--panel2:#161a18;--line:#232826;--ink:#ecefe9;--mute:#8e968f;--dim:#5f6762;--acc:#c3f25f;--accbg:rgba(195,242,95,.1)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 Inter,system-ui,-apple-system,Segoe UI,sans-serif}
+main{max-width:900px;margin:0 auto;padding:40px 16px 90px}
+a{color:var(--acc)}
+h1{font-size:30px;line-height:1.2;margin:0 0 8px}
+h2{font-size:21px;margin:52px 0 8px;padding-top:18px;border-top:1px solid var(--line)}
+h3{font-size:16px;margin:22px 0 6px}
+p,li{color:var(--ink)}
+.sub{color:var(--mute);margin:0 0 18px}
+.mute{color:var(--mute)}
+.tag{display:inline-block;font:11px var(--mono);padding:2px 8px;border:1px solid var(--line);border-radius:99px;color:var(--mute);margin-right:6px;white-space:nowrap}
+.tag.acc{color:var(--acc);border-color:var(--acc)}.tag.warn{color:var(--warn);border-color:var(--warn)}.tag.bad{color:var(--bad);border-color:var(--bad)}
+nav.toc{display:flex;flex-wrap:wrap;gap:6px;margin:16px 0 0}
+nav.toc a{font:12px var(--mono);color:var(--mute);text-decoration:none;border:1px solid var(--line);padding:3px 9px;border-radius:99px}
+nav.toc a:hover{color:var(--acc);border-color:var(--acc)}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;margin:18px 0}
+.facts div{background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:10px 12px}
+.facts span{display:block;font:10.5px var(--mono);color:var(--dim);text-transform:uppercase;letter-spacing:.06em}
+.facts b{font-weight:600}
+.flow{display:grid;gap:8px;margin:14px 0;counter-reset:s}
+.flow div{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--acc);border-radius:10px;padding:10px 14px}
+.flow div.you{border-left-color:var(--warn)}
+.flow div b:first-child{counter-increment:s}
+.flow div b:first-child::before{content:counter(s) ". ";color:var(--dim);font-family:var(--mono)}
+.note{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin:12px 0;color:var(--mute)}
+.note.warn{border-color:var(--warn);background:var(--warnbg);color:var(--ink)}
+.note.bad{border-color:var(--bad);background:var(--badbg);color:var(--ink)}
+.tw{overflow-x:auto;margin:10px 0;border:1px solid var(--line);border-radius:11px}
+table{width:100%;border-collapse:collapse;font-size:14px;min-width:620px}
+th{font:10.5px var(--mono);color:var(--dim);text-transform:uppercase;letter-spacing:.06em;text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);background:var(--panel)}
+td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border:0}
+td:first-child{font-weight:600;white-space:nowrap}
+.daily{display:grid;gap:8px;margin:12px 0}
+.daily div{display:grid;grid-template-columns:110px 1fr;gap:12px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 14px}
+.daily span{font:12px var(--mono);color:var(--acc)}
+code{font:13px var(--mono);background:var(--panel2);border:1px solid var(--line);padding:1px 6px;border-radius:5px}
+ul{padding-left:20px}
+@media (max-width:600px){h1{font-size:25px}.daily div{grid-template-columns:1fr;gap:2px}}
+</style>
+</head>
+<body>
+<main>
+<span class="tag acc">Operator guide</span><span class="tag">Brevo agency partnerships, pilot</span><span class="tag">Updated 20 Oct 2026</span>
+<h1>Running Closefast: a guide for Milan</h1>
+<p class="sub">What the agent does on its own, what stays with you, and where to click. Ten minutes a day is enough for the pilot.</p>
+<nav class="toc">
+  <a href="#facts">Quick facts</a><a href="#flow">How it works</a><a href="#offer">The offer</a><a href="#day">Your day</a>
+  <a href="#replies">Reply handling</a><a href="#step-in">When you step in</a><a href="#after">After a call is booked</a>
+  <a href="#dashboard">Dashboard tour</a><a href="#howto">How to</a><a href="#rules">Guardrails</a><a href="#built">How it's built</a><a href="#faq">FAQ</a>
+</nav>
+
+<h2 id="facts">Quick facts</h2>
+<div class="facts">
+  <div><span>Dashboard</span><b><a href="https://closefast-app.pages.dev">closefast-app.pages.dev</a></b><br><span class="mute">Password from Farooq</span></div>
+  <div><span>Goal</span><b>A booked call with the agency founder</b></div>
+  <div><span>Emails are signed</span><b>Milan, Agency Partnerships, Brevo</b></div>
+  <div><span>Sent from</span><b>4 Instantly inboxes, sender name Milan Amuth</b></div>
+  <div><span>You are CC'd</span><b>From their first reply onwards</b></div>
+  <div><span>Summaries to you</span><b>12:00 and 19:00 IST, by email</b></div>
+  <div><span>Cold emails go out</span><b>8 to 11am their time, Tue to Fri</b></div>
+  <div><span>Pilot</span><b>50 Klaviyo partner agencies who never replied to us</b></div>
+</div>
+
+<h2 id="flow">How it works, end to end</h2>
+<p class="mute">Green steps are the agent. Yellow steps are you.</p>
+<div class="flow">
+  <div><b>Import.</b> A list of agency founders comes in as a CSV. Extra columns (ESP, country, LinkedIn followers, Klaviyo partner) become facts the agent may use.</div>
+  <div><b>Opener.</b> It writes one personal email per agency with the offer in the first two lines and one ask: a 20 minute call with you.</div>
+  <div><b>Send.</b> It sends in the agency's own morning, 8 to 11am, Tuesday to Friday. Each agency stays on one inbox for the whole thread.</div>
+  <div><b>Follow up.</b> No reply means up to 4 follow-ups, 2 days apart. Follow-up 1 carries a ready-to-post LinkedIn announcement in the founder's voice.</div>
+  <div><b>Handle replies.</b> Every reply is read, sorted (interested, question, not now, no, wrong person, out of office and so on) and answered politely within working hours. You are CC'd from here.</div>
+  <div><b>Book.</b> Interested agencies get your booking link: <code>meet.brevo.com/pushowlpartnerships/new-partners</code>.</div>
+  <div class="you"><b>Take the call.</b> Open the call brief on Meetings first. Onboard them on PartnerStack.</div>
+  <div class="you"><b>Close the loop.</b> Create their discount code, email it with the announcement post timeline, and log the outcome in the dashboard.</div>
+</div>
+<div class="note">Everything after a call is booked is yours. The agent never negotiates the bonus, sends a code, or promises anything that is not in the FAQ.</div>
+
+<h2 id="offer">The offer</h2>
+<div class="tw"><table>
+<tr><th>Part</th><th>What it is</th><th>Written in email?</th></tr>
+<tr><td>Partner status</td><td>Official Brevo for Ecommerce partner, a listing in the partner directory, co-branded case studies, partner playbooks for their team</td><td>Yes</td></tr>
+<tr><td>Signing bonus</td><td>Paid for one LinkedIn post <b>by the founder</b> announcing the partnership, saying why they chose Brevo and sharing a personal discount code</td><td>That it exists, yes. The amount, never</td></tr>
+<tr><td>Talking points</td><td>Brevo beats Klaviyo on price and features; free migration with a managed, done-for-you team; end-to-end campaign setup, ads included; the best retention CRM for ecommerce. The agent picks the one that fits.</td><td>Yes, one per email</td></tr>
+<tr><td>Bonus range, BFCM revenue share, PartnerStack</td><td>Details for you, on the call only. They appear in the <b>private notes of every call brief</b>.</td><td>Never</td></tr>
+<tr><td>Discount code and post timeline</td><td>You create the code after the call and send it with the timeline for the announcement post</td><td>By you, after the call</td></tr>
+</table></div>
+<div class="note warn">Never promise lead flow or referrals of clients. The agent is blocked from saying it; please keep the same line on calls.</div>
+
+<h2 id="day">Your day (about 10 minutes)</h2>
+<div class="daily">
+  <div><span>12:00 IST</span><div>Read the summary email. <b>NEEDS YOU</b> at the top lists anything waiting on you, with a link to the exact thread. If it says nothing is waiting, you are done.</div></div>
+  <div><span>Any time</span><div>Reply-all on CC'd threads only if you want to. The moment you reply yourself, the agent stops writing to that person (see takeover below).</div></div>
+  <div><span>New booking</span><div>When an invite from a partner lands in your calendar, mark it booked in Closefast so the call brief is written and their colleagues stop getting emails.</div></div>
+  <div><span>After a call</span><div>Meetings: mark Held (or No-show), then the outcome: Won, Nurture or Lost.</div></div>
+  <div><span>19:00 IST</span><div>Second summary. Same drill.</div></div>
+</div>
+
+<h2 id="replies">How replies are handled (no action from you)</h2>
+<div class="tw"><table>
+<tr><th>They say</th><th>The agent</th><th>You</th></tr>
+<tr><td>Interested</td><td>Thanks them and sends your booking link. Stage moves to interested.</td><td>Watch for the calendar invite</td></tr>
+<tr><td>A question</td><td>Answers from the campaign FAQ only. Anything the FAQ does not cover is steered to the call.</td><td>Nothing</td></tr>
+<tr><td>An objection</td><td>Answers once, politely. A second objection gets a warm close.</td><td>Nothing</td></tr>
+<tr><td>Not now, try in January</td><td>Thanks them and comes back on the date they gave (or in a few weeks).</td><td>Nothing</td></tr>
+<tr><td>No thanks</td><td>A polite close. Two gentle win-backs later, 45 days apart.</td><td>Nothing</td></tr>
+<tr><td>Wrong person, speak to Jane</td><td>Thanks them and emails Jane, saying who suggested it.</td><td>Nothing</td></tr>
+<tr><td>Out of office</td><td>Waits until their return date, then carries on.</td><td>Nothing</td></tr>
+<tr><td>Unsubscribe or stop</td><td>Removes them for good. Nobody at that address is emailed again.</td><td>Nothing</td></tr>
+<tr><td>Someone at the same agency replies</td><td>Pauses all their colleagues. Only one conversation per agency.</td><td>Nothing</td></tr>
+<tr><td>Send me the agreement or terms</td><td>Sends a polite holding line and <b>emails you an alert</b>.</td><td>Reply with the paperwork</td></tr>
+<tr><td>Angry or spam complaint</td><td>Stops, removes them and <b>emails you an alert</b>.</td><td>Read it; usually nothing more</td></tr>
+</table></div>
+
+<h2 id="step-in">When you step in</h2>
+<ul>
+  <li><b>An alert email</b> (subject starts with <code>Closefast:</code>): someone asked for terms or paperwork, or replied angrily. Open the link in the email.</li>
+  <li><b>Owe a reply</b> in the summary or the Inbox tab: they wrote and nothing has gone back yet. Under autopilot this should be rare; it means a reply failed. Reply yourself from the thread, or mark <b>No reply needed</b> if it was just a thanks.</li>
+  <li><b>Draft waiting</b>: a few emails always wait for you, such as the reschedule note after a no-show. Approve, edit or reject them inside the thread.</li>
+  <li><b>A booking came in</b>: mark it booked (thread or Meetings) and add the time.</li>
+</ul>
+<div class="note">If you <b>reply-all</b> to a prospect from your own mailbox (keep the Closefast inbox on the thread), Closefast sees it, marks the thread as yours and stops writing to them. Use <b>Resume automation</b> in the thread to hand it back.</div>
+
+<h2 id="after">After a call is booked</h2>
+<div class="flow">
+  <div class="you"><b>Before the call.</b> Meetings: open the <b>Call brief</b>. It has who they are, what they replied, the talking point that fits them and the private notes (bonus range, BFCM revenue share, what never to promise).</div>
+  <div class="you"><b>On the call.</b> Agree the bonus, onboard them on PartnerStack, agree when the founder posts.</div>
+  <div class="you"><b>Right after.</b> Meetings: click <b>Held</b>, then <b>Won</b>, <b>Nurture</b> or <b>Lost</b>. Add a deal value if you want it in Mission Control.</div>
+  <div class="you"><b>Follow-through.</b> Create their discount code and email it with the post timeline. This part is manual.</div>
+  <div class="you"><b>No-show.</b> Click <b>No-show</b>. A reschedule note is drafted for you to approve in the thread or Approvals.</div>
+</div>
+
+<h2 id="dashboard">Dashboard tour</h2>
+<h3>Mission Control (home)</h3>
+<p>The number tiles (leads, contacted, replied, positive, owe a reply, calls booked, partners won, opted out) are clickable and open the people behind each number. Below them: <b>Needs you</b>, <b>Today</b> (emails sent per inbox against today's limit, and when each inbox was last checked), the <b>pipeline funnel</b>, sends and replies by day, <b>which email earns the reply</b>, how people replied, the live agent feed and this week's calls.</p>
+<h3>Inbox</h3>
+<p>Three panes. <b>Left</b>: one row per agency with tabs: Needs you, Owe a reply, Replied, Scheduled, Waiting, Not started, Closed, All. <b>Middle</b>: the whole email thread. Scheduled and draft emails show with a dashed border; drafts can be edited and approved right there, scheduled ones can be cancelled. At the bottom: <b>Reply</b>, <b>Note</b> (private) and <b>Teach the agent</b>. <b>Right</b>: the recommended next action, Mark booked, Move stage, contact facts, colleagues at the same agency and a timeline.</p>
+<h3>Approvals</h3>
+<p>Every draft waiting for you, in one list. Mostly empty under autopilot.</p>
+<h3>Meetings and outcomes</h3>
+<p>Booked calls with their call brief, the "interested, not booked yet" list with a Mark booked button, and past calls with outcomes.</p>
+<h3>Campaigns, Leads, Deliverability, Integrations, Settings</h3>
+<p>Setup screens. You should not need them day to day. <b>Campaigns</b> holds the brief (offer, FAQ, guardrails), the sequence and CSV import. <b>Deliverability</b> shows inbox health, bounces and the do-not-contact list.</p>
+
+<h2 id="howto">How to</h2>
+<div class="tw"><table>
+<tr><th>Task</th><th>Where</th></tr>
+<tr><td>Reply yourself</td><td>Inbox, open the agency, <b>Reply</b>. Signature is added, it goes from the inbox they were emailed from, in their working hours. Works once they have written back.</td></tr>
+<tr><td>Stop the agent for one agency</td><td>Thread header: <b>Take over</b>. Hand back with <b>Resume automation</b>.</td></tr>
+<tr><td>Stop emailing someone for good</td><td>Thread: Move stage to <b>disqualified</b>. Or add the address or <code>@domain</code> on Deliverability.</td></tr>
+<tr><td>Teach a rule for every email</td><td>Thread: <b>Teach the agent</b>, e.g. "Never mention BFCM to UK agencies". Editing a draft also teaches it.</td></tr>
+<tr><td>Cancel one scheduled email</td><td>Thread: the dashed email, <b>Cancel this email</b>.</td></tr>
+<tr><td>Mark a call booked</td><td>Thread (right panel) or Meetings: pick the time, <b>Mark booked</b>.</td></tr>
+<tr><td>Log an outcome</td><td>Meetings: Held / No-show / Cancelled, then Won / Nurture / Lost.</td></tr>
+<tr><td>Export the list</td><td>Inbox or Mission Control: <b>Export CSV</b>.</td></tr>
+<tr><td>Pause the whole campaign</td><td>Campaigns, open it, <b>Pause</b>.</td></tr>
+<tr><td>Stop everything now</td><td><b>EMERGENCY STOP</b> in the sidebar. Nothing sends until it is released; queued emails go back for approval.</td></tr>
+</table></div>
+
+<h2 id="rules">Guardrails (hard, even for you)</h2>
+<ul>
+  <li><b>No money amounts in writing.</b> A draft with a fee or amount cannot be sent, even if you approve it. Amounts are for the call.</li>
+  <li><b>Blocked topics:</b> acquisition, merger, roll-up, exit, valuation, long-term plans, lead flow, "sell your agency". Same rule.</li>
+  <li><b>Never says:</b> guaranteed leads, we will send you clients, exclusive.</li>
+  <li><b>Polite always.</b> Short sentences, no hype, one ask, no pressure.</li>
+  <li><b>No double sends.</b> One email per step per person, ever. Opt-outs are permanent.</li>
+</ul>
+
+<h2 id="built">How it's built (one minute)</h2>
+<ul>
+  <li><b>Runs on Cloudflare</b>: a Worker wakes every 5 minutes, checks the inboxes, drafts, sends what is due and writes the summaries. Data lives in a D1 database. Writing uses Workers AI models.</li>
+  <li><b>Sending</b>: 4 Instantly inboxes used by no other engine. Each starts at 10 emails a day and adds 5 per sending day. One inbox per agency for the whole thread.</li>
+  <li><b>Founders first</b>: where we have several contacts at one agency, the founder is emailed first; the others only if the founder stays quiet, and all stop when anyone replies.</li>
+  <li><b>The brief</b>: everything the agent writes comes from the campaign brief (offer, talking points, FAQ, guardrails). Change the brief, and every new email changes.</li>
+  <li><b>Learning</b>: your edits, rejections and Teach notes become rules on the campaign.</li>
+  <li><b>Same family as</b> the creator seeding and Partner Voices engines, rebuilt for booking calls with agency owners.</li>
+</ul>
+
+<h2 id="faq">FAQ</h2>
+<h3>Will the agent ever send the discount code or agree a bonus?</h3>
+<p>No. It cannot write amounts, and codes are created by you after the call.</p>
+<h3>Someone booked through the link but Closefast still shows "interested".</h3>
+<p>Booking detection from your calendar is not connected yet. Mark it booked in the thread or on Meetings. That also writes the call brief and pauses their colleagues.</p>
+<h3>I replied from Gmail. Will the agent reply on top of me?</h3>
+<p>No, as long as you reply-all so the Closefast inbox is on it. Your reply marks the thread as yours and the agent stops. If you emailed them separately, click <b>Take over</b> in the thread.</p>
+<h3>Why has nobody been emailed at 4pm?</h3>
+<p>Cold emails only go out 8 to 11am in the agency's own timezone, Tuesday to Friday. Replies go out 7am to 9pm their time, Monday to Saturday.</p>
+<h3>A thread looks wrong or someone is upset.</h3>
+<p>Take over the thread, or press Emergency stop if it looks systemic, then tell Farooq.</p>
+<h3>How do I add the next batch of agencies?</h3>
+<p>Campaigns, open the campaign, Import a CSV (name, email, company, website, role, country, plus any extra columns). Farooq can do this for you.</p>
+</main>
+</body>
+</html>
