@@ -39,9 +39,9 @@ nav.toc a:hover{color:var(--acc);border-color:var(--acc)}
 </head>
 <body>
 <main>
-<span class="tag warn">THESIS v0.4 FOR REVIEW</span><span class="tag">31 Oct 2026</span><span class="tag acc">Closefast</span> <a class="tag acc" href="../v1/" style="text-decoration:none">NEXT: V1 BUILD PLAN</a>
+<span class="tag warn">THESIS v0.5 FOR REVIEW</span><span class="tag">31 Oct 2026</span><span class="tag acc">Closefast</span> <a class="tag acc" href="../v1/" style="text-decoration:none">NEXT: V1 BUILD PLAN</a>
 <h1>Free agent, paid fuel</h1>
-<p class="sub">How a hosted Closefast makes money when anyone can vibe-code an outreach agent. v0.3 applies Farooq's review: free sends from our own warm inboxes, free never expires (a starter boost plus an always-free monthly allowance), free signals track competitors and keywords, no pay per meeting, and costs measured per outcome. v0.4 adds one vocabulary (prospect, lead, goal), campaign goals beyond meetings, and LinkedIn signals as an opt-in source for businesses whose buyers are on LinkedIn.</p>
+<p class="sub">How a hosted Closefast makes money when anyone can vibe-code an outreach agent. v0.3 applies Farooq's review: free sends from our own warm inboxes, free never expires (a starter boost plus an always-free monthly allowance), free signals track competitors and keywords, no pay per meeting, and costs measured per outcome. v0.4 adds one vocabulary (prospect, lead, goal), campaign goals beyond meetings, and LinkedIn signals as an opt-in source for businesses whose buyers are on LinkedIn. v0.5 prices the free pool on pre-warmed InboxKit inboxes (about $0.018 an email instead of $0.01).</p>
 
 <nav class="toc">
 <a href="#thesis">Thesis</a><a href="#evidence">Evidence</a><a href="#vocab">Vocabulary</a><a href="#goals">Goals</a><a href="#free">Free plan</a><a href="#outcomes">Cost per outcome</a><a href="#sending">Sending</a><a href="#thirdparty">Third-party calls</a><a href="#paid">Paid</a><a href="#signals">Signals</a><a href="#model">Model</a><a href="#economics">Economics</a><a href="#build">Build</a><a href="#risks">Risks</a><a href="#decisions">Decisions</a>
@@ -49,7 +49,7 @@ nav.toc a:hover{color:var(--acc);border-color:var(--acc)}
 
 <h2 id="thesis">0. The thesis</h2>
 <div class="call">The agent loop (research, write, send, follow up, handle replies, book) is commodity code, so charging seats for it is SaaS 1.0. We host it and give it away <b>forever</b>, Semrush-style: always something free, always limited. Free sends from <b>our own warm inboxes</b>, so there's nothing to connect, no risk to the user's domain, and the first replies arrive within days. We <b>charge for the fuel</b>: more sending, sending from their own brand, more found prospects, more signals and better writing. One prepaid wallet, priced per use, no seats, no outcome guarantees.</div>
-<p>Two layers of free do two jobs. The <b>starter boost</b> (once, at signup) gets a new user to real replies fast. The <b>always-free allowance</b> (every month, no expiry) keeps them coming back weekly and keeps them in our database, at under $2 a month even when maxed out.</p>
+<p>Two layers of free do two jobs. The <b>starter boost</b> (once, at signup) gets a new user to real replies fast. The <b>always-free allowance</b> (every month, no expiry) keeps them coming back weekly and keeps them in our database, at under $3 a month even when maxed out.</p>
 <p>Hosting everything means we own the relationship: every signup, their ideal customer, usage and results live with us. Users who keep hitting the caps are upgrade candidates we can see, and Closefast itself can run our outreach to them.</p>
 
 <h2 id="evidence">1. What the market is telling us</h2>
@@ -113,38 +113,38 @@ nav.toc a:hover{color:var(--acc);border-color:var(--acc)}
 <li><b>Up to 300 emails</b> from our warm inboxes (about 75 prospects with follow-ups), 25 a day.</li>
 <li>If your buyers are on LinkedIn, an <b>opt-in signal</b> backfilled over the last 30 days: people engaging with a competitor's posts or posts on a keyword. Its matches count toward the 100.</li>
 <li>Replies handled, booking link sent, every thread in one inbox.</li>
-<li><b>Our cost when fully used: about $4.50, once.</b></li>
+<li><b>Our cost when fully used: about $6.80, once.</b></li>
 </ul></div>
 <div class="card"><h3>Always free (every month, forever)</h3><ul>
 <li><b>50 found prospects</b> a month, from any source that fits.</li>
 <li><b>5 emails a day</b> from our warm inboxes (about 110 a month, about 28 prospects).</li>
 <li>The opt-in signal keeps running weekly; its matches come out of the 50 and arrive as a weekly "your buyers this week" digest.</li>
 <li>Unlimited reply handling on their threads.</li>
-<li><b>Our cost when maxed out: about $1.85 a month.</b></li>
+<li><b>Our cost when maxed out: about $2.70 a month.</b></li>
 </ul></div>
 </div>
-<p><b>Why these caps:</b> found prospects are cheap (about $0.008 each from data, about the same from a signal), so free gets plenty. Sending is the real cost (about $0.01 an email from our pool, about 4 emails per prospect), so that's what we cap. The weekly signal digest is the cheapest way to give a reason to come back every week.</p>
+<p><b>Why these caps:</b> found prospects are cheap (about $0.008 each from data, about the same from a signal), so free gets plenty. Sending is the real cost (about $0.018 an email from our pre-warmed pool, about 4 emails per prospect), so that's what we cap. The weekly signal digest is the cheapest way to give a reason to come back every week.</p>
 
 <h2 id="outcomes">5. Cost per free outcome</h2>
 <p>Reply rate from our own pilot (4% of prospects reply); leads and meetings use Explee's published ratio (its "warm leads") until we have our own.</p>
 <div class="tw"><table>
 <tr><th>Outcome we deliver free</th><th>Starter boost (maxed)</th><th>Always free, per month (maxed)</th><th>Our cost per outcome</th></tr>
 <tr><td>Prospects found and verified</td><td>100</td><td>50</td><td>About $0.008 each</td></tr>
-<tr><td>Prospects fully worked (found, researched, 4 emails, replies handled)</td><td>About 75</td><td>About 28</td><td>About $0.05 each</td></tr>
-<tr><td>Replies</td><td>About 3</td><td>About 1</td><td>About $1.50 to $1.70 each</td></tr>
-<tr><td>Leads (Interested replies)</td><td>About 1 to 2</td><td>About 0.3 to 0.9</td><td>About $2 to $6 each</td></tr>
-<tr><td>Goal reached, if the goal is a meeting</td><td>About 0.4</td><td>About 0.15</td><td>About $11 to $13 each</td></tr>
-<tr><td><b>Total cost to us</b></td><td><b>About $4.50 once</b></td><td><b>About $1.85 a month</b></td><td>Year 1 for a user who maxes everything: about $25</td></tr>
+<tr><td>Prospects fully worked (found, researched, 4 emails, replies handled)</td><td>About 75</td><td>About 28</td><td>About $0.08 each</td></tr>
+<tr><td>Replies</td><td>About 3</td><td>About 1</td><td>About $2.30 to $2.50 each</td></tr>
+<tr><td>Leads (Interested replies)</td><td>About 1 to 2</td><td>About 0.3 to 0.9</td><td>About $3 to $9 each</td></tr>
+<tr><td>Goal reached, if the goal is a meeting</td><td>About 0.4</td><td>About 0.15</td><td>About $17 to $18 each</td></tr>
+<tr><td><b>Total cost to us</b></td><td><b>About $6.80 once</b></td><td><b>About $2.70 a month</b></td><td>Year 1 for a user who maxes everything: about $37</td></tr>
 </table></div>
-<p><b>Per 1,000 signups</b>, assuming 40% use the full starter boost and 15% stay active at about 60% of the always-free caps: about $1,800 once, then about $170 a month. That's under $2 per signup, against Explee's $30 trial credit.</p>
+<p><b>Per 1,000 signups</b>, assuming 40% use the full starter boost and 15% stay active at about 60% of the always-free caps: about $2,700 once, then about $240 a month. That's under $3 per signup, against Explee's $30 trial credit.</p>
 
 <h2 id="sending">6. Sending: our pool for free, their brand for paid</h2>
 <div class="grid">
 <div class="card"><h3>Free: our warm inbox pool</h3><ul>
-<li>Neutral domains we own, Google inboxes through InboxKit, warmed once and kept warm.</li>
+<li>Pre-warmed Google domains and inboxes bought from InboxKit's inventory (they come with neutral names), with warming kept on.</li>
 <li>Sender name is the user's real name; the signature, footer, address and unsubscribe are their business's. Replies land in their Closefast inbox and are forwarded to their email.</li>
 <li>Each user is pinned to 1 or 2 inboxes, so one bad sender only burns their own slice.</li>
-<li>Cost: about $4.30 per inbox a month for about 550 safe emails, so about $0.01 an email with a 30% burn reserve.</li>
+<li>Cost: about $6 to $9 per inbox a month plus a one-time domain fee, for about 550 safe emails: about $0.018 an email with a 30% burn reserve. Growing the pool later with fresh inboxes we warm ahead of demand brings it back toward $0.01.</li>
 </ul></div>
 <div class="card"><h3>Paid: their brand</h3><ul>
 <li>Lookalike branded domains (acme.com becomes getacme.com), registered on our Cloudflare account, with inboxes created, authenticated and warmed by the InboxKit API.</li>
@@ -159,7 +159,7 @@ nav.toc a:hover{color:var(--acc);border-color:var(--acc)}
 <tr><td>Primeforge / Mailforge</td><td>Google, MS365 / shared SMTP</td><td>$4.50 / $3, minimum 10</td><td>Yes</td><td>Backup vendor</td></tr>
 <tr><td>Maildoso</td><td>Own SMTP</td><td>$2.50, down to $0.49 at volume</td><td>Yes</td><td>Later: a cheaper pool tier</td></tr>
 </table></div>
-<div class="call warn"><b>Watch-outs.</b> With a shared pool we are the sending platform, so free sends must pass content gates, go only to verified business emails (keeps bounces under 2%), and the first 10 need the user's approval. Cheap Google inboxes seem to ride regional reseller pricing, so a Google policy change could suspend a batch: spread the pool across two vendors. Confirm which login fields InboxKit's credentials endpoint returns before building.</div>
+<div class="call warn"><b>Watch-outs.</b> With a shared pool we are the sending platform, so free sends go only to verified business emails (keeps bounces under 2%), with auto-pause on bounces and complaints. InboxKit returns each inbox's password, app password and 2FA secret, so the agent's SMTP/IMAP driver uses them as is, and its forwarding API pushes replies to us.</div>
 
 <h2 id="thirdparty">7. Third-party calls in free</h2>
 <p><b>Yes, all the cheap ones, capped.</b> The "it found my buyers" and "these people are looking at my competitor" moments are what a vibe-coded clone can't give, and they cost cents.</p>
@@ -167,7 +167,7 @@ nav.toc a:hover{color:var(--acc);border-color:var(--acc)}
 <tr><th>Call</th><th>Our cost</th><th>In free?</th></tr>
 <tr><td>Find companies, decision-maker lookup, verified work email</td><td>About $0.003 to $0.015 per prospect</td><td><b>Yes</b>: 100 in the boost, 50 a month after</td></tr>
 <tr><td>1 competitor or keyword signal, weekly, triaged on headline, only matches enriched</td><td>About $0.15 a month</td><td><b>Yes, opt-in</b>, only offered when buyers are on LinkedIn; matches count toward free prospects</td></tr>
-<tr><td>Warm pool inboxes</td><td>About $0.01 an email</td><td><b>Yes</b>: 300 in the boost, 5 a day after</td></tr>
+<tr><td>Warm pool inboxes</td><td>About $0.018 an email</td><td><b>Yes</b>: 300 in the boost, 5 a day after</td></tr>
 <tr><td>More signals, daily refresh, creator discovery</td><td>Grows with how busy the pages are</td><td>No, paid</td></tr>
 <tr><td>Branded domains and inboxes</td><td>$3 to $9 per inbox a month</td><td>No, paid</td></tr>
 <tr><td>Deep research and premium model writing</td><td>About $0.07+ per prospect</td><td>No, paid</td></tr>
@@ -180,7 +180,7 @@ nav.toc a:hover{color:var(--acc);border-color:var(--acc)}
 <tr><td>Prospects we find from data (verified, enriched)</td><td>$0.08 per prospect</td><td>About $0.003 to $0.015</td></tr>
 <tr><td>Signal prospects: more signals, daily refresh (billed only for people who match)</td><td>$0.15 per signal prospect</td><td>About $0.005 to $0.01</td></tr>
 <tr><td>Send as your own brand: branded domains and inboxes, one click</td><td>$5 per inbox a month (warmed during setup), $10 pre-warmed; domains $15 a year</td><td>About $3 ($6 to $9 pre-warmed); domain about $10 a year</td></tr>
-<tr><td>More sending from our pool (no brand setup)</td><td>$0.015 per email</td><td>About $0.01</td></tr>
+<tr><td>More sending from our pool (no brand setup)</td><td>$0.03 per email</td><td>About $0.018</td></tr>
 <tr><td>Premium writing: a top model plus deep research</td><td>$0.10 per prospect</td><td>About $0.07 to $0.09</td></tr>
 <tr><td>Done for you: a human runs strategy, lists, copy review, deliverability</td><td>From $750 a month</td><td>Our time</td></tr>
 <tr><td>Enterprise: SSO, DPA, security review, dedicated sending</td><td>Annual contract</td><td>Support</td></tr>
@@ -201,9 +201,9 @@ nav.toc a:hover{color:var(--acc);border-color:var(--acc)}
 <h2 id="economics">11. Economics</h2>
 <div class="grid">
 <div class="card"><h3>Free</h3><ul>
-<li>About $4.50 once per fully used boost, then at most $1.85 a month.</li>
-<li>Per 1,000 signups: about $1,800 once plus about $170 a month.</li>
-<li>If 3% of signups pay $75 a month, that's about $1,700 a month of gross profit (75% margin): it repays the boosts in about a month and the always-free cost 10 times over.</li>
+<li>About $6.80 once per fully used boost, then at most $2.70 a month.</li>
+<li>Per 1,000 signups: about $2,700 once plus about $240 a month.</li>
+<li>If 3% of signups pay $75 a month, that's about $1,700 a month of gross profit (75% margin): it repays the boosts in under 2 months and covers the always-free cost about 7 times over.</li>
 </ul></div>
 <div class="card"><h3>Paid: 500 prospects a month (2,000 emails), all found by us, 4 branded inboxes on 2 domains</h3><ul>
 <li><b>They pay:</b> prospects worked $15 + prospects found $40 + inboxes $20 + domains $2.50 = <b>$77.50 a month</b>. Explee for the same 2,000 emails: $70 to $80, from Explee's domains.</li>
@@ -215,17 +215,17 @@ nav.toc a:hover{color:var(--acc);border-color:var(--acc)}
 <h2 id="build">12. What hosting adds to the build</h2>
 <ul>
 <li><b>Multi-tenant:</b> signup, login, workspaces, per-tenant allowances and a usage ledger.</li>
-<li><b>Warm pool manager:</b> buys and warms pool inboxes ahead of demand, pins users to inboxes, tracks bounces and complaints per user, retires burned inboxes.</li>
+<li><b>Warm pool manager:</b> buys pre-warmed inboxes from InboxKit ahead of demand, pins users to inboxes, tracks bounces and complaints per user, retires burned inboxes.</li>
 <li><b>Branded inboxes:</b> InboxKit API plus Cloudflare Registrar for the paid tier.</li>
 <li><b>Connect your own inbox (paid):</b> Google requires app verification plus an annual security assessment for apps that read Gmail, and Microsoft asks for publisher verification. Free no longer depends on it, so it can come later.</li>
 <li><b>Billing:</b> Stripe wallet, top-ups, auto top-up, bounce refunds, live usage.</li>
-<li><b>Abuse controls:</b> work-email signup, one free account per company domain, first 10 emails approved, daily caps, content gates, auto-pause on bounces or complaints.</li>
+<li><b>Pool protection, invisible to the user:</b> daily caps, verified emails only, content gates, auto-pause on bounces or complaints, cost per account in the admin console. No signup friction.</li>
 </ul>
 
 <h2 id="risks">13. Risks</h2>
 <div class="tw"><table>
 <tr><th>Risk</th><th>Answer</th></tr>
-<tr><td>A spammer on free burns our pool.</td><td>Users pinned to their own inboxes, verified emails only, content gates, approval of first sends, auto-pause, one account per domain.</td></tr>
+<tr><td>A spammer on free burns our pool.</td><td>Users pinned to their own inboxes, verified emails only, content gates, auto-pause, admin kill switch per account.</td></tr>
 <tr><td>Free costs balloon.</td><td>Sending is capped per day, nothing rolls over, kill switch per account, pool sized to demand.</td></tr>
 <tr><td>Free is enough and nobody upgrades.</td><td>5 emails a day is a trickle; anyone with a working campaign wants volume and their own brand.</td></tr>
 <tr><td>Prospects distrust an unfamiliar domain.</td><td>Real sender name and business signature; "send as your brand" is the first upsell.</td></tr>
@@ -236,7 +236,7 @@ nav.toc a:hover{color:var(--acc);border-color:var(--acc)}
 <h2 id="decisions">14. Decisions for Farooq</h2>
 <ol>
 <li>Starter boost (100 prospects, 300 emails, opt-in signal) and always-free (50 prospects, 5 emails a day, weekly signal if opted in): right size?</li>
-<li>Card at signup (like Explee) or not? Recommendation: no card; work email plus one account per domain.</li>
+<li>Card at signup (like Explee) or not? Recommendation: no card and no domain checks; sending is at the user's own risk.</li>
 <li>Pool domains: neutral brand of ours, or Closefast-branded?</li>
 <li>Vocabulary: lead means an Interested reply, everyone before that is a prospect. Agree?</li>
 <li>Signals: opt-in source metered from the wallet (recommended), or a separate add-on plan?</li>

@@ -39,29 +39,53 @@ nav.toc a:hover{color:var(--acc);border-color:var(--acc)}
 </head>
 <body>
 <main>
-<span class="tag acc">BUILD PLAN v1</span><span class="tag">31 Oct 2026</span><span class="tag acc">Closefast</span><span class="tag warn">FOR REVIEW</span>
+<span class="tag acc">BUILD PLAN v1.1</span><span class="tag">31 Oct 2026</span><span class="tag acc">Closefast</span><span class="tag warn">FOR REVIEW</span>
 <h1>Closefast V1: scenarios, rules, guardrails, infra, blockers</h1>
-<p class="sub">Everything to settle before building the hosted, multi-tenant Closefast described in the <a href="../thesis/">business thesis v0.4</a>. Pilots (ads.brevo.com, Brevo ecommerce) come after V1 and run as ordinary tenants.</p>
+<p class="sub">Everything to settle before building the hosted, multi-tenant Closefast described in the <a href="../thesis/">business thesis v0.4</a>. Pilots (ads.brevo.com, Brevo ecommerce) come after V1 and run as ordinary tenants. v1.1 applies Farooq's review: accounts, data licensing, legal and Google policy are settled; signup friction removed; pool runs on pre-warmed InboxKit inboxes; V1 ships as a separate instance.</p>
 
 <nav class="toc">
-<a href="#blockers">Blockers</a><a href="#scope">V1 scope</a><a href="#reuse">Reuse vs build</a><a href="#fixfirst">Fix first</a><a href="#scenarios">Scenarios</a><a href="#rules">Default rules</a><a href="#replies">Replies</a><a href="#infra">Infra</a><a href="#invariants">Invariants</a><a href="#side">Side features</a><a href="#order">Build order</a><a href="#decisions">Decisions</a>
+<a href="#blockers">Unblock</a><a href="#pool">Pre-warmed pool</a><a href="#instances">Live instances</a><a href="#questions">Open questions</a><a href="#scope">V1 scope</a><a href="#reuse">Reuse vs build</a><a href="#fixfirst">Fix first</a><a href="#scenarios">Scenarios</a><a href="#rules">Default rules</a><a href="#replies">Replies</a><a href="#infra">Infra</a><a href="#invariants">Invariants</a><a href="#side">Side features</a><a href="#order">Build order</a><a href="#decisions">Decisions</a>
 </nav>
 
-<h2 id="blockers">0. Blockers, ranked</h2>
+<h2 id="blockers">0. What's left to unblock</h2>
+<p><span class="tag acc">SETTLED</span> Entity and accounts, data licensing, sender-of-record and legal, Google policy risk.</p>
 <div class="tw"><table>
-<tr><th>#</th><th>Blocker</th><th>Why it blocks</th><th>Way through</th></tr>
-<tr><td>1</td><td><b>Entity and accounts</b></td><td>Closefast runs today on the Cloudflare account "Sheik.farooq@pushowl.com's Account" and the pushowl treg team. A SaaS that takes money needs its own legal entity, Cloudflare, Stripe, treg or provider accounts, GitHub org and domains, and a clear contract for the Brevo pilot (who owns the code, data and customers).</td><td>Decide the operating entity; open separate accounts; keep the Brevo pilot on the current setup until then.</td></tr>
-<tr><td>2</td><td><b>Data licensing</b></td><td>Showing provider data to our customers and keeping a shared person index may breach a provider's terms. LinkedIn-derived data carries legal risk (Proxycurl shut down in 2025 after LinkedIn sued).</td><td>Check each provider's resale and display terms (Fetchin, BlitzAPI, Bright Data, TikHub, AnyAPI) before wiring them in; keep providers swappable; keep an erasure list.</td></tr>
-<tr><td>3</td><td><b>We become the sender</b></td><td>Free sends from our pool, so complaints, blocklists and legal notices land on us.</td><td>Terms of service, acceptable use policy, abuse inbox, country rules, B2C block, content gates, auto-pause (sections 4 and 5). Legal review before launch.</td></tr>
-<tr><td>4</td><td><b>Pool warmup lead time</b></td><td>New inboxes need about 2 weeks or more of warmup before cold sends; the pool must be warm on launch day.</td><td>Order and warm the first pool inboxes early in the build, or buy pre-warmed at roughly double.</td></tr>
-<tr><td>5</td><td><b>InboxKit credentials</b></td><td>Whether its API returns SMTP/IMAP logins or only OAuth decides the whole send and receive path.</td><td>Buy 1 inbox and test send, receive and forwarding before building the pool manager.</td></tr>
-<tr><td>6</td><td><b>Google policy risk</b></td><td>Cheap Google inboxes likely ride regional reseller pricing; a policy change could suspend a batch.</td><td>Two vendors in the pool (InboxKit plus Primeforge or Maildoso), never more than half the pool with one.</td></tr>
-<tr><td>7</td><td><b>Prospect discovery at scale</b></td><td>The pilot's free web search is rate-limited (it failed on 28 Oct).</td><td>Paid search and data providers behind the source router, budgeted per tenant.</td></tr>
-<tr><td>8</td><td>Stripe and tax</td><td>Needs the entity; prepaid credits need tax handling by country.</td><td>Stripe plus Stripe Tax once the entity exists.</td></tr>
-<tr><td>9</td><td>Gmail app verification</td><td>Only for "connect your own Gmail" (paid, later). Not a V1 blocker.</td><td>Start the verification when V1 is stable.</td></tr>
+<tr><th>#</th><th>Item</th><th>Way through</th></tr>
+<tr><td>1</td><td><b>Buy the pre-warmed pool</b> before launch</td><td>InboxKit pre-warm inventory (section 1). Launch with about 30 inboxes: 750 cold emails a day for about $230 a month.</td></tr>
+<tr><td>2</td><td><b>Prospect discovery at scale</b>: the pilot's free web search is rate-limited (failed on 28 Oct)</td><td>Paid search and data providers behind the source router, budgeted per tenant.</td></tr>
+<tr><td>3</td><td>Gmail app verification, only for "connect your own Gmail" (paid, after V1)</td><td>Start once V1 is stable. Not a V1 blocker.</td></tr>
 </table></div>
 
-<h2 id="scope">1. V1 scope</h2>
+<h2 id="pool">1. The pre-warmed pool (from InboxKit's docs)</h2>
+<div class="tw"><table>
+<tr><th>Question</th><th>Answer</th></tr>
+<tr><td>What we buy</td><td>Already-warmed Google Workspace domains and inboxes from InboxKit's inventory. Search by domain age and TLD, then buy by domain or by inbox (<code>Search Domains</code>, <code>Search Mailboxes</code>, <code>Buy Prewarmed Mailboxes</code>). Google only.</td></tr>
+<tr><td>Names</td><td>Domains come with their own neutral names, which suits a shared free pool. Each inbox's username, first and last name and photo can be set at purchase.</td></tr>
+<tr><td>Price</td><td>About $6 to $9 per inbox a month by warmup length (2 to 4, 4 to 8, 8+ weeks), plus a one-time domain fee (examples $15 to $33), paid from prepaid InboxKit credits.</td></tr>
+<tr><td>Keeps warming</td><td>Optional "continue warming for up to 12 weeks", on by default.</td></tr>
+<tr><td>Delivery</td><td>Orders run in the background: <code>Check Order Status</code> until completed.</td></tr>
+<tr><td>Logins</td><td><code>Show mailbox credentials</code> returns the password, an app password and the 2FA secret, so the agent's existing SMTP/IMAP driver can send and read as is.</td></tr>
+<tr><td>Replies</td><td><code>Setup Email Forwarding</code> forwards each inbox to our Cloudflare Email Worker, so replies arrive instantly.</td></tr>
+<tr><td>Capacity</td><td>25 cold emails a day per inbox: one starter boost uses 1 inbox for its 2 weeks; 5 always-free users share 1 inbox.</td></tr>
+<tr><td>Cost per email</td><td>About $0.018 (was $0.01 with fresh inboxes). Grow the pool later with fresh $3 inboxes warmed ahead of demand to bring it back toward $0.01.</td></tr>
+<tr><td>Branded inboxes (paid)</td><td>A customer's own lookalike domain can't come pre-warmed: fresh domain plus warmup, or a pre-warmed domain from inventory if they're happy with its name.</td></tr>
+</table></div>
+
+<h2 id="instances">2. Live instances stay untouched: V1 is a separate instance</h2>
+<div class="tw"><table>
+<tr><th>Instance</th><th>Code</th><th>Cloudflare</th><th>What happens</th></tr>
+<tr><td>Brevo partnership pilot</td><td><code>closefast</code> repo, <code>main</code></td><td>Worker and D1 <code>closefast-brevo</code>, cron every 5 minutes, dashboard proxy <code>closefast-app</code>, 4 Instantly inboxes</td><td>Keeps running as is. Only targeted fixes (the reply-poll fix) get ported.</td></tr>
+<tr><td>Winning Statics outreach</td><td><code>closefast</code> repo, <code>ws-campaign</code></td><td>Worker and D1 <code>closefast-ws</code> (plus <code>closefast-ws-dryrun</code>), 5 staggered crons</td><td>Keeps running; the WS session owns it.</td></tr>
+<tr><td><b>Closefast V1 (new)</b></td><td>New private repo <code>closefast-cloud</code>, started from <code>main</code> at <code>77f6bb2</code> with history, so fixes can be cherry-picked both ways</td><td>All new names: <code>closefast-cloud-*</code> Workers, D1, Queues and Pages; own secrets and MASTER_KEY; own InboxKit workspace; own OpenRouter key and data budget</td><td>Built and deployed separately. Nothing shared at runtime.</td></tr>
+</table></div>
+<ul>
+<li><b>Yes, separate is easier:</b> V1 rewrites tenancy, auth, scheduling and reply ingestion, so building it inside the live repo would put both pilots at risk on every deploy.</li>
+<li><b>Trap:</b> the default <code>wrangler.toml</code> in both checkouts deploys a generic <code>closefast</code> Worker and D1. V1 gets its own config names, and deploys only from CI.</li>
+<li><b>Never share inboxes</b> between instances (one inbox per engine): V1 never touches the pilot's Instantly inboxes or Farooq's Gmail.</li>
+<li><b>Later:</b> once V1 is stable, the Brevo partnership and WS campaigns can move in as tenants (prospects, threads, suppression imported), or stay where they are.</li>
+</ul>
+
+<h2 id="scope">3. V1 scope</h2>
 <div class="grid">
 <div class="card"><h3>In V1</h3><ul>
 <li>Signup, login, one company per account, free team seats</li>
@@ -85,7 +109,7 @@ nav.toc a:hover{color:var(--acc);border-color:var(--acc)}
 </ul></div>
 </div>
 
-<h2 id="reuse">2. What we reuse and what's new</h2>
+<h2 id="reuse">4. What we reuse and what's new</h2>
 <div class="tw"><table>
 <tr><th>Area</th><th>Reuse from Closefast today</th><th>Change or build</th></tr>
 <tr><td>Tenancy</td><td>Every table already has <code>workspace_id</code></td><td>Replace the hard-coded <code>WS</code> with the signed-in tenant in every query; real user auth instead of the admin password</td></tr>
@@ -98,7 +122,7 @@ nav.toc a:hover{color:var(--acc);border-color:var(--acc)}
 <tr><td>Ops</td><td>Heartbeats, incidents, events feed, daily digest</td><td>Admin console, invariants sweep, cost per tenant, canary tenant</td></tr>
 </table></div>
 
-<h2 id="fixfirst">3. Fix before building on top</h2>
+<h2 id="fixfirst">5. Fix before building on top</h2>
 <ul>
 <li><b>Reply-poll starvation:</b> the fix (seen set = every stored reply, own copies dropped before the 10-slot cut) exists only on the WS branch as <code>ab4d081</code>. Port it to main. The Brevo instance already shows the pattern (listed 3, stored 0).</li>
 <li><b>Booking detection is link-only</b>; bookings are marked by hand today.</li>
@@ -107,17 +131,15 @@ nav.toc a:hover{color:var(--acc);border-color:var(--acc)}
 <li>Audit the creator engine's 30 silent defects against Closefast: NULL subjects, retry ceilings, a pending cold row silencing an owed reply, threading by a list of kinds, new lanes not inheriting guards, "sent" vs delivered, signature lines read as names.</li>
 </ul>
 
-<h2 id="scenarios">4. Scenarios and edge cases</h2>
+<h2 id="scenarios">6. Scenarios and edge cases</h2>
 
-<h3>A. Signup and trust</h3>
+<h3>A. Signup and trust: no friction</h3>
 <div class="tw"><table>
 <tr><th>Case</th><th>Rule</th></tr>
-<tr><td>Signup with Gmail, Yahoo or a disposable domain</td><td>Blocked; work email only.</td></tr>
-<tr><td>Work email domain differs from the website domain</td><td>Prove ownership: a code sent to an address at the website's domain, or a DNS TXT record. Stops people posing as brands they don't own.</td></tr>
-<tr><td>Second free account on the same company domain</td><td>Joins the existing account as a teammate; no second allowance.</td></tr>
-<tr><td>Prohibited business (gambling, adult, weapons, crypto schemes, drugs, debt collection, lead resale)</td><td>Classifier on the website and brief; blocked at onboarding with a plain reason.</td></tr>
-<tr><td>Bot signups</td><td>Cloudflare Turnstile on signup; rate limit per IP.</td></tr>
-<tr><td>Brand-new account</td><td>Trust ramp: first 10 emails need approval, 10 sends on day one, full free cap after the first clean week.</td></tr>
+<tr><td>Signup</td><td>Any email, Google sign-in or a magic link. No domain checks, no approvals; the user sends at their own risk.</td></tr>
+<tr><td>Bots</td><td>Invisible Cloudflare Turnstile on signup.</td></tr>
+<tr><td>Free allowance farming (many accounts)</td><td>No upfront blocks; the admin console shows cost per account and can cap an abuser.</td></tr>
+<tr><td>Protecting the shared pool</td><td>Invisible to the user: verified emails only, per-inbox caps, auto-pause on bounces and complaints, opt-outs honoured across the pool.</td></tr>
 </table></div>
 
 <h3>B. Onboarding from a website</h3>
@@ -125,7 +147,7 @@ nav.toc a:hover{color:var(--acc);border-color:var(--acc)}
 <tr><th>Case</th><th>Rule</th></tr>
 <tr><td>Site down, JavaScript-only or parked</td><td>Fall back to 3 questions: what you sell, who buys it, where.</td></tr>
 <tr><td>Several products or buyer types</td><td>Agent proposes up to 3 ICPs; each campaign picks one.</td></tr>
-<tr><td>Buyers are consumers (homebuyers, patients, shoppers)</td><td>No cold email to individuals. Offer B2B angles (partners, suppliers, local businesses) or explain why cold email doesn't fit.</td></tr>
+<tr><td>Buyers are consumers (homebuyers, patients, shoppers)</td><td>The agent suggests B2B angles (partners, suppliers, local businesses); the user can go ahead anyway.</td></tr>
 <tr><td>Buyers are on LinkedIn (SaaS, agencies, B2B services)</td><td>Offer the opt-in signal card; otherwise never mention signals.</td></tr>
 <tr><td>Local business buyers (restaurants, clinics, shops)</td><td>Local source (maps, directories); role inboxes allowed.</td></tr>
 <tr><td>Non-English site or market</td><td>Write in the prospect's language from a supported list; otherwise ask.</td></tr>
@@ -135,11 +157,11 @@ nav.toc a:hover{color:var(--acc);border-color:var(--acc)}
 <h3>C. Campaign setup</h3>
 <div class="tw"><table>
 <tr><th>Case</th><th>Rule</th></tr>
-<tr><td>Sender identity</td><td>Real name, title, company and postal address required before anything sends (footer). No address, no send.</td></tr>
+<tr><td>Sender identity</td><td>Name and company prefilled from signup and the website; the footer uses the company address when we have it.</td></tr>
 <tr><td>Booking link dead or not a known booking tool</td><td>Validate on save; warn; block a meeting goal without a working link.</td></tr>
 <tr><td>Page goal URL</td><td>Must load and sit on the business's own domain (no redirects to third-party sites, which also stops phishing).</td></tr>
 <tr><td>Facts the agent may claim</td><td>A facts list built from the website and confirmed by the user; anything else (numbers, client names, results) is blocked by the claims gate.</td></tr>
-<tr><td>User never approves the first 10</td><td>Nothing sends; nudges at 24 and 72 hours.</td></tr>
+<tr><td>Launch</td><td>One preview screen with 3 sample emails and a Launch button. Approving each email is optional and off by default.</td></tr>
 </table></div>
 
 <h3>D. Prospects and sources</h3>
@@ -154,7 +176,6 @@ nav.toc a:hover{color:var(--acc);border-color:var(--acc)}
 <tr><td>Imported CSV bounces badly</td><td>Verify on import (small charge); pause the list if bounces pass 5%.</td></tr>
 <tr><td><b>Two tenants target the same person</b> from the pool</td><td>One cold sequence per person per 60 days across all pool sends; the second tenant's prospect waits or is skipped.</td></tr>
 <tr><td>Person opted out or complained via any tenant on the pool</td><td>Global pool suppression. "Not interested" stays tenant-only.</td></tr>
-<tr><td>EU or UK sole traders, Canada</td><td>Country rules table (section 5); V1 sends only to the allowed list.</td></tr>
 </table></div>
 
 <h3>E. Signals</h3>
@@ -221,10 +242,10 @@ nav.toc a:hover{color:var(--acc);border-color:var(--acc)}
 <tr><td>Staff access</td><td>Admin console behind Cloudflare Access; impersonation logged.</td></tr>
 </table></div>
 
-<h2 id="rules">5. Default rules (proposals to confirm)</h2>
+<h2 id="rules">7. Default rules (proposals to confirm)</h2>
 <div class="tw"><table>
 <tr><th>Rule</th><th>Default</th></tr>
-<tr><td>Cold sends per pool inbox</td><td>25 a day (10 a day in an inbox's first week); 3 inboxes per domain</td></tr>
+<tr><td>Cold sends per pool inbox</td><td>25 a day (pre-warmed, so no ramp); 3 inboxes per domain</td></tr>
 <tr><td>Free sends per tenant</td><td>Starter boost 25 a day; always-free 5 a day</td></tr>
 <tr><td>Sequence</td><td>Opener plus 3 follow-ups, 2+ business days apart; win-backs off by default</td></tr>
 <tr><td>Send window</td><td>8 to 11am in the prospect's timezone, Monday to Friday, holidays skipped</td></tr>
@@ -233,15 +254,14 @@ nav.toc a:hover{color:var(--acc);border-color:var(--acc)}
 <tr><td>Bounce and complaint pauses</td><td>Inbox at 3%, tenant at 5% bounces; tenant at 0.1% complaints</td></tr>
 <tr><td>Length</td><td>Opener 110 words max, follow-ups 70</td></tr>
 <tr><td>Links</td><td>None in the opener; 1 max after</td></tr>
-<tr><td>Target countries in V1</td><td>A short allowed list (for example US, UK, Ireland, Australia, New Zealand, plus EU companies); Canada (CASL) and consumers out</td></tr>
 <tr><td>Footer</td><td>Sender's company, postal address, one-line opt-out ("Not relevant? Reply 'no' and I won't email again")</td></tr>
 </table></div>
 
-<h2 id="replies">6. Reply handling</h2>
+<h2 id="replies">8. Reply handling</h2>
 <div class="tw"><table>
 <tr><th>Reply</th><th>Counts as</th><th>Default action</th></tr>
 <tr><td>Meeting request</td><td>Lead</td><td>Booking link sent automatically; instant alert</td></tr>
-<tr><td>Info or pricing request</td><td>Lead</td><td>Draft for approval (autopilot optional); instant alert</td></tr>
+<tr><td>Info or pricing request</td><td>Lead</td><td>Answered automatically from the facts list; held for the user only when the facts can't answer; instant alert</td></tr>
 <tr><td>Referral to a colleague</td><td>Lead</td><td>Thank them; new prospect created with "referred by", needs approval</td></tr>
 <tr><td>Question the brief can't answer</td><td>Replied</td><td>Held for the user</td></tr>
 <tr><td>Not now (with or without a date)</td><td>Replied</td><td>Snooze to the date, or 90 days</td></tr>
@@ -257,7 +277,7 @@ nav.toc a:hover{color:var(--acc);border-color:var(--acc)}
 <tr><td>Data access or erasure request</td><td>Replied</td><td>Routed to our privacy desk</td></tr>
 </table></div>
 
-<h2 id="infra">7. Infra</h2>
+<h2 id="infra">9. Infra</h2>
 <div class="wf">App and dashboard (Pages)  ->  API Worker (auth, tenants, wallet)
                                       |
 D1: control (tenants, users, wallet ledger, allowances, pool, global suppression, erasure)
@@ -265,7 +285,7 @@ D1: control (tenants, users, wallet ledger, allowances, pool, global suppression
 
 Cron (every minute) -> enqueue due work per tenant
 Queues: source -> verify/enrich -> draft (batched LLM) -> gate -> send
-Send: Durable Object per inbox (daily budget, thread lock) -> SMTP to pool inboxes (InboxKit, 2 vendors)
+Send: Durable Object per inbox (daily budget, thread lock) -> SMTP to pre-warmed pool inboxes (InboxKit)
 Replies: pool inbox forwarding -> Cloudflare Email Routing -> Email Worker -> classify -> outcome
          hourly IMAP reconciliation (catches anything forwarding missed)
 Signals: scheduled per signal -> data providers -> headline triage -> enrich matches -> prospects
@@ -282,7 +302,7 @@ Admin console (Pages + Cloudflare Access); invariants cron; alerts to email and 
 <tr><td>Environments</td><td>Staging and production Workers; deploys only from CI</td><td>Lessons from two agents editing one engine</td></tr>
 </table></div>
 
-<h2 id="invariants">8. Invariants and monitoring (from 40 paid-for traps)</h2>
+<h2 id="invariants">10. Invariants and monitoring (from 40 paid-for traps)</h2>
 <ul>
 <li>Every stage reports listed, processed and stored; alert when listed stays above zero and stored stays at zero.</li>
 <li>Oldest due item per queue; alert when work waits too long (starvation).</li>
@@ -295,7 +315,22 @@ Admin console (Pages + Cloudflare Access); invariants cron; alerts to email and 
 <li>Eval sets: 200 real replies for classification and 50 openers for facts and tone; a prompt change can't ship if they regress.</li>
 </ul>
 
-<h2 id="side">9. Side features</h2>
+<h2 id="questions">11. Questions you haven't asked yet (with a recommendation)</h2>
+<div class="tw"><table>
+<tr><th>Question</th><th>Recommendation</th></tr>
+<tr><td>What does the landing page say?</td><td>closefast.pages.dev still sells the $49 license and the "No Calls, No Pay" guarantee, both gone in the new model. Rewrite it around free forever plus the wallet before launch.</td></tr>
+<tr><td>What happens to Milan's self-install package (closefast.zip)?</td><td>Freeze it. Hosted V1 replaces it; keep it only as an enterprise or self-host option later.</td></tr>
+<tr><td>How big is the launch pool, and its budget?</td><td>About 30 pre-warmed inboxes (750 cold emails a day, about $230 a month); add inboxes when daily sends pass 70% of capacity.</td></tr>
+<tr><td>Wallet top-up amounts?</td><td>$10, $25, $50, $100, plus auto top-up. The first top-up is the real conversion moment, so keep $10.</td></tr>
+<tr><td>How fast do replies go out?</td><td>Autopilot replies wait a random 5 to 30 minutes in working hours, so they read human.</td></tr>
+<tr><td>How do we measure the funnel?</td><td>PostHog events: signup, ICP confirmed, first send, first reply, first lead, first top-up, plus weekly retention. Same PostHog you already use.</td></tr>
+<tr><td>Who handles support?</td><td>An in-app help agent trained on the docs, with escalation to email.</td></tr>
+<tr><td>How do we test without emailing real prospects?</td><td>A dry-run mode that sends only to our own seed inboxes (the WS dryrun worker already does this), plus the canary tenant.</td></tr>
+<tr><td>Name and app domain?</td><td>Keep Closefast; the app needs its own domain (for example app.closefast.ai), separate from the sending pool.</td></tr>
+<tr><td>Launch: open or invite-only?</td><td>Invite-only for the first 100 signups, then open.</td></tr>
+</table></div>
+
+<h2 id="side">12. Side features</h2>
 <div class="grid">
 <div class="card"><h3>V1 (cheap, retention)</h3><ul>
 <li>Weekly "your buyers this week" digest</li>
@@ -315,10 +350,10 @@ Admin console (Pages + Cloudflare Access); invariants cron; alerts to email and 
 </ul></div>
 </div>
 
-<h2 id="order">10. Build order</h2>
+<h2 id="order">13. Build order</h2>
 <ol>
-<li><b>Foundations:</b> entity and accounts decision, tenant scoping, auth, admin console skeleton, invariants framework, port the reply-poll fix.</li>
-<li><b>Pool sending:</b> InboxKit test, pool manager, per-inbox Durable Object, push reply ingestion, footer and unsubscribe, health and pauses, global suppression. Start warming inboxes here.</li>
+<li><b>Foundations:</b> new <code>closefast-cloud</code> repo and Cloudflare resources, tenant scoping, auth, admin console skeleton, invariants framework, port the reply-poll fix.</li>
+<li><b>Pool sending:</b> buy the first pre-warmed inboxes, pool manager, per-inbox Durable Object, push reply ingestion, footer and unsubscribe, health and pauses, global suppression. </li>
 <li><b>Onboarding and sources:</b> website to ICP, B2B or B2C check, source router (database, local, CSV), verification, dedupe, exclusions, country rules.</li>
 <li><b>Writing and replies:</b> model router, facts list, expanded gates, reply outcomes, approval queue, goals and booking.</li>
 <li><b>Free plan and wallet:</b> allowances, trust ramp, Stripe wallet, metering ledger, refunds, abuse controls.</li>
@@ -327,13 +362,11 @@ Admin console (Pages + Cloudflare Access); invariants cron; alerts to email and 
 </ol>
 <p>Then the ads.brevo.com and Brevo ecommerce pilots run as tenants on V1.</p>
 
-<h2 id="decisions">11. Decisions for Farooq</h2>
+<h2 id="decisions">14. Decisions for Farooq</h2>
 <ol>
-<li>Operating entity and separate accounts (blocker 1).</li>
+<li>Separate V1 instance in a new repo <code>closefast-cloud</code> (recommended), leaving the Brevo and WS instances as they are?</li>
 <li>Tenancy: shared D1 with tenant scoping for V1 (recommended), or per-tenant databases from day one?</li>
-<li>V1 target countries: start with the short list above?</li>
-<li>Autopilot default for info requests: approval (recommended) or auto-send?</li>
-<li>Name for the neutral pool domains.</li>
+<li>Launch pool: about 30 pre-warmed InboxKit inboxes (about $230 a month)?</li>
 <li>LinkedIn sending stays out of V1 (recommended)?</li>
 </ol>
 </main>
