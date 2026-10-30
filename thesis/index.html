@@ -39,18 +39,18 @@ nav.toc a:hover{color:var(--acc);border-color:var(--acc)}
 </head>
 <body>
 <main>
-<span class="tag warn">THESIS v0.3 FOR REVIEW</span><span class="tag">31 Oct 2026</span><span class="tag acc">Closefast</span>
+<span class="tag warn">THESIS v0.4 FOR REVIEW</span><span class="tag">31 Oct 2026</span><span class="tag acc">Closefast</span>
 <h1>Free agent, paid fuel</h1>
-<p class="sub">How a hosted Closefast makes money when anyone can vibe-code an outreach agent. v0.3 applies Farooq's review: free sends from our own warm inboxes, free never expires (a starter boost plus an always-free monthly allowance), free signals track competitors and keywords, no pay per meeting, and costs measured per outcome.</p>
+<p class="sub">How a hosted Closefast makes money when anyone can vibe-code an outreach agent. v0.3 applies Farooq's review: free sends from our own warm inboxes, free never expires (a starter boost plus an always-free monthly allowance), free signals track competitors and keywords, no pay per meeting, and costs measured per outcome. v0.4 adds one vocabulary (prospect, lead, goal), campaign goals beyond meetings, and LinkedIn signals as an opt-in source for businesses whose buyers are on LinkedIn.</p>
 
 <nav class="toc">
-<a href="#thesis">Thesis</a><a href="#evidence">Evidence</a><a href="#free">Free plan</a><a href="#outcomes">Cost per outcome</a><a href="#sending">Sending</a><a href="#thirdparty">Third-party calls</a><a href="#paid">Paid</a><a href="#signals">Signals</a><a href="#model">Model</a><a href="#economics">Economics</a><a href="#build">Build</a><a href="#risks">Risks</a><a href="#decisions">Decisions</a>
+<a href="#thesis">Thesis</a><a href="#evidence">Evidence</a><a href="#vocab">Vocabulary</a><a href="#goals">Goals</a><a href="#free">Free plan</a><a href="#outcomes">Cost per outcome</a><a href="#sending">Sending</a><a href="#thirdparty">Third-party calls</a><a href="#paid">Paid</a><a href="#signals">Signals</a><a href="#model">Model</a><a href="#economics">Economics</a><a href="#build">Build</a><a href="#risks">Risks</a><a href="#decisions">Decisions</a>
 </nav>
 
 <h2 id="thesis">0. The thesis</h2>
-<div class="call">The agent loop (research, write, send, follow up, handle replies, book) is commodity code, so charging seats for it is SaaS 1.0. We host it and give it away <b>forever</b>, Semrush-style: always something free, always limited. Free sends from <b>our own warm inboxes</b>, so there's nothing to connect, no risk to the user's domain, and the first replies arrive within days. We <b>charge for the fuel</b>: more sending, sending from their own brand, more leads, more signals and better writing. One prepaid wallet, priced per use, no seats, no outcome guarantees.</div>
+<div class="call">The agent loop (research, write, send, follow up, handle replies, book) is commodity code, so charging seats for it is SaaS 1.0. We host it and give it away <b>forever</b>, Semrush-style: always something free, always limited. Free sends from <b>our own warm inboxes</b>, so there's nothing to connect, no risk to the user's domain, and the first replies arrive within days. We <b>charge for the fuel</b>: more sending, sending from their own brand, more found prospects, more signals and better writing. One prepaid wallet, priced per use, no seats, no outcome guarantees.</div>
 <p>Two layers of free do two jobs. The <b>starter boost</b> (once, at signup) gets a new user to real replies fast. The <b>always-free allowance</b> (every month, no expiry) keeps them coming back weekly and keeps them in our database, at under $2 a month even when maxed out.</p>
-<p>Hosting everything means we own the relationship: every signup, their ideal customer, usage and results live with us. Users who keep hitting the caps are qualified upgrade leads we can see, and Closefast itself can run our outreach to them.</p>
+<p>Hosting everything means we own the relationship: every signup, their ideal customer, usage and results live with us. Users who keep hitting the caps are upgrade candidates we can see, and Closefast itself can run our outreach to them.</p>
 
 <h2 id="evidence">1. What the market is telling us</h2>
 <div class="grid">
@@ -77,39 +77,68 @@ nav.toc a:hover{color:var(--acc);border-color:var(--acc)}
 </ul></div>
 </div>
 
-<h2 id="free">2. The free plan: never expires</h2>
+<h2 id="vocab">2. Vocabulary: prospect, lead, goal</h2>
+<p>The market uses "lead" for three different things: any uploaded contact (Instantly, Smartlead, lemlist), someone who engaged with a post (Jungler), or someone who showed interest (HubSpot). We pick one meaning and keep it everywhere: <b>a lead is earned by a reply</b>. Everyone before that is a prospect.</p>
+<div class="tw"><table>
+<tr><th>Stage</th><th>Our definition</th><th>What others call it</th></tr>
+<tr><td><b>Prospect</b></td><td>A person who fits your ideal customer and can be reached. Every prospect has a <b>source</b>: Database (company and people data), Local (maps and directories), Your list (CSV or CRM), or Signal.</td><td>Lead (Instantly, Smartlead, lemlist, Artisan); contact (Apollo, Reply.io); prospect (Valley, 11x)</td></tr>
+<tr><td><b>Signal</b></td><td>The event that gives a prospect a reason to reach out now: engaged with a competitor's post, posted about your keyword, changed job, company hiring or funded. A signal is the event, not the person; the person is a <b>signal prospect</b>.</td><td>Same word at 11x and Valley; Jungler calls the people "leads" or "engagers"</td></tr>
+<tr><td><b>Contacted</b></td><td>First email delivered.</td><td>Approaching (Apollo), Sent (lemlist)</td></tr>
+<tr><td><b>Replied</b></td><td>Any human reply. Auto-replies, out-of-office and bounces don't count.</td><td>Replied (Apollo, lemlist)</td></tr>
+<tr><td><b>Lead</b> (status: Interested)</td><td>A reply that moves the deal forward: asks for details, pricing or a call, or points to the right person. Tagged as meeting request, info request or referral. Not interested, not now, wrong person and unsubscribes are tracked but aren't leads.</td><td>Interested (Instantly, Smartlead, Apollo, lemlist, Artisan, Reply.io); interested reply (Valley); hot lead (Explee, 11x); opportunity (Instantly)</td></tr>
+<tr><td><b>Goal reached</b></td><td>The campaign's own objective happened (section 3). Meeting booked is the default.</td><td>Meeting booked (everyone); Won / Closed-won (Instantly, Reply.io)</td></tr>
+<tr><td><b>Won</b> (optional)</td><td>A deal closed, from a CRM sync or marked by the user.</td><td>Won (Instantly), Customer (HubSpot)</td></tr>
+</table></div>
+<ul>
+<li><b>Headline number:</b> leads (Interested). It's fully inside our system, it comes days after sending (not weeks), and it compares directly with Explee's "hot lead" and Valley's "interested replies". Cost per lead means cost per Interested reply.</li>
+<li><b>No "warm" or "hot" in the product.</b> Signal tools call engagers "warm" before any reply, 11x calls a yes "hot". In marketing copy, "warm lead" can mean a lead as defined above.</li>
+<li>Pricing follows the same words: we charge for <b>prospects found</b> (data we pay for), never "per lead", so a bad week never looks like a billing error.</li>
+</ul>
+
+<h2 id="goals">3. Campaign goals and what we can track</h2>
+<p>Each campaign picks one goal when it's created. The goal sets the email's call to action and what counts as "goal reached". We only claim what we can see.</p>
+<div class="tw"><table>
+<tr><th>Goal</th><th>Example</th><th>How we track it</th><th>Confidence</th></tr>
+<tr><td><b>Start a conversation</b></td><td>Partnerships, recruiting, PR</td><td>The lead (Interested reply) is the goal</td><td>Tracked</td></tr>
+<tr><td><b>Book a meeting</b> (default)</td><td>Demo, intro call</td><td>Our booking link, or their connected Google or Outlook calendar; otherwise the user marks it</td><td>Tracked when connected</td></tr>
+<tr><td><b>Visit a page or sign up</b></td><td>Landing page, free trial, lead form</td><td>Tracked links (clicks, with UTM tags for their analytics); signups only via a webhook, Zapier or CRM sync</td><td>Clicks tracked; conversions when connected</td></tr>
+<tr><td><b>Custom</b></td><td>Order, quote request</td><td>The user marks it in the inbox, or a webhook</td><td>Reported</td></tr>
+</table></div>
+<p>The dashboard shows "tracked" next to numbers we saw and "reported" next to numbers the user marked. A small conversion snippet for landing pages would be a differentiator later (no outbound tool we found has one), but it isn't needed for launch.</p>
+
+<h2 id="free">4. The free plan: never expires</h2>
 <div class="grid">
 <div class="card"><h3>Starter boost (once, first 14 days)</h3><ul>
-<li>Paste your website: the agent works out your buyers and <b>finds 100 of them</b> (company, decision maker, verified email).</li>
+<li>Paste your website: the agent works out your buyers and <b>finds 100 prospects</b> (company, decision maker, verified email) from whichever sources fit your business.</li>
 <li><b>Up to 300 emails</b> from our warm inboxes (about 75 prospects with follow-ups), 25 a day.</li>
-<li><b>1 signal</b> backfilled over the last 30 days: people engaging with a competitor's posts or posts on a keyword.</li>
+<li>If your buyers are on LinkedIn, an <b>opt-in signal</b> backfilled over the last 30 days: people engaging with a competitor's posts or posts on a keyword. Its matches count toward the 100.</li>
 <li>Replies handled, booking link sent, every thread in one inbox.</li>
 <li><b>Our cost when fully used: about $4.50, once.</b></li>
 </ul></div>
 <div class="card"><h3>Always free (every month, forever)</h3><ul>
-<li><b>50 found leads</b> a month.</li>
+<li><b>50 found prospects</b> a month, from any source that fits.</li>
 <li><b>5 emails a day</b> from our warm inboxes (about 110 a month, about 28 prospects).</li>
-<li><b>1 signal</b>, refreshed weekly, up to <b>50 matched people</b> a month, sent as a weekly "your buyers this week" digest.</li>
+<li>The opt-in signal keeps running weekly; its matches come out of the 50 and arrive as a weekly "your buyers this week" digest.</li>
 <li>Unlimited reply handling on their threads.</li>
 <li><b>Our cost when maxed out: about $1.85 a month.</b></li>
 </ul></div>
 </div>
-<p><b>Why these caps:</b> leads are cheap (about $0.008 each), so free gets plenty. Sending is the real cost (about $0.01 an email from our pool, about 4 emails per prospect), so that's what we cap. The weekly signal digest is the cheapest way to give a reason to come back every week.</p>
+<p><b>Why these caps:</b> found prospects are cheap (about $0.008 each from data, about the same from a signal), so free gets plenty. Sending is the real cost (about $0.01 an email from our pool, about 4 emails per prospect), so that's what we cap. The weekly signal digest is the cheapest way to give a reason to come back every week.</p>
 
-<h2 id="outcomes">3. Cost per free outcome</h2>
-<p>Reply rate from our own pilot (4% of prospects reply); warm leads and meetings use Explee's published ratio until we have our own.</p>
+<h2 id="outcomes">5. Cost per free outcome</h2>
+<p>Reply rate from our own pilot (4% of prospects reply); leads and meetings use Explee's published ratio (its "warm leads") until we have our own.</p>
 <div class="tw"><table>
 <tr><th>Outcome we deliver free</th><th>Starter boost (maxed)</th><th>Always free, per month (maxed)</th><th>Our cost per outcome</th></tr>
-<tr><td>Leads found and verified</td><td>100</td><td>50</td><td>About $0.008 each</td></tr>
-<tr><td>Prospects fully worked (lead, research, 4 emails, replies)</td><td>About 75</td><td>About 28</td><td>About $0.05 each</td></tr>
+<tr><td>Prospects found and verified</td><td>100</td><td>50</td><td>About $0.008 each</td></tr>
+<tr><td>Prospects fully worked (found, researched, 4 emails, replies handled)</td><td>About 75</td><td>About 28</td><td>About $0.05 each</td></tr>
 <tr><td>Replies</td><td>About 3</td><td>About 1</td><td>About $1.50 to $1.70 each</td></tr>
-<tr><td>Warm leads</td><td>About 1 to 2</td><td>About 0.3 to 0.9</td><td>About $2 to $6 each</td></tr>
-<tr><td>Meetings</td><td>About 0.4</td><td>About 0.15</td><td>About $11 to $13 each</td></tr>
+<tr><td>Leads (Interested replies)</td><td>About 1 to 2</td><td>About 0.3 to 0.9</td><td>About $2 to $6 each</td></tr>
+<tr><td>Goal reached, if the goal is a meeting</td><td>About 0.4</td><td>About 0.15</td><td>About $11 to $13 each</td></tr>
 <tr><td><b>Total cost to us</b></td><td><b>About $4.50 once</b></td><td><b>About $1.85 a month</b></td><td>Year 1 for a user who maxes everything: about $25</td></tr>
 </table></div>
 <p><b>Per 1,000 signups</b>, assuming 40% use the full starter boost and 15% stay active at about 60% of the always-free caps: about $1,800 once, then about $170 a month. That's under $2 per signup, against Explee's $30 trial credit.</p>
 
-<h2 id="sending">4. Sending: our pool for free, their brand for paid</h2>
+<h2 id="sending">6. Sending: our pool for free, their brand for paid</h2>
 <div class="grid">
 <div class="card"><h3>Free: our warm inbox pool</h3><ul>
 <li>Neutral domains we own, Google inboxes through InboxKit, warmed once and kept warm.</li>
@@ -132,58 +161,58 @@ nav.toc a:hover{color:var(--acc);border-color:var(--acc)}
 </table></div>
 <div class="call warn"><b>Watch-outs.</b> With a shared pool we are the sending platform, so free sends must pass content gates, go only to verified business emails (keeps bounces under 2%), and the first 10 need the user's approval. Cheap Google inboxes seem to ride regional reseller pricing, so a Google policy change could suspend a batch: spread the pool across two vendors. Confirm which login fields InboxKit's credentials endpoint returns before building.</div>
 
-<h2 id="thirdparty">5. Third-party calls in free</h2>
+<h2 id="thirdparty">7. Third-party calls in free</h2>
 <p><b>Yes, all the cheap ones, capped.</b> The "it found my buyers" and "these people are looking at my competitor" moments are what a vibe-coded clone can't give, and they cost cents.</p>
 <div class="tw"><table>
 <tr><th>Call</th><th>Our cost</th><th>In free?</th></tr>
-<tr><td>Find companies, decision-maker lookup, verified work email</td><td>About $0.003 to $0.015 per lead</td><td><b>Yes</b>: 100 in the boost, 50 a month after</td></tr>
-<tr><td>1 competitor or keyword signal, weekly, triaged on headline, only matches enriched</td><td>About $0.15 a month</td><td><b>Yes</b>: 50 matched people a month</td></tr>
+<tr><td>Find companies, decision-maker lookup, verified work email</td><td>About $0.003 to $0.015 per prospect</td><td><b>Yes</b>: 100 in the boost, 50 a month after</td></tr>
+<tr><td>1 competitor or keyword signal, weekly, triaged on headline, only matches enriched</td><td>About $0.15 a month</td><td><b>Yes, opt-in</b>, only offered when buyers are on LinkedIn; matches count toward free prospects</td></tr>
 <tr><td>Warm pool inboxes</td><td>About $0.01 an email</td><td><b>Yes</b>: 300 in the boost, 5 a day after</td></tr>
 <tr><td>More signals, daily refresh, creator discovery</td><td>Grows with how busy the pages are</td><td>No, paid</td></tr>
 <tr><td>Branded domains and inboxes</td><td>$3 to $9 per inbox a month</td><td>No, paid</td></tr>
 <tr><td>Deep research and premium model writing</td><td>About $0.07+ per prospect</td><td>No, paid</td></tr>
 </table></div>
 
-<h2 id="paid">6. Paid: one wallet, per use</h2>
+<h2 id="paid">8. Paid: one wallet, per use</h2>
 <div class="tw"><table>
 <tr><th>What</th><th>Price (proposal)</th><th>Our cost</th></tr>
 <tr><td>Prospects worked (AI research, sequence, reply handling), past the free allowance</td><td>$0.03 per prospect</td><td>About $0.003</td></tr>
-<tr><td>Leads we find (verified, enriched)</td><td>$0.08 per lead</td><td>About $0.003 to $0.015</td></tr>
-<tr><td>Extra signals, daily refresh, more matches (billed only for ICP matches)</td><td>$0.15 per matched person</td><td>About $0.005 to $0.01</td></tr>
+<tr><td>Prospects we find from data (verified, enriched)</td><td>$0.08 per prospect</td><td>About $0.003 to $0.015</td></tr>
+<tr><td>Signal prospects: more signals, daily refresh (billed only for people who match)</td><td>$0.15 per signal prospect</td><td>About $0.005 to $0.01</td></tr>
 <tr><td>Send as your own brand: branded domains and inboxes, one click</td><td>$5 per inbox a month (warmed during setup), $10 pre-warmed; domains $15 a year</td><td>About $3 ($6 to $9 pre-warmed); domain about $10 a year</td></tr>
 <tr><td>More sending from our pool (no brand setup)</td><td>$0.015 per email</td><td>About $0.01</td></tr>
 <tr><td>Premium writing: a top model plus deep research</td><td>$0.10 per prospect</td><td>About $0.07 to $0.09</td></tr>
 <tr><td>Done for you: a human runs strategy, lists, copy review, deliverability</td><td>From $750 a month</td><td>Our time</td></tr>
 <tr><td>Enterprise: SSO, DPA, security review, dedicated sending</td><td>Annual contract</td><td>Support</td></tr>
 </table></div>
-<p><b>No pay per meeting.</b> We can't guarantee meetings and they lag weeks behind the work. Instead we stand behind what we control: <b>any found email that bounces is refunded to the wallet</b>, and the dashboard leads with leading numbers (leads found, emails delivered, replies). Optional auto top-up ("add $50 when the balance drops under $10") gives predictable monthly revenue without a seat plan.</p>
+<p><b>No pay per meeting.</b> We can't guarantee meetings and they lag weeks behind the work. Instead we stand behind what we control: <b>any found email that bounces is refunded to the wallet</b>, and the dashboard leads with early numbers: prospects found, emails delivered, replies, leads. Optional auto top-up ("add $50 when the balance drops under $10") gives predictable monthly revenue without a seat plan.</p>
 
-<h2 id="signals">7. Signals (the Jungler module)</h2>
+<h2 id="signals">9. Signals (the Jungler module): a source, not a plan</h2>
 <ul>
-<li><b>What it is:</b> people engaging with competitors', industry leaders' and creators' posts, plus authors of posts on your keywords ("Klaviyo alternative"). The user's own page is just one option.</li>
-<li><b>Free:</b> 1 signal of any kind, refreshed weekly, 50 matched people a month, as a weekly digest. We keep the cost at about $0.15 a month by checking only recent posts, triaging every person on their headline with a cheap model, and enriching only the matches.</li>
-<li><b>Paid:</b> more signals, daily refresh, more matches, creator discovery.</li>
-<li><b>Why ours wins:</b> Jungler stops at a list for $99 a month and up. Ours goes signal to reply, and bills only for people who match.</li>
+<li><b>Only where buyers are on LinkedIn.</b> Signals fit B2B: SaaS, agencies, B2B services, recruiting. A real estate agent's buyers or a dentist's patients aren't engaging with competitor posts on LinkedIn; their sources are local directories and maps, property or public data, and their own lists. The agent reads the website at signup, works out who the buyers are, and only offers signals when they fit. This is the Source Plan idea Closefast already uses.</li>
+<li><b>Opt-in, never automatic.</b> If they fit, onboarding shows one card: "Your buyers are active on LinkedIn. Watch who engages with a competitor's posts?" The user picks 1 competitor page or keyword. Free matches come out of the same prospect allowance, so nobody pays for a source they don't use.</li>
+<li><b>Paid: metered from the wallet</b>, $0.15 per signal prospect (people who match only), with more signals and daily refresh. Not a separate plan: Valley bundles signals into a $199+ seat and Jungler sells them at $99+ a month, while ours costs nothing until it finds a match. A monthly "signals pack" can come later if customers want a fixed bill.</li>
+<li><b>Copy rule:</b> a signal is a reason to write, never the subject. Never say "I saw you liked a post" and never name the competitor.</li>
 </ul>
 
-<h2 id="model">8. Model choice</h2>
+<h2 id="model">10. Model choice</h2>
 <p>GPT-6 Luna and Claude Haiku 5.5 cost the same on OpenRouter: $0.10 per million input tokens and $0.50 per million output, and half that in batch mode. So the pick comes down to quality: run both on a reply-rate eval and keep the winner, with OpenRouter making a swap a config change. The real saving is <b>batching</b> research and draft writing (they're not urgent), which halves those calls. With that, a fully worked prospect costs about $0.003 in LLM.</p>
 
-<h2 id="economics">9. Economics</h2>
+<h2 id="economics">11. Economics</h2>
 <div class="grid">
 <div class="card"><h3>Free</h3><ul>
 <li>About $4.50 once per fully used boost, then at most $1.85 a month.</li>
 <li>Per 1,000 signups: about $1,800 once plus about $170 a month.</li>
 <li>If 3% of signups pay $75 a month, that's about $1,700 a month of gross profit (75% margin): it repays the boosts in about a month and the always-free cost 10 times over.</li>
 </ul></div>
-<div class="card"><h3>Paid: 500 prospects a month (2,000 emails), our leads, 4 branded inboxes on 2 domains</h3><ul>
-<li><b>They pay:</b> prospects $15 + leads $40 + inboxes $20 + domains $2.50 = <b>$77.50 a month</b>. Explee for the same 2,000 emails: $70 to $80, from Explee's domains.</li>
+<div class="card"><h3>Paid: 500 prospects a month (2,000 emails), all found by us, 4 branded inboxes on 2 domains</h3><ul>
+<li><b>They pay:</b> prospects worked $15 + prospects found $40 + inboxes $20 + domains $2.50 = <b>$77.50 a month</b>. Explee for the same 2,000 emails: $70 to $80, from Explee's domains.</li>
 <li><b>We spend:</b> about $19.70. <b>Gross margin about 75%.</b></li>
 <li>Add 200 signal matches: +$30 for about $2 of data.</li>
 </ul></div>
 </div>
 
-<h2 id="build">10. What hosting adds to the build</h2>
+<h2 id="build">12. What hosting adds to the build</h2>
 <ul>
 <li><b>Multi-tenant:</b> signup, login, workspaces, per-tenant allowances and a usage ledger.</li>
 <li><b>Warm pool manager:</b> buys and warms pool inboxes ahead of demand, pins users to inboxes, tracks bounces and complaints per user, retires burned inboxes.</li>
@@ -193,7 +222,7 @@ nav.toc a:hover{color:var(--acc);border-color:var(--acc)}
 <li><b>Abuse controls:</b> work-email signup, one free account per company domain, first 10 emails approved, daily caps, content gates, auto-pause on bounces or complaints.</li>
 </ul>
 
-<h2 id="risks">11. Risks</h2>
+<h2 id="risks">13. Risks</h2>
 <div class="tw"><table>
 <tr><th>Risk</th><th>Answer</th></tr>
 <tr><td>A spammer on free burns our pool.</td><td>Users pinned to their own inboxes, verified emails only, content gates, approval of first sends, auto-pause, one account per domain.</td></tr>
@@ -204,11 +233,13 @@ nav.toc a:hover{color:var(--acc);border-color:var(--acc)}
 </table></div>
 <p><b>Test:</b> open free to the first 100 signups and measure time to first reply, share that top up the wallet, revenue per paying user, free cost per signup, and our real reply and meeting ratios to replace Explee's.</p>
 
-<h2 id="decisions">12. Decisions for Farooq</h2>
+<h2 id="decisions">14. Decisions for Farooq</h2>
 <ol>
-<li>Starter boost (100 leads, 300 emails, 1 signal) and always-free (50 leads, 5 emails a day, 1 weekly signal): right size?</li>
+<li>Starter boost (100 prospects, 300 emails, opt-in signal) and always-free (50 prospects, 5 emails a day, weekly signal if opted in): right size?</li>
 <li>Card at signup (like Explee) or not? Recommendation: no card; work email plus one account per domain.</li>
 <li>Pool domains: neutral brand of ours, or Closefast-branded?</li>
+<li>Vocabulary: lead means an Interested reply, everyone before that is a prospect. Agree?</li>
+<li>Signals: opt-in source metered from the wallet (recommended), or a separate add-on plan?</li>
 <li>Model: run the Luna vs Haiku eval now, or ship on Luna (already wired in your engines) and test later?</li>
 </ol>
 
@@ -216,7 +247,8 @@ nav.toc a:hover{color:var(--acc);border-color:var(--acc)}
 <ul>
 <li><a href="https://www.youtube.com/watch?v=AqqjH_uv-_w">Greg Isenberg, "SaaS is dead?" (29 Oct 2026)</a></li>
 <li><a href="https://explee.com/">Explee</a>, <a href="https://explee.com/pricing">pricing</a>, <a href="https://www.salesforge.ai/blog/explee-review">Salesforge's Explee review</a> (a competitor, treat with care)</li>
-<li><a href="https://jungler.ai/pricing">Jungler pricing</a>, <a href="https://docs.jungler.ai/">docs</a></li>
+<li><a href="https://jungler.ai/pricing">Jungler pricing</a>, <a href="https://docs.jungler.ai/">docs</a>; <a href="https://joinvalley.co/">Valley</a>, <a href="https://joinvalley.co/pricing">pricing</a>, <a href="https://joinvalley.co/signals/competitor-post-engagers">competitor post engagers</a></li>
+<li>Lead and outcome terms: <a href="https://help.instantly.ai/en/articles/9160456-opportunities-feature">Instantly</a>, <a href="https://helpcenter.smartlead.ai/en/articles/51-lead-categories">Smartlead</a>, <a href="https://help.lemlist.com/en/articles/8000399-understand-lead-statuses">lemlist</a>, <a href="https://support.artisan.co/configure-campaign-settings">Artisan</a>, <a href="https://docs.11x.ai/glossary">11x</a>, <a href="https://how.reply.io/reference/statuses">Reply.io</a>, <a href="https://knowledge.hubspot.com/records/use-lifecycle-stages">HubSpot lifecycle stages</a></li>
 <li>Model prices: <a href="https://openrouter.ai/api/v1/models">OpenRouter models API</a>, 31 Oct 2026 (GPT-6 Luna and Claude Haiku 5.5 both $0.10 / $0.50 per million tokens, batch half)</li>
 <li>Data prices: treg catalog, measured 31 Oct 2026 (Fetchin, BlitzAPI, TikHub, AnyAPI)</li>
 <li>Inboxes: <a href="https://www.inboxkit.com/pricing">InboxKit pricing</a>, <a href="https://docs.inboxkit.com/llms.txt">InboxKit API</a>, <a href="https://help.instantly.ai/en/articles/10273259-instantly-plans-overview">Instantly plans</a>, <a href="https://developer.instantly.ai/api-reference/dfyemailaccountorder/place-a-dfy-email-account-order">Instantly DFY order API</a>, <a href="https://www.primeforge.ai/pricing">Primeforge</a>, <a href="https://www.mailforge.ai/pricing">Mailforge</a>, <a href="https://maildoso.ai/pricing">Maildoso</a>, <a href="https://developers.cloudflare.com/registrar/registrar-api/">Cloudflare Registrar API</a>, <a href="https://workspace.google.com/terms/use_policy/">Google Workspace acceptable use</a></li>
