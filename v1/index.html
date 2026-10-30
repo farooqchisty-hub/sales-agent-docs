@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Closefast V1 Build Plan</title>
+<style>
+:root{--bg:#0d0f10;--panel:#15181a;--line:#262a2d;--ink:#eceeea;--mute:#9aa19c;--acc:#b6f36b;--warn:#f3c86b;--bad:#f37b6b;--mono:ui-monospace,SFMono-Regular,Menlo,monospace}
+@media (prefers-color-scheme: light){:root:not([data-theme="dark"]){--bg:#f7f7f4;--panel:#fff;--line:#e2e3de;--ink:#15181a;--mute:#5d645f;--acc:#3f7d12;--warn:#9a6a00;--bad:#b23a2a}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 Inter,system-ui,-apple-system,Segoe UI,sans-serif}
+main{max-width:1040px;margin:0 auto;padding:40px 16px 80px}
+h1{font-size:30px;line-height:1.2;margin:0 0 8px}
+h2{font-size:21px;margin:48px 0 12px;padding-top:16px;border-top:1px solid var(--line)}
+h3{font-size:16px;margin:24px 0 8px}
+p,li{color:var(--ink)}
+.sub{color:var(--mute);margin:0 0 24px}
+.tag{display:inline-block;font:12px var(--mono);padding:2px 8px;border:1px solid var(--line);border-radius:99px;color:var(--mute);margin-right:6px}
+.tag.acc{color:var(--acc);border-color:var(--acc)}
+.tag.warn{color:var(--warn);border-color:var(--warn)}
+.tag.bad{color:var(--bad);border-color:var(--bad)}
+.grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px}
+.card h3{margin-top:0}
+.card ul{margin:0;padding-left:18px}
+table{width:100%;border-collapse:collapse;margin:8px 0 16px;font-size:14px}
+th,td{text-align:left;vertical-align:top;padding:8px 10px;border-bottom:1px solid var(--line)}
+th{color:var(--mute);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.04em}
+.tw{overflow-x:auto}
+code,.mono{font-family:var(--mono);font-size:13px}
+.call{border-left:3px solid var(--acc);background:var(--panel);padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0}
+.call.warn{border-color:var(--warn)}
+.wf{background:var(--panel);border:1px dashed var(--line);border-radius:10px;padding:14px;font:13px/1.5 var(--mono);color:var(--mute);white-space:pre;overflow-x:auto}
+nav.toc{display:flex;flex-wrap:wrap;gap:6px;margin:16px 0 8px}
+nav.toc a{font:12px var(--mono);color:var(--mute);text-decoration:none;border:1px solid var(--line);padding:3px 9px;border-radius:99px}
+nav.toc a:hover{color:var(--acc);border-color:var(--acc)}
+</style>
+</head>
+<body>
+<main>
+<span class="tag acc">BUILD PLAN v1</span><span class="tag">31 Oct 2026</span><span class="tag acc">Closefast</span><span class="tag warn">FOR REVIEW</span>
+<h1>Closefast V1: scenarios, rules, guardrails, infra, blockers</h1>
+<p class="sub">Everything to settle before building the hosted, multi-tenant Closefast described in the <a href="../thesis/">business thesis v0.4</a>. Pilots (ads.brevo.com, Brevo ecommerce) come after V1 and run as ordinary tenants.</p>
+
+<nav class="toc">
+<a href="#blockers">Blockers</a><a href="#scope">V1 scope</a><a href="#reuse">Reuse vs build</a><a href="#fixfirst">Fix first</a><a href="#scenarios">Scenarios</a><a href="#rules">Default rules</a><a href="#replies">Replies</a><a href="#infra">Infra</a><a href="#invariants">Invariants</a><a href="#side">Side features</a><a href="#order">Build order</a><a href="#decisions">Decisions</a>
+</nav>
+
+<h2 id="blockers">0. Blockers, ranked</h2>
+<div class="tw"><table>
+<tr><th>#</th><th>Blocker</th><th>Why it blocks</th><th>Way through</th></tr>
+<tr><td>1</td><td><b>Entity and accounts</b></td><td>Closefast runs today on the Cloudflare account "Sheik.farooq@pushowl.com's Account" and the pushowl treg team. A SaaS that takes money needs its own legal entity, Cloudflare, Stripe, treg or provider accounts, GitHub org and domains, and a clear contract for the Brevo pilot (who owns the code, data and customers).</td><td>Decide the operating entity; open separate accounts; keep the Brevo pilot on the current setup until then.</td></tr>
+<tr><td>2</td><td><b>Data licensing</b></td><td>Showing provider data to our customers and keeping a shared person index may breach a provider's terms. LinkedIn-derived data carries legal risk (Proxycurl shut down in 2025 after LinkedIn sued).</td><td>Check each provider's resale and display terms (Fetchin, BlitzAPI, Bright Data, TikHub, AnyAPI) before wiring them in; keep providers swappable; keep an erasure list.</td></tr>
+<tr><td>3</td><td><b>We become the sender</b></td><td>Free sends from our pool, so complaints, blocklists and legal notices land on us.</td><td>Terms of service, acceptable use policy, abuse inbox, country rules, B2C block, content gates, auto-pause (sections 4 and 5). Legal review before launch.</td></tr>
+<tr><td>4</td><td><b>Pool warmup lead time</b></td><td>New inboxes need about 2 weeks or more of warmup before cold sends; the pool must be warm on launch day.</td><td>Order and warm the first pool inboxes early in the build, or buy pre-warmed at roughly double.</td></tr>
+<tr><td>5</td><td><b>InboxKit credentials</b></td><td>Whether its API returns SMTP/IMAP logins or only OAuth decides the whole send and receive path.</td><td>Buy 1 inbox and test send, receive and forwarding before building the pool manager.</td></tr>
+<tr><td>6</td><td><b>Google policy risk</b></td><td>Cheap Google inboxes likely ride regional reseller pricing; a policy change could suspend a batch.</td><td>Two vendors in the pool (InboxKit plus Primeforge or Maildoso), never more than half the pool with one.</td></tr>
+<tr><td>7</td><td><b>Prospect discovery at scale</b></td><td>The pilot's free web search is rate-limited (it failed on 28 Oct).</td><td>Paid search and data providers behind the source router, budgeted per tenant.</td></tr>
+<tr><td>8</td><td>Stripe and tax</td><td>Needs the entity; prepaid credits need tax handling by country.</td><td>Stripe plus Stripe Tax once the entity exists.</td></tr>
+<tr><td>9</td><td>Gmail app verification</td><td>Only for "connect your own Gmail" (paid, later). Not a V1 blocker.</td><td>Start the verification when V1 is stable.</td></tr>
+</table></div>
+
+<h2 id="scope">1. V1 scope</h2>
+<div class="grid">
+<div class="card"><h3>In V1</h3><ul>
+<li>Signup, login, one company per account, free team seats</li>
+<li>Onboarding from a website: ICP, sources, B2B or B2C check</li>
+<li>Campaigns with a goal (conversation, meeting, page visit, custom)</li>
+<li>Prospects from database, local and CSV; exclusion lists</li>
+<li>LinkedIn signals, opt-in (competitor page or keyword)</li>
+<li>Writing with gates, approval queue, autopilot settings</li>
+<li>Sending from our warm pool; reply handling; booking</li>
+<li>Free starter boost and always-free allowance; prepaid wallet</li>
+<li>Dashboard, lead alerts, weekly digest</li>
+<li>Our admin console, kill switches, invariants, cost tracking</li>
+</ul></div>
+<div class="card"><h3>After V1</h3><ul>
+<li>Branded domains and inboxes (paid), connect own Gmail or Outlook</li>
+<li>Tracked links and conversion webhooks</li>
+<li>Slack, CRM sync (HubSpot, Brevo), API and MCP</li>
+<li>Agency mode (client workspaces), white label</li>
+<li>LinkedIn as a sending channel (account-ban risk)</li>
+<li>Done-for-you service, enterprise</li>
+</ul></div>
+</div>
+
+<h2 id="reuse">2. What we reuse and what's new</h2>
+<div class="tw"><table>
+<tr><th>Area</th><th>Reuse from Closefast today</th><th>Change or build</th></tr>
+<tr><td>Tenancy</td><td>Every table already has <code>workspace_id</code></td><td>Replace the hard-coded <code>WS</code> with the signed-in tenant in every query; real user auth instead of the admin password</td></tr>
+<tr><td>Sequencing</td><td>Send windows by contact timezone, duplicate-send guards (3 layers), pause and emergency stop, whole-queue send pass</td><td>Move from one cron loop to queues per stage; per-inbox rate limiting</td></tr>
+<tr><td>Writing</td><td>Brief, opener template, gates: style (110 words), claims, never_topics, no_amounts, salutation, dash stripping</td><td>Facts list per tenant, link and spam checks, language support, signal copy rule, 2 opener variants</td></tr>
+<tr><td>Replies</td><td>Intents: interested, question, not now, wrong person, referral, opt-out, out-of-office, bounce; fixed polite outcomes; owner takeover</td><td>Push ingestion for pool inboxes, cross-tenant opt-outs, hostile and legal categories, "how did you get my email" answer</td></tr>
+<tr><td>Sources</td><td>Source planner, web adapters, site crawl, email patterns, MX checks</td><td>Paid source router, local source, verification waterfall, dedupe and exclusions across sources, signals module</td></tr>
+<tr><td>Mail</td><td>Gmail, Microsoft, SMTP/IMAP and Instantly drivers; MIME</td><td>Pool manager (InboxKit), inbox pinning, health scoring, List-Unsubscribe header</td></tr>
+<tr><td>Billing</td><td>None</td><td>Allowances, wallet ledger, Stripe, metering, refunds</td></tr>
+<tr><td>Ops</td><td>Heartbeats, incidents, events feed, daily digest</td><td>Admin console, invariants sweep, cost per tenant, canary tenant</td></tr>
+</table></div>
+
+<h2 id="fixfirst">3. Fix before building on top</h2>
+<ul>
+<li><b>Reply-poll starvation:</b> the fix (seen set = every stored reply, own copies dropped before the 10-slot cut) exists only on the WS branch as <code>ab4d081</code>. Port it to main. The Brevo instance already shows the pattern (listed 3, stored 0).</li>
+<li><b>Booking detection is link-only</b>; bookings are marked by hand today.</li>
+<li><b>"Ran out of sources"</b> fires for list-only campaigns.</li>
+<li><b>Web search rate limit</b> breaks sourcing (blocker 7).</li>
+<li>Audit the creator engine's 30 silent defects against Closefast: NULL subjects, retry ceilings, a pending cold row silencing an owed reply, threading by a list of kinds, new lanes not inheriting guards, "sent" vs delivered, signature lines read as names.</li>
+</ul>
+
+<h2 id="scenarios">4. Scenarios and edge cases</h2>
+
+<h3>A. Signup and trust</h3>
+<div class="tw"><table>
+<tr><th>Case</th><th>Rule</th></tr>
+<tr><td>Signup with Gmail, Yahoo or a disposable domain</td><td>Blocked; work email only.</td></tr>
+<tr><td>Work email domain differs from the website domain</td><td>Prove ownership: a code sent to an address at the website's domain, or a DNS TXT record. Stops people posing as brands they don't own.</td></tr>
+<tr><td>Second free account on the same company domain</td><td>Joins the existing account as a teammate; no second allowance.</td></tr>
+<tr><td>Prohibited business (gambling, adult, weapons, crypto schemes, drugs, debt collection, lead resale)</td><td>Classifier on the website and brief; blocked at onboarding with a plain reason.</td></tr>
+<tr><td>Bot signups</td><td>Cloudflare Turnstile on signup; rate limit per IP.</td></tr>
+<tr><td>Brand-new account</td><td>Trust ramp: first 10 emails need approval, 10 sends on day one, full free cap after the first clean week.</td></tr>
+</table></div>
+
+<h3>B. Onboarding from a website</h3>
+<div class="tw"><table>
+<tr><th>Case</th><th>Rule</th></tr>
+<tr><td>Site down, JavaScript-only or parked</td><td>Fall back to 3 questions: what you sell, who buys it, where.</td></tr>
+<tr><td>Several products or buyer types</td><td>Agent proposes up to 3 ICPs; each campaign picks one.</td></tr>
+<tr><td>Buyers are consumers (homebuyers, patients, shoppers)</td><td>No cold email to individuals. Offer B2B angles (partners, suppliers, local businesses) or explain why cold email doesn't fit.</td></tr>
+<tr><td>Buyers are on LinkedIn (SaaS, agencies, B2B services)</td><td>Offer the opt-in signal card; otherwise never mention signals.</td></tr>
+<tr><td>Local business buyers (restaurants, clinics, shops)</td><td>Local source (maps, directories); role inboxes allowed.</td></tr>
+<tr><td>Non-English site or market</td><td>Write in the prospect's language from a supported list; otherwise ask.</td></tr>
+<tr><td>Agency selling for clients</td><td>V1: one company per account. Agency mode later.</td></tr>
+</table></div>
+
+<h3>C. Campaign setup</h3>
+<div class="tw"><table>
+<tr><th>Case</th><th>Rule</th></tr>
+<tr><td>Sender identity</td><td>Real name, title, company and postal address required before anything sends (footer). No address, no send.</td></tr>
+<tr><td>Booking link dead or not a known booking tool</td><td>Validate on save; warn; block a meeting goal without a working link.</td></tr>
+<tr><td>Page goal URL</td><td>Must load and sit on the business's own domain (no redirects to third-party sites, which also stops phishing).</td></tr>
+<tr><td>Facts the agent may claim</td><td>A facts list built from the website and confirmed by the user; anything else (numbers, client names, results) is blocked by the claims gate.</td></tr>
+<tr><td>User never approves the first 10</td><td>Nothing sends; nudges at 24 and 72 hours.</td></tr>
+</table></div>
+
+<h3>D. Prospects and sources</h3>
+<div class="tw"><table>
+<tr><th>Case</th><th>Rule</th></tr>
+<tr><td>Same person from two sources or campaigns</td><td>Dedupe on email, LinkedIn URL, then name plus company; merge the reasons.</td></tr>
+<tr><td>Existing customers, partners, competitors, own staff</td><td>Exclusion lists (CSV, domains, later CRM). Checked at queue time and again at send time.</td></tr>
+<tr><td>Many people at one company</td><td>At most 2 in an active sequence at once; a negative reply or "nobody here" stops the whole company.</td></tr>
+<tr><td>Catch-all or risky email</td><td>Never from the free pool (protects everyone's reputation); allowed with a cap on paid branded inboxes.</td></tr>
+<tr><td>Role inbox (info@, hello@)</td><td>Only when no named person exists, mostly local businesses; lower priority.</td></tr>
+<tr><td>Email older than 90 days</td><td>Re-verify before sending.</td></tr>
+<tr><td>Imported CSV bounces badly</td><td>Verify on import (small charge); pause the list if bounces pass 5%.</td></tr>
+<tr><td><b>Two tenants target the same person</b> from the pool</td><td>One cold sequence per person per 60 days across all pool sends; the second tenant's prospect waits or is skipped.</td></tr>
+<tr><td>Person opted out or complained via any tenant on the pool</td><td>Global pool suppression. "Not interested" stays tenant-only.</td></tr>
+<tr><td>EU or UK sole traders, Canada</td><td>Country rules table (section 5); V1 sends only to the allowed list.</td></tr>
+</table></div>
+
+<h3>E. Signals</h3>
+<div class="tw"><table>
+<tr><th>Case</th><th>Rule</th></tr>
+<tr><td>Competitor page with huge engagement</td><td>Cap per run (latest 5 posts, first 500 engagers each); estimate monthly matches and cost before the user saves it.</td></tr>
+<tr><td>Engagers who aren't buyers</td><td>Headline triage drops the competitor's own staff, the user's staff, job seekers, students, vendors and recruiters.</td></tr>
+<tr><td>Same person on several signals</td><td>One prospect, all reasons kept.</td></tr>
+<tr><td>Already in a sequence or excluded</td><td>Skipped before enrichment (no cost).</td></tr>
+<tr><td>Stale engagement</td><td>Only the last 30 days; first touch no sooner than 24 hours after it.</td></tr>
+<tr><td>Copy</td><td>Never mention the engagement or name the competitor; the signal only picks the angle.</td></tr>
+<tr><td>Provider down or banned</td><td>Fallback provider; the signal pauses with a notice instead of failing silently.</td></tr>
+</table></div>
+
+<h3>F. Writing and content</h3>
+<div class="tw"><table>
+<tr><th>Case</th><th>Rule</th></tr>
+<tr><td>Made-up claims</td><td>Claims gate against the facts list (exists, extend to numbers and client names).</td></tr>
+<tr><td>Wrong company or person name from scraping</td><td>Name and company must match the prospect record; salutation check (exists); a failed research step falls back to a plain, correct opener.</td></tr>
+<tr><td>Deliverability</td><td>Plain text, no images or attachments, no link in the opener by default, at most 1 link later, no URL shorteners, no open-tracking pixels from the pool, spam-word check.</td></tr>
+<tr><td>Threading</td><td>Follow-ups thread on the opener by rule (not a list of kinds); subject never empty.</td></tr>
+<tr><td>Instructions hidden in a scraped page or a reply</td><td>Treated as text, never as instructions; the writer has no tools; gates run after every draft.</td></tr>
+<tr><td>Model refuses or returns empty</td><td>Retry with a ceiling, then the fallback model, then hold for review. Never skip a planned touch silently.</td></tr>
+</table></div>
+
+<h3>G. Sending and the pool</h3>
+<div class="tw"><table>
+<tr><th>Case</th><th>Rule</th></tr>
+<tr><td>Which inbox sends</td><td>Each tenant pinned to 1 or 2 pool inboxes; a prospect's whole thread stays on one inbox.</td></tr>
+<tr><td>Inbox burned mid-thread</td><td>Stops new sends; keeps receiving until its open threads close; then retired.</td></tr>
+<tr><td>Bounce</td><td>Hard bounce suppresses the address and refunds the credit; inbox pauses above 3% over its last 100 sends; tenant pauses above 5%.</td></tr>
+<tr><td>Spam complaint</td><td>Global suppression; tenant review; pause above 0.1% over 1,000 sends.</td></tr>
+<tr><td>Holidays and weekends</td><td>Skipped per the prospect's country.</td></tr>
+<tr><td>Unsubscribe</td><td>Footer line plus a List-Unsubscribe header (mailto and one-click), honoured instantly.</td></tr>
+</table></div>
+
+<h3>H. Goals, booking and tracking</h3>
+<div class="tw"><table>
+<tr><th>Case</th><th>Rule</th></tr>
+<tr><td>Meeting booked outside our link</td><td>"Reported" when the user marks it; "tracked" once a calendar or booking tool is connected.</td></tr>
+<tr><td>Prospect sends their own booking link</td><td>Flag to the user as a lead needing action.</td></tr>
+<tr><td>Page goal clicks</td><td>Tracked links on a separate tracking domain (never a sending domain), with UTM tags.</td></tr>
+</table></div>
+
+<h3>I. Free allowance and wallet</h3>
+<div class="tw"><table>
+<tr><th>Case</th><th>Rule</th></tr>
+<tr><td>Allowance runs out mid-sequence</td><td>A prospect is charged once when started, so its follow-ups always finish; replies are always handled free.</td></tr>
+<tr><td>Wallet empty</td><td>New prospects stop; in-flight sequences and replies continue.</td></tr>
+<tr><td>Spend safety</td><td>Reserve credits before spending, commit after; the balance can never go negative; every usage event is idempotent.</td></tr>
+<tr><td>Price surprise</td><td>Show the expected cost before saving a signal or a campaign.</td></tr>
+<tr><td>Allowance timing</td><td>Resets on the signup anniversary; never rolls over.</td></tr>
+<tr><td>Card testing on top-ups</td><td>Stripe Radar; small first top-up limit.</td></tr>
+</table></div>
+
+<h3>J. Data rights and security</h3>
+<div class="tw"><table>
+<tr><th>Case</th><th>Rule</th></tr>
+<tr><td>A prospect asks to be erased</td><td>Global erasure list: removed from the shared index and every tenant, never re-imported.</td></tr>
+<tr><td>"How did you get my email?"</td><td>Fixed, honest answer (public business information) plus opt-out.</td></tr>
+<tr><td>A query missing its tenant filter</td><td>All SQL through one tenant-scoped helper; a test fails the build on any raw query without <code>workspace_id</code>.</td></tr>
+<tr><td>Stored secrets (booking links, webhooks, inbox logins)</td><td>Encrypted (the MASTER_KEY scheme exists); never shown back in full.</td></tr>
+<tr><td>Inactive tenants</td><td>Prospect data deleted after a set retention period; export on request.</td></tr>
+<tr><td>Staff access</td><td>Admin console behind Cloudflare Access; impersonation logged.</td></tr>
+</table></div>
+
+<h2 id="rules">5. Default rules (proposals to confirm)</h2>
+<div class="tw"><table>
+<tr><th>Rule</th><th>Default</th></tr>
+<tr><td>Cold sends per pool inbox</td><td>25 a day (10 a day in an inbox's first week); 3 inboxes per domain</td></tr>
+<tr><td>Free sends per tenant</td><td>Starter boost 25 a day; always-free 5 a day</td></tr>
+<tr><td>Sequence</td><td>Opener plus 3 follow-ups, 2+ business days apart; win-backs off by default</td></tr>
+<tr><td>Send window</td><td>8 to 11am in the prospect's timezone, Monday to Friday, holidays skipped</td></tr>
+<tr><td>Per company</td><td>Max 2 people in an active sequence</td></tr>
+<tr><td>Cross-tenant (pool)</td><td>1 cold sequence per person per 60 days</td></tr>
+<tr><td>Bounce and complaint pauses</td><td>Inbox at 3%, tenant at 5% bounces; tenant at 0.1% complaints</td></tr>
+<tr><td>Length</td><td>Opener 110 words max, follow-ups 70</td></tr>
+<tr><td>Links</td><td>None in the opener; 1 max after</td></tr>
+<tr><td>Target countries in V1</td><td>A short allowed list (for example US, UK, Ireland, Australia, New Zealand, plus EU companies); Canada (CASL) and consumers out</td></tr>
+<tr><td>Footer</td><td>Sender's company, postal address, one-line opt-out ("Not relevant? Reply 'no' and I won't email again")</td></tr>
+</table></div>
+
+<h2 id="replies">6. Reply handling</h2>
+<div class="tw"><table>
+<tr><th>Reply</th><th>Counts as</th><th>Default action</th></tr>
+<tr><td>Meeting request</td><td>Lead</td><td>Booking link sent automatically; instant alert</td></tr>
+<tr><td>Info or pricing request</td><td>Lead</td><td>Draft for approval (autopilot optional); instant alert</td></tr>
+<tr><td>Referral to a colleague</td><td>Lead</td><td>Thank them; new prospect created with "referred by", needs approval</td></tr>
+<tr><td>Question the brief can't answer</td><td>Replied</td><td>Held for the user</td></tr>
+<tr><td>Not now (with or without a date)</td><td>Replied</td><td>Snooze to the date, or 90 days</td></tr>
+<tr><td>Wrong person</td><td>Replied</td><td>Polite thanks; ask who handles it once</td></tr>
+<tr><td>Not interested</td><td>Replied</td><td>Short thanks; stop; tenant-level suppression</td></tr>
+<tr><td>Unsubscribe or "stop"</td><td>Replied</td><td>Stop instantly; pool-wide suppression; no further reply</td></tr>
+<tr><td>Hostile, spam accusation or legal threat</td><td>Replied</td><td>Stop; global suppression; flag to the tenant and our abuse desk; no reply</td></tr>
+<tr><td>Out of office</td><td>Not counted</td><td>Reschedule after the return date</td></tr>
+<tr><td>Auto-reply or ticket system</td><td>Not counted</td><td>Ignore</td></tr>
+<tr><td>Bounce disguised as a reply</td><td>Bounce</td><td>Suppress; refund</td></tr>
+<tr><td>Reply from a colleague, alias or CC</td><td>Matched by thread headers</td><td>Same thread; a new person needs approval</td></tr>
+<tr><td>Reply weeks after the sequence ended</td><td>As above</td><td>Still handled</td></tr>
+<tr><td>Data access or erasure request</td><td>Replied</td><td>Routed to our privacy desk</td></tr>
+</table></div>
+
+<h2 id="infra">7. Infra</h2>
+<div class="wf">App and dashboard (Pages)  ->  API Worker (auth, tenants, wallet)
+                                      |
+D1: control (tenants, users, wallet ledger, allowances, pool, global suppression, erasure)
+    shared index (companies, people, signal cache)      tenant data (campaigns, prospects, messages; workspace_id)
+
+Cron (every minute) -> enqueue due work per tenant
+Queues: source -> verify/enrich -> draft (batched LLM) -> gate -> send
+Send: Durable Object per inbox (daily budget, thread lock) -> SMTP to pool inboxes (InboxKit, 2 vendors)
+Replies: pool inbox forwarding -> Cloudflare Email Routing -> Email Worker -> classify -> outcome
+         hourly IMAP reconciliation (catches anything forwarding missed)
+Signals: scheduled per signal -> data providers -> headline triage -> enrich matches -> prospects
+Billing: Stripe checkout and webhooks -> append-only ledger
+Tracking: redirect Worker on a tracking domain -> click events; conversion webhook endpoint
+Admin console (Pages + Cloudflare Access); invariants cron; alerts to email and Slack</div>
+<div class="tw"><table>
+<tr><th>Decision</th><th>Recommendation</th><th>Why</th></tr>
+<tr><td>Tenancy</td><td>Shared D1 with <code>workspace_id</code> and one scoped query helper; Durable Objects for per-inbox and per-tenant locks</td><td>The schema is already shaped for it; per-tenant databases can come later if D1 size or throughput limits bite</td></tr>
+<tr><td>Replies</td><td>Push through forwarding to an Email Worker; polling only as reconciliation</td><td>Polling hundreds of inboxes is slow and has already starved twice</td></tr>
+<tr><td>Scheduling</td><td>Queues per stage, retry ceilings, dead-letter queues</td><td>One cron loop over all tenants won't scale and hides failures</td></tr>
+<tr><td>LLM</td><td>OpenRouter: GPT-6 Luna default, Claude Haiku 5.5 fallback, batch for research and drafts</td><td>Same price, two vendors, half cost on batch</td></tr>
+<tr><td>Data</td><td>One source router over treg and direct provider accounts, per-tenant budgets</td><td>Swap providers without code changes</td></tr>
+<tr><td>Environments</td><td>Staging and production Workers; deploys only from CI</td><td>Lessons from two agents editing one engine</td></tr>
+</table></div>
+
+<h2 id="invariants">8. Invariants and monitoring (from 40 paid-for traps)</h2>
+<ul>
+<li>Every stage reports listed, processed and stored; alert when listed stays above zero and stored stays at zero.</li>
+<li>Oldest due item per queue; alert when work waits too long (starvation).</li>
+<li>Every queued command type has a consumer; dead-letter queues are watched.</li>
+<li>"Sent" means delivered by the provider, not handed over.</li>
+<li>One shared guard function for every lane (opt-out, excluded, suppressed, paused), so a new lane can't skip one.</li>
+<li>Each invariant runs on its own, so one broken check can't silence the rest.</li>
+<li>Cost per tenant and per provider per day; alert on spikes.</li>
+<li>A canary tenant sends daily to seed inboxes at Gmail and Outlook to measure inbox placement.</li>
+<li>Eval sets: 200 real replies for classification and 50 openers for facts and tone; a prompt change can't ship if they regress.</li>
+</ul>
+
+<h2 id="side">9. Side features</h2>
+<div class="grid">
+<div class="card"><h3>V1 (cheap, retention)</h3><ul>
+<li>Weekly "your buyers this week" digest</li>
+<li>Instant lead alerts by email</li>
+<li>CSV import and export, exclusion lists</li>
+<li>2 opener variants, winner picked by lead rate</li>
+<li>Referral credits (give $10, get $10)</li>
+<li>Cost estimate before saving anything</li>
+</ul></div>
+<div class="card"><h3>Later</h3><ul>
+<li>Free SEO tools for top of funnel: cold email grader, ICP from URL, email finder lookup</li>
+<li>Slack, HubSpot and Brevo CRM sync</li>
+<li>API and MCP server</li>
+<li>Agency mode, white label</li>
+<li>Landing page conversion snippet</li>
+<li>LinkedIn sending</li>
+</ul></div>
+</div>
+
+<h2 id="order">10. Build order</h2>
+<ol>
+<li><b>Foundations:</b> entity and accounts decision, tenant scoping, auth, admin console skeleton, invariants framework, port the reply-poll fix.</li>
+<li><b>Pool sending:</b> InboxKit test, pool manager, per-inbox Durable Object, push reply ingestion, footer and unsubscribe, health and pauses, global suppression. Start warming inboxes here.</li>
+<li><b>Onboarding and sources:</b> website to ICP, B2B or B2C check, source router (database, local, CSV), verification, dedupe, exclusions, country rules.</li>
+<li><b>Writing and replies:</b> model router, facts list, expanded gates, reply outcomes, approval queue, goals and booking.</li>
+<li><b>Free plan and wallet:</b> allowances, trust ramp, Stripe wallet, metering ledger, refunds, abuse controls.</li>
+<li><b>Signals (opt-in) and digests.</b></li>
+<li><b>Hardening:</b> eval sets, canary tenant, staging soak, legal pages.</li>
+</ol>
+<p>Then the ads.brevo.com and Brevo ecommerce pilots run as tenants on V1.</p>
+
+<h2 id="decisions">11. Decisions for Farooq</h2>
+<ol>
+<li>Operating entity and separate accounts (blocker 1).</li>
+<li>Tenancy: shared D1 with tenant scoping for V1 (recommended), or per-tenant databases from day one?</li>
+<li>V1 target countries: start with the short list above?</li>
+<li>Autopilot default for info requests: approval (recommended) or auto-send?</li>
+<li>Name for the neutral pool domains.</li>
+<li>LinkedIn sending stays out of V1 (recommended)?</li>
+</ol>
+</main>
+</body>
+</html>
