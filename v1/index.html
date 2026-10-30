@@ -39,15 +39,30 @@ nav.toc a:hover{color:var(--acc);border-color:var(--acc)}
 </head>
 <body>
 <main>
-<span class="tag acc">BUILD PLAN v1.1</span><span class="tag">31 Oct 2026</span><span class="tag acc">Closefast</span><span class="tag warn">FOR REVIEW</span>
+<span class="tag acc">BUILD PLAN v1.2</span><span class="tag">31 Oct 2026</span><span class="tag acc">Closefast</span><span class="tag warn">FOR REVIEW</span>
 <h1>Closefast V1: scenarios, rules, guardrails, infra, blockers</h1>
 <p class="sub">Everything to settle before building the hosted, multi-tenant Closefast described in the <a href="../thesis/">business thesis v0.4</a>. Pilots (ads.brevo.com, Brevo ecommerce) come after V1 and run as ordinary tenants. v1.1 applies Farooq's review: accounts, data licensing, legal and Google policy are settled; signup friction removed; pool runs on pre-warmed InboxKit inboxes; V1 ships as a separate instance.</p>
 
 <nav class="toc">
-<a href="#blockers">Unblock</a><a href="#pool">Pre-warmed pool</a><a href="#instances">Live instances</a><a href="#questions">Open questions</a><a href="#scope">V1 scope</a><a href="#reuse">Reuse vs build</a><a href="#fixfirst">Fix first</a><a href="#scenarios">Scenarios</a><a href="#rules">Default rules</a><a href="#replies">Replies</a><a href="#infra">Infra</a><a href="#invariants">Invariants</a><a href="#side">Side features</a><a href="#order">Build order</a><a href="#decisions">Decisions</a>
+<a href="#status">Build status</a><a href="#blockers">Unblock</a><a href="#pool">Pre-warmed pool</a><a href="#instances">Live instances</a><a href="#questions">Open questions</a><a href="#scope">V1 scope</a><a href="#reuse">Reuse vs build</a><a href="#fixfirst">Fix first</a><a href="#scenarios">Scenarios</a><a href="#rules">Default rules</a><a href="#replies">Replies</a><a href="#infra">Infra</a><a href="#invariants">Invariants</a><a href="#side">Side features</a><a href="#order">Build order</a><a href="#decisions">Decisions</a>
 </nav>
 
-<h2 id="blockers">0. What's left to unblock</h2>
+<h2 id="status">0. Build status</h2>
+<div class="call"><b>Foundations shipped (31 Oct 2026).</b> Private repo <code>farooqchisty-hub/closefast-cloud</code>, started from <code>main</code> at <code>77f6bb2</code>. Live at <a href="https://closefast-cloud.pages.dev">closefast-cloud.pages.dev</a> (Pages proxy to the <code>closefast-cloud</code> Worker, D1 <code>closefast-cloud</code>). <b>No cron, so nothing sends.</b> The Brevo and WS instances are untouched.</div>
+<div class="tw"><table>
+<tr><th>Done</th><th>Detail</th></tr>
+<tr><td>Accounts and logins</td><td>Email signup (company, website, email, password) creates a workspace; email login; 30-day session; no signup friction.</td></tr>
+<tr><td>Per-account data</td><td>The hard-coded workspace 1 is gone: every query reads the workspace from the running request or cron pass, and code outside an account fails loudly.</td></tr>
+<tr><td>Cross-account holes closed</td><td>Preview, meetings, approvals and lead edits could act on another account's campaign or lead by id; inbox ids from requests weren't checked. All fixed and verified live with two test accounts (since deleted).</td></tr>
+<tr><td>Tenancy tests</td><td>The build fails on a hard-coded workspace id or a main-table read by id alone; 28 tests pass.</td></tr>
+<tr><td>Reply-poll fix</td><td>Ported from the WS branch (<code>ab4d081</code>) with its regression test.</td></tr>
+<tr><td>Cron per account</td><td>One pass per active account with its own locks (the old locks used a literal workspace 1). Off until the pool sender ships.</td></tr>
+<tr><td>Admin</td><td>Operator-token routes: list accounts with usage, suspend or reactivate, run a pass.</td></tr>
+<tr><td>Your to-dos</td><td><a href="https://github.com/farooqchisty-hub/closefast-cloud/issues/1">GitHub issue #1</a>: PostHog project, InboxKit workspace and credits, OpenRouter key, discovery budget, Stripe, launch mode.</td></tr>
+</table></div>
+<p><b>Next:</b> pool sending (InboxKit pre-warmed inboxes, per-inbox limits, forwarded replies, footer and unsubscribe), then onboarding from a website, the in-app support agent, test mode, wallet and signals.</p>
+
+<h2 id="blockers">1. What's left to unblock</h2>
 <p><span class="tag acc">SETTLED</span> Entity and accounts, data licensing, sender-of-record and legal, Google policy risk.</p>
 <div class="tw"><table>
 <tr><th>#</th><th>Item</th><th>Way through</th></tr>
@@ -56,7 +71,7 @@ nav.toc a:hover{color:var(--acc);border-color:var(--acc)}
 <tr><td>3</td><td>Gmail app verification, only for "connect your own Gmail" (paid, after V1)</td><td>Start once V1 is stable. Not a V1 blocker.</td></tr>
 </table></div>
 
-<h2 id="pool">1. The pre-warmed pool (from InboxKit's docs)</h2>
+<h2 id="pool">2. The pre-warmed pool (from InboxKit's docs)</h2>
 <div class="tw"><table>
 <tr><th>Question</th><th>Answer</th></tr>
 <tr><td>What we buy</td><td>Already-warmed Google Workspace domains and inboxes from InboxKit's inventory. Search by domain age and TLD, then buy by domain or by inbox (<code>Search Domains</code>, <code>Search Mailboxes</code>, <code>Buy Prewarmed Mailboxes</code>). Google only.</td></tr>
@@ -71,7 +86,7 @@ nav.toc a:hover{color:var(--acc);border-color:var(--acc)}
 <tr><td>Branded inboxes (paid)</td><td>A customer's own lookalike domain can't come pre-warmed: fresh domain plus warmup, or a pre-warmed domain from inventory if they're happy with its name.</td></tr>
 </table></div>
 
-<h2 id="instances">2. Live instances stay untouched: V1 is a separate instance</h2>
+<h2 id="instances">3. Live instances stay untouched: V1 is a separate instance</h2>
 <div class="tw"><table>
 <tr><th>Instance</th><th>Code</th><th>Cloudflare</th><th>What happens</th></tr>
 <tr><td>Brevo partnership pilot</td><td><code>closefast</code> repo, <code>main</code></td><td>Worker and D1 <code>closefast-brevo</code>, cron every 5 minutes, dashboard proxy <code>closefast-app</code>, 4 Instantly inboxes</td><td>Keeps running as is. Only targeted fixes (the reply-poll fix) get ported.</td></tr>
@@ -85,7 +100,7 @@ nav.toc a:hover{color:var(--acc);border-color:var(--acc)}
 <li><b>Later:</b> once V1 is stable, the Brevo partnership and WS campaigns can move in as tenants (prospects, threads, suppression imported), or stay where they are.</li>
 </ul>
 
-<h2 id="scope">3. V1 scope</h2>
+<h2 id="scope">4. V1 scope</h2>
 <div class="grid">
 <div class="card"><h3>In V1</h3><ul>
 <li>Signup, login, one company per account, free team seats</li>
@@ -109,7 +124,7 @@ nav.toc a:hover{color:var(--acc);border-color:var(--acc)}
 </ul></div>
 </div>
 
-<h2 id="reuse">4. What we reuse and what's new</h2>
+<h2 id="reuse">5. What we reuse and what's new</h2>
 <div class="tw"><table>
 <tr><th>Area</th><th>Reuse from Closefast today</th><th>Change or build</th></tr>
 <tr><td>Tenancy</td><td>Every table already has <code>workspace_id</code></td><td>Replace the hard-coded <code>WS</code> with the signed-in tenant in every query; real user auth instead of the admin password</td></tr>
@@ -122,7 +137,7 @@ nav.toc a:hover{color:var(--acc);border-color:var(--acc)}
 <tr><td>Ops</td><td>Heartbeats, incidents, events feed, daily digest</td><td>Admin console, invariants sweep, cost per tenant, canary tenant</td></tr>
 </table></div>
 
-<h2 id="fixfirst">5. Fix before building on top</h2>
+<h2 id="fixfirst">6. Fix before building on top</h2>
 <ul>
 <li><b>Reply-poll starvation:</b> the fix (seen set = every stored reply, own copies dropped before the 10-slot cut) exists only on the WS branch as <code>ab4d081</code>. Port it to main. The Brevo instance already shows the pattern (listed 3, stored 0).</li>
 <li><b>Booking detection is link-only</b>; bookings are marked by hand today.</li>
@@ -131,7 +146,7 @@ nav.toc a:hover{color:var(--acc);border-color:var(--acc)}
 <li>Audit the creator engine's 30 silent defects against Closefast: NULL subjects, retry ceilings, a pending cold row silencing an owed reply, threading by a list of kinds, new lanes not inheriting guards, "sent" vs delivered, signature lines read as names.</li>
 </ul>
 
-<h2 id="scenarios">6. Scenarios and edge cases</h2>
+<h2 id="scenarios">7. Scenarios and edge cases</h2>
 
 <h3>A. Signup and trust: no friction</h3>
 <div class="tw"><table>
@@ -242,7 +257,7 @@ nav.toc a:hover{color:var(--acc);border-color:var(--acc)}
 <tr><td>Staff access</td><td>Admin console behind Cloudflare Access; impersonation logged.</td></tr>
 </table></div>
 
-<h2 id="rules">7. Default rules (proposals to confirm)</h2>
+<h2 id="rules">8. Default rules (proposals to confirm)</h2>
 <div class="tw"><table>
 <tr><th>Rule</th><th>Default</th></tr>
 <tr><td>Cold sends per pool inbox</td><td>25 a day (pre-warmed, so no ramp); 3 inboxes per domain</td></tr>
@@ -257,7 +272,7 @@ nav.toc a:hover{color:var(--acc);border-color:var(--acc)}
 <tr><td>Footer</td><td>Sender's company, postal address, one-line opt-out ("Not relevant? Reply 'no' and I won't email again")</td></tr>
 </table></div>
 
-<h2 id="replies">8. Reply handling</h2>
+<h2 id="replies">9. Reply handling</h2>
 <div class="tw"><table>
 <tr><th>Reply</th><th>Counts as</th><th>Default action</th></tr>
 <tr><td>Meeting request</td><td>Lead</td><td>Booking link sent automatically; instant alert</td></tr>
@@ -277,7 +292,7 @@ nav.toc a:hover{color:var(--acc);border-color:var(--acc)}
 <tr><td>Data access or erasure request</td><td>Replied</td><td>Routed to our privacy desk</td></tr>
 </table></div>
 
-<h2 id="infra">9. Infra</h2>
+<h2 id="infra">10. Infra</h2>
 <div class="wf">App and dashboard (Pages)  ->  API Worker (auth, tenants, wallet)
                                       |
 D1: control (tenants, users, wallet ledger, allowances, pool, global suppression, erasure)
@@ -302,7 +317,7 @@ Admin console (Pages + Cloudflare Access); invariants cron; alerts to email and 
 <tr><td>Environments</td><td>Staging and production Workers; deploys only from CI</td><td>Lessons from two agents editing one engine</td></tr>
 </table></div>
 
-<h2 id="invariants">10. Invariants and monitoring (from 40 paid-for traps)</h2>
+<h2 id="invariants">11. Invariants and monitoring (from 40 paid-for traps)</h2>
 <ul>
 <li>Every stage reports listed, processed and stored; alert when listed stays above zero and stored stays at zero.</li>
 <li>Oldest due item per queue; alert when work waits too long (starvation).</li>
@@ -315,22 +330,22 @@ Admin console (Pages + Cloudflare Access); invariants cron; alerts to email and 
 <li>Eval sets: 200 real replies for classification and 50 openers for facts and tone; a prompt change can't ship if they regress.</li>
 </ul>
 
-<h2 id="questions">11. Questions you haven't asked yet (with a recommendation)</h2>
+<h2 id="questions">12. Questions you haven't asked yet (with a recommendation)</h2>
 <div class="tw"><table>
 <tr><th>Question</th><th>Recommendation</th></tr>
-<tr><td>What does the landing page say?</td><td>closefast.pages.dev still sells the $49 license and the "No Calls, No Pay" guarantee, both gone in the new model. Rewrite it around free forever plus the wallet before launch.</td></tr>
-<tr><td>What happens to Milan's self-install package (closefast.zip)?</td><td>Freeze it. Hosted V1 replaces it; keep it only as an enterprise or self-host option later.</td></tr>
+<tr><td>What does the landing page say?</td><td><b>Approved:</b> rewrite around free forever plus the wallet; in progress.</td></tr>
+<tr><td>What happens to Milan's self-install package (closefast.zip)?</td><td><b>Decided:</b> left as is; Milan keeps using it.</td></tr>
 <tr><td>How big is the launch pool, and its budget?</td><td>About 30 pre-warmed inboxes (750 cold emails a day, about $230 a month); add inboxes when daily sends pass 70% of capacity.</td></tr>
 <tr><td>Wallet top-up amounts?</td><td>$10, $25, $50, $100, plus auto top-up. The first top-up is the real conversion moment, so keep $10.</td></tr>
-<tr><td>How fast do replies go out?</td><td>Autopilot replies wait a random 5 to 30 minutes in working hours, so they read human.</td></tr>
-<tr><td>How do we measure the funnel?</td><td>PostHog events: signup, ICP confirmed, first send, first reply, first lead, first top-up, plus weekly retention. Same PostHog you already use.</td></tr>
-<tr><td>Who handles support?</td><td>An in-app help agent trained on the docs, with escalation to email.</td></tr>
-<tr><td>How do we test without emailing real prospects?</td><td>A dry-run mode that sends only to our own seed inboxes (the WS dryrun worker already does this), plus the canary tenant.</td></tr>
-<tr><td>Name and app domain?</td><td>Keep Closefast; the app needs its own domain (for example app.closefast.ai), separate from the sending pool.</td></tr>
-<tr><td>Launch: open or invite-only?</td><td>Invite-only for the first 100 signups, then open.</td></tr>
+<tr><td>How fast do replies go out?</td><td><b>Decided:</b> no artificial delays.</td></tr>
+<tr><td>How do we measure the funnel?</td><td><b>Decided:</b> PostHog; Farooq sets up the project (issue #1), then the events get wired.</td></tr>
+<tr><td>Who handles support?</td><td><b>Approved:</b> build the in-app support agent.</td></tr>
+<tr><td>How do we test without emailing real prospects?</td><td><b>Approved:</b> test mode that only sends to our seed inboxes.</td></tr>
+<tr><td>Name and app domain?</td><td><b>Decided:</b> Closefast on a pages.dev subdomain: closefast-cloud.pages.dev.</td></tr>
+<tr><td>Launch: open or invite-only?</td><td><b>Later:</b> Farooq decides closer to launch.</td></tr>
 </table></div>
 
-<h2 id="side">12. Side features</h2>
+<h2 id="side">13. Side features</h2>
 <div class="grid">
 <div class="card"><h3>V1 (cheap, retention)</h3><ul>
 <li>Weekly "your buyers this week" digest</li>
@@ -350,7 +365,7 @@ Admin console (Pages + Cloudflare Access); invariants cron; alerts to email and 
 </ul></div>
 </div>
 
-<h2 id="order">13. Build order</h2>
+<h2 id="order">14. Build order</h2>
 <ol>
 <li><b>Foundations:</b> new <code>closefast-cloud</code> repo and Cloudflare resources, tenant scoping, auth, admin console skeleton, invariants framework, port the reply-poll fix.</li>
 <li><b>Pool sending:</b> buy the first pre-warmed inboxes, pool manager, per-inbox Durable Object, push reply ingestion, footer and unsubscribe, health and pauses, global suppression. </li>
@@ -362,9 +377,9 @@ Admin console (Pages + Cloudflare Access); invariants cron; alerts to email and 
 </ol>
 <p>Then the ads.brevo.com and Brevo ecommerce pilots run as tenants on V1.</p>
 
-<h2 id="decisions">14. Decisions for Farooq</h2>
+<h2 id="decisions">15. Decisions for Farooq</h2>
 <ol>
-<li>Separate V1 instance in a new repo <code>closefast-cloud</code> (recommended), leaving the Brevo and WS instances as they are?</li>
+<li><s>Separate V1 instance in a new repo</s> Done: <code>closefast-cloud</code>.</li>
 <li>Tenancy: shared D1 with tenant scoping for V1 (recommended), or per-tenant databases from day one?</li>
 <li>Launch pool: about 30 pre-warmed InboxKit inboxes (about $230 a month)?</li>
 <li>LinkedIn sending stays out of V1 (recommended)?</li>
