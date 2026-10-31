@@ -39,7 +39,7 @@ nav.toc a:hover{color:var(--acc);border-color:var(--acc)}
 </head>
 <body>
 <main>
-<span class="tag acc">BUILD PLAN v1.5</span><span class="tag">1 Nov 2026</span><span class="tag acc">Closefast</span><span class="tag warn">FOR REVIEW</span>
+<span class="tag acc">BUILD PLAN v1.6</span><span class="tag">1 Nov 2026</span><span class="tag acc">Closefast</span><span class="tag warn">FOR REVIEW</span>
 <h1>Closefast V1: scenarios, rules, guardrails, infra, blockers</h1>
 <p class="sub">Everything to settle before building the hosted, multi-tenant Closefast described in the <a href="../thesis/">business thesis v0.4</a>. Pilots (ads.brevo.com, Brevo ecommerce) come after V1 and run as ordinary tenants. v1.1 applies Farooq's review: accounts, data licensing, legal and Google policy are settled; signup friction removed; pool runs on pre-warmed InboxKit inboxes; V1 ships as a separate instance.</p>
 
@@ -66,10 +66,11 @@ nav.toc a:hover{color:var(--acc);border-color:var(--acc)}
 <tr><td>Operator console</td><td><code>/admin</code> with the operator token: accounts (suspend, erase), pool inboxes, InboxKit search, buy and import, support tickets.</td></tr>
 <tr><td>Prospect discovery (1 Nov)</td><td>Live on treg: web search, people lookup by company domain (for sites that name nobody), work-email finder and decisive verification, on one org token tagged per workspace. App ceiling $100 a month, shown in /admin. Local test: verified founders at about $0.002 each. Two preview rounds went from 106 s to 28 s (parallel crawl, concurrent companies, gpt-oss-20b as the fast model).</td></tr>
 <tr><td>Models and funnel (1 Nov)</td><td>Workers AI first, then OpenRouter, Replicate and fal (fal waits for a key). Funnel steps (signed up, set up, went live, first email, first reply, first lead, first top-up) are counted in /admin and go to PostHog once its key is set.</td></tr>
+<tr><td>Pilot plumbing (1 Nov)</td><td>Pilot sending inbox: phild@trywinningstatics.com, released by WS outreach, sits in the shared pool through our Instantly workspace (25 a day, one workspace). System email (password reset, summaries, alerts) goes out through Cloudflare Email Sending from no-reply@closefast.ecomagents.ai. Forgot password is live. Dodo is set up in test mode: Closefast brand, $10/$25/$50/$100 packs, webhook, USD checkout. PostHog is connected.</td></tr>
 <tr><td>Fixed in the walkthrough</td><td>A cross-account read in campaign preview (it returned any campaign's prospects by id); saving a campaign dropped its goal, facts and sender; a slow preview hung for minutes; raw HTTP errors on screen; a platform subdomain read as its host.</td></tr>
 <tr><td>Your to-dos</td><td><a href="https://github.com/farooqchisty-hub/closefast-cloud/issues/1">GitHub issue #1</a>: InboxKit (switches sending on), discovery budget (now critical), Dodo, PostHog, optional model key, launch mode.</td></tr>
 </table></div>
-<p><b>Next, once InboxKit is in:</b> buy and import the pool, switch the cron on, send a first test-mode run. <b>Gaps still open:</b> a sending inbox (InboxKit pre-warmed inventory needs a work-email account, so a Closefast domain comes first; no free inbox in the WS Instantly workspace); a system email sender for summaries, alerts and password reset (there is no "forgot password" yet); self-serve account deletion (today it goes through Help); switching a campaign back to warm inboxes from the UI. <b>Still to build:</b> LinkedIn signals and the weekly digest, branded inboxes.</p>
+<p><b>Next, once InboxKit is in:</b> buy and import the pool, switch the cron on, send a first test-mode run. <b>Gaps still open:</b> InboxKit pre-warmed inboxes (blocked until a work-email login joins the InboxKit team, then buy 2); the scheduler (cron) is still off, so nothing runs on its own yet; self-serve account deletion (today it goes through Help); switching a campaign back to warm inboxes from the UI. <b>Still to build:</b> LinkedIn signals and the weekly digest, branded inboxes.</p>
 
 <h2 id="blockers">1. What's left to unblock</h2>
 <p><span class="tag acc">SETTLED</span> Entity and accounts, data licensing, sender-of-record and legal, Google policy risk.</p>
