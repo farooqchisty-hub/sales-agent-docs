@@ -39,7 +39,7 @@ nav.toc a:hover{color:var(--acc);border-color:var(--acc)}
 </head>
 <body>
 <main>
-<span class="tag acc">BUILD PLAN v1.3</span><span class="tag">31 Oct 2026</span><span class="tag acc">Closefast</span><span class="tag warn">FOR REVIEW</span>
+<span class="tag acc">BUILD PLAN v1.4</span><span class="tag">31 Oct 2026</span><span class="tag acc">Closefast</span><span class="tag warn">FOR REVIEW</span>
 <h1>Closefast V1: scenarios, rules, guardrails, infra, blockers</h1>
 <p class="sub">Everything to settle before building the hosted, multi-tenant Closefast described in the <a href="../thesis/">business thesis v0.4</a>. Pilots (ads.brevo.com, Brevo ecommerce) come after V1 and run as ordinary tenants. v1.1 applies Farooq's review: accounts, data licensing, legal and Google policy are settled; signup friction removed; pool runs on pre-warmed InboxKit inboxes; V1 ships as a separate instance.</p>
 
@@ -48,7 +48,7 @@ nav.toc a:hover{color:var(--acc);border-color:var(--acc)}
 </nav>
 
 <h2 id="status">Build status</h2>
-<div class="call"><b>Steps 1 to 5 are built and live, with sending off.</b> App at <a href="https://closefast-cloud.pages.dev">closefast-cloud.pages.dev</a> (repo <code>farooqchisty-hub/closefast-cloud</code>). No cron, and the pool has no inboxes yet, so nothing can send. 90 tests pass. The Brevo and WS instances are untouched.</div>
+<div class="call"><b>Steps 1 to 5 and the hosted dashboard are built and live, with sending off.</b> App at <a href="https://closefast-cloud.pages.dev">closefast-cloud.pages.dev</a> (repo <code>farooqchisty-hub/closefast-cloud</code>), operator console at <a href="https://closefast-cloud.pages.dev/admin">/admin</a>. No cron, and the pool has no inboxes yet, so nothing can send. 98 tests pass. The Brevo and WS instances are untouched.</div>
 <div class="tw"><table>
 <tr><th>Built</th><th>Detail</th></tr>
 <tr><td>Accounts and per-account data</td><td>Signup, login, workspace scoping on every query, cross-account holes closed, tenancy tests that fail the build on a regression.</td></tr>
@@ -56,21 +56,25 @@ nav.toc a:hover{color:var(--acc);border-color:var(--acc)}
 <tr><td>Shared sending pool</td><td>Pre-warmed pool inboxes shared by up to 5 accounts each; replies read once centrally and routed to the right account by thread or sender; pool-wide opt-outs and bounces; one cold sequence per person per 60 days across accounts; shared daily cap; 3% bounce pause; a campaign without its own inbox gets one at launch.</td></tr>
 <tr><td>InboxKit</td><td>Search pre-warmed inventory, buy, import a completed order into the pool with its app passwords (admin routes). Waiting on your key.</td></tr>
 <tr><td>One-click unsubscribe</td><td>Signed link per message plus the List-Unsubscribe headers; a page asks before unsubscribing so link scanners can't.</td></tr>
-<tr><td>Test mode</td><td>On for new accounts: openers come to the owner as previews; a switch in Settings. Plus an instance-wide send allowlist for staging.</td></tr>
+<tr><td>Test mode</td><td>On for new accounts: openers come to the owner as previews; a switch on the Sending page. New campaigns start on autopilot, so test mode is the safety. Plus an instance-wide send allowlist for staging.</td></tr>
 <tr><td>Free plan and wallet</td><td>Starter boost then a monthly allowance that never expires; one append-only ledger; charges at sourcing, openers and pool sends; never below zero; bounce refunds; Wallet page.</td></tr>
 <tr><td>Dodo Payments</td><td>Top-up checkout ($10, $25, $50, $100) and a signed webhook that credits the pack value once (never the tax-inclusive total). Waiting on your account setup.</td></tr>
 <tr><td>Support agent</td><td>Help panel answering from 18 articles with sources; hands bugs, refunds and requests for a person to the team (admin list); 30 questions a day per account. Verified live.</td></tr>
 <tr><td>Erasure</td><td>Removes a person from every account and blocks them everywhere (admin).</td></tr>
-<tr><td>Your to-dos</td><td><a href="https://github.com/farooqchisty-hub/closefast-cloud/issues/1">GitHub issue #1</a>: InboxKit (switches sending on), Dodo, PostHog, optional model key, discovery budget, launch mode.</td></tr>
+<tr><td>Hosted dashboard (31 Oct)</td><td>Rebuilt after a click-through as a new user. <b>Home</b>: a 6-step Get started checklist, owner-facing alerts only, tiles in the new words (prospects, leads, goal reached). <b>Sending</b> replaces the self-hosted Integrations page: test mode switch, warm inboxes and limits, booking link, alerts, do-not-contact list, own inbox as an advanced option. <b>Settings</b>: sender name and title with a signature preview, footer address, timezone from the browser, change password, log out. <b>Campaign page</b>: what it does (goal, ask, buyers, facts), preview with sample first emails, simple sending, the full editor folded away. <b>Prospects</b> and <b>Results</b> (leads waiting, mark goal reached or call booked by goal). Onboarding asks who signs the emails and flags errors at the field. In-app dialogs instead of browser pop-ups; phone layout checked.</td></tr>
+<tr><td>Google sign-in</td><td>"Continue with Google" for signup and login, built directly in the Worker (no Supabase needed, no extra cost). Hidden until a Google OAuth client is set.</td></tr>
+<tr><td>Operator console</td><td><code>/admin</code> with the operator token: accounts (suspend, erase), pool inboxes, InboxKit search, buy and import, support tickets.</td></tr>
+<tr><td>Fixed in the walkthrough</td><td>A cross-account read in campaign preview (it returned any campaign's prospects by id); saving a campaign dropped its goal, facts and sender; a slow preview hung for minutes; raw HTTP errors on screen; a platform subdomain read as its host.</td></tr>
+<tr><td>Your to-dos</td><td><a href="https://github.com/farooqchisty-hub/closefast-cloud/issues/1">GitHub issue #1</a>: InboxKit (switches sending on), discovery budget (now critical), Google sign-in client, Dodo, PostHog, optional model key, launch mode.</td></tr>
 </table></div>
-<p><b>Next, once InboxKit is in:</b> buy and import the pool, switch the cron on, send a first test-mode run. <b>Still to build:</b> LinkedIn signals and the weekly digest, branded inboxes, PostHog events, paid prospect discovery.</p>
+<p><b>Next, once InboxKit is in:</b> buy and import the pool, switch the cron on, send a first test-mode run. <b>Gaps the walkthrough found, still open:</b> prospect discovery (critical: without a paid search provider a preview finds nobody); a system email sender for summaries, alerts and password reset (there is no "forgot password" yet); self-serve account deletion (today it goes through Help); switching a campaign back to warm inboxes from the UI. <b>Still to build:</b> LinkedIn signals and the weekly digest, branded inboxes, PostHog events.</p>
 
 <h2 id="blockers">1. What's left to unblock</h2>
 <p><span class="tag acc">SETTLED</span> Entity and accounts, data licensing, sender-of-record and legal, Google policy risk.</p>
 <div class="tw"><table>
 <tr><th>#</th><th>Item</th><th>Way through</th></tr>
 <tr><td>1</td><td><b>Buy the pre-warmed pool</b> before launch</td><td>InboxKit pre-warm inventory (section 1). Launch with about 30 inboxes: 750 cold emails a day for about $230 a month.</td></tr>
-<tr><td>2</td><td><b>Prospect discovery at scale</b>: the pilot's free web search is rate-limited (failed on 28 Oct)</td><td>Paid search and data providers behind the source router, budgeted per tenant.</td></tr>
+<tr><td>2</td><td><b>Prospect discovery at scale</b> (critical): the free web search is rate-limited (failed on 28 Oct), and the 31 Oct walkthrough's preview found nobody</td><td>Paid search and data providers behind the source router, budgeted per tenant.</td></tr>
 <tr><td>3</td><td>Gmail app verification, only for "connect your own Gmail" (paid, after V1)</td><td>Start once V1 is stable. Not a V1 blocker.</td></tr>
 </table></div>
 
