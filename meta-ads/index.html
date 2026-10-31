@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
 <title>Closefast Meta Ad Teardown</title>
-<link rel="stylesheet" href="style.css?v=2">
+<link rel="stylesheet" href="style.css?v=4">
 </head>
 <body>
 <div id="tip"></div>
@@ -92,11 +92,11 @@
 <p class="sub">Every tagged creative counted by angle, hook, format, offer, proof and audience. <b>Share</b> weights each brand equally, so Pancake's 270 ads do not drown out Explee's 81. <b>Median age</b> is how long the live creatives using it have been running. Read the two columns together: high share with low age means crowded and churning; low share with high age means a quiet angle that holds.</p>
 <div class="call"><b>What the tags say for AI sales agents</b> (live creatives, Bland and Retell excluded because their ads are not about sales):
 <ul>
-<li><b>Formats that hold:</b> founder-to-camera video (87% of live ones are 30+ days old), screen demos (90%), big-number statics (median age 70 days and the best scroll-stopping read, 4.1 of 5), comparisons (57%), creator UGC (56%). <b>Formats that churn:</b> person-photo statics (29%), motion graphics (40%, median 5 days), skits (29%), illustrations (39%).</li>
-<li><b>Angles:</b> "saves you time / runs on autopilot" and "more meetings" are the most common. Speed to lead holds longest (median 128 days: Alta's "Alex" and Voxr). Price arguments are young (34% past 30 days), which is a test in progress, not a verdict.</li>
-<li><b>Hooks:</b> pain callouts and result claims lead on volume (13 and 12 brands). Questions (70%) and curiosity gaps (73%) hold longest. Offer-first hooks churn (5% past 30 days): the free offer belongs in the second line or the headline, not the hook.</li>
-<li><b>Offers:</b> a free trial is the default (7 brands). Credit packs (Explee) churn fastest, but Explee keeps the same offer copy and swaps visuals, so that is visual churn, not offer churn.</li>
-<li><b>Caveat:</b> the 30+ day share is biased against brands testing right now (Mailscale's whole batch is 14 days old). Use it with the brand table above.</li>
+<li><b>Formats that hold:</b> founder-to-camera video (66% of live ones are 30+ days old, median 41 days), comparisons (54%), big-number statics (53%, and the best scroll-stopping read: 4.0 of 5), screen demos (51%), creator UGC (49%). <b>Formats that churn:</b> memes (7%), person-photo statics (24%), skits (26%), motion graphics (30%, median 14 days). Native mocks score 4.0 but are only 24% past 30 days: most were launched in the last few weeks, so they are a live test, not a verdict.</li>
+<li><b>Angles:</b> "replace an SDR or a hire" is now the most common (9 brands), then "runs on autopilot" and "more meetings". Speed to lead holds longest (72% past 30 days: Alta's "Alex" and Voxr). Price arguments are young (30% past 30 days), a test in progress.</li>
+<li><b>Hooks:</b> pain callouts and result claims lead on volume (13 and 12 brands). Questions (69%) and curiosity gaps (58%) hold longest. Offer-first hooks churn (5% past 30 days): the free offer belongs in the second line or the headline, not the hook.</li>
+<li><b>Offers:</b> a free trial is the default (8 brands, 313 live creatives). Credit packs (Explee) churn fastest, but Explee keeps the same offer copy and swaps visuals, so that is visual churn, not offer churn.</li>
+<li><b>Caveat:</b> the 30+ day share is biased against brands testing right now (Mailscale's and Pancake's newest batches are 2 weeks old). Use it with the brand table above.</li>
 </ul></div>
 <div id="patterns"></div>
 
@@ -111,7 +111,7 @@
 <div class="grid" id="conceptlist"></div>
 
 <h2 id="gallery-h">Every ad</h2>
-<p class="sub">All live creatives plus the 2026 ads that ran 21 days or more, with the tags behind the charts above. Brands with hundreds of near-identical variants were sampled for tagging (untagged cards still show copy and image). Click the image to open the ad in the Meta Ad Library.</p>
+<p class="sub">All live creatives plus the 2026 ads that ran 21 days or more, with the tags behind the charts above. Every one is tagged. Click the image to open the ad in the Meta Ad Library.</p>
 <div id="gallery"></div>
 
 <h2 id="method">Method and caveats</h2>
@@ -120,12 +120,12 @@
 <li><b>Source:</b> Meta Ad Library via ScrapeCreators (through treg), pulled 31 Oct 2026. Every live ad per page, plus ads that started in 2026 and have since stopped. Each brand's page was verified by matching its ads' landing URLs to the brand's domain (page-name search alone returned wrong pages, e.g. "Jungler" resolved to an Italian camera store and was dropped).</li>
 <li><b>Creative:</b> ads that share the same copy and the same first image or video collapse into one creative. "Ads using it" counts how many ad IDs reuse it, a sign of scaling across ad sets.</li>
 <li><b>Persistence, not performance:</b> the library has no spend, reach or results for commercial ads. Live age and completed run length are reported separately and never folded into one score, because young ads cannot have long runs yet.</li>
-<li><b>Tagging:</b> each creative's still image, copy, on-image text (on-device OCR) and video script were tagged against a fixed taxonomy (angle, hook, format, offer, proof, audience, tone, a 1 to 5 read of scroll-stopping clarity). Brands with hundreds of variants were capped for tagging; shares weight every brand equally.</li>
+<li><b>Tagging:</b> each creative's still image, copy, on-image text (on-device OCR) and video script were tagged against a fixed taxonomy (angle, hook, format, offer, proof, audience, tone, a 1 to 5 read of scroll-stopping clarity). Most were tagged by 8 parallel Claude reviewers reading contact sheets; the rest by Claude Sonnet 4.5 on Replicate with the same schema. Shares weight every brand equally, so brands with hundreds of variants don't dominate.</li>
 <li><b>Gaps:</b> 207 videos had no speech to transcribe (music-only), and those were read from copy and thumbnail. Pages that run ads only under a person's name (founder pages) are found only when their ads link to the brand domain.</li>
 </ul>
 </div>
 </main>
-<script src="app.js?v=2"></script>
-<script src="content.js?v=2"></script>
+<script src="app.js?v=4"></script>
+<script src="content.js?v=4"></script>
 </body>
 </html>
