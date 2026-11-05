@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Closefast Signals Plan</title>
+<style>
+:root{--bg:#0d0f10;--panel:#15181a;--line:#262a2d;--ink:#eceeea;--mute:#9aa19c;--acc:#b6f36b;--warn:#f3c86b;--bad:#f37b6b;--mono:ui-monospace,SFMono-Regular,Menlo,monospace}
+@media (prefers-color-scheme: light){:root:not([data-theme="dark"]){--bg:#f7f7f4;--panel:#fff;--line:#e2e3de;--ink:#15181a;--mute:#5d645f;--acc:#3f7d12;--warn:#9a6a00;--bad:#b23a2a}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 Inter,system-ui,-apple-system,Segoe UI,sans-serif}
+main{max-width:1040px;margin:0 auto;padding:40px 16px 80px}
+h1{font-size:30px;line-height:1.2;margin:0 0 8px}
+h2{font-size:21px;margin:48px 0 12px;padding-top:16px;border-top:1px solid var(--line)}
+h3{font-size:16px;margin:24px 0 8px}
+.sub{color:var(--mute);margin:0 0 24px}
+.tag{display:inline-block;font:12px var(--mono);padding:2px 8px;border:1px solid var(--line);border-radius:99px;color:var(--mute);margin-right:6px}
+.tag.acc{color:var(--acc);border-color:var(--acc)}
+.tag.warn{color:var(--warn);border-color:var(--warn)}
+.grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px}
+.card h3{margin-top:0}
+.card ul{margin:0;padding-left:18px}
+.kpi b{display:block;font:600 24px/1.2 var(--mono);color:var(--acc)}
+.kpi span{color:var(--mute);font-size:13px}
+table{width:100%;border-collapse:collapse;margin:8px 0 16px;font-size:14px}
+th,td{text-align:left;vertical-align:top;padding:8px 10px;border-bottom:1px solid var(--line)}
+th{color:var(--mute);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.04em}
+td.n{font-family:var(--mono);white-space:nowrap}
+.tw{overflow-x:auto}
+code,.mono{font-family:var(--mono);font-size:13px}
+.call{border-left:3px solid var(--acc);background:var(--panel);padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0}
+.call.warn{border-color:var(--warn)}
+.wf{background:var(--panel);border:1px dashed var(--line);border-radius:10px;padding:14px;font:13px/1.55 var(--mono);color:var(--mute);white-space:pre;overflow-x:auto}
+nav.toc{display:flex;flex-wrap:wrap;gap:6px;margin:16px 0 8px}
+nav.toc a{font:12px var(--mono);color:var(--mute);text-decoration:none;border:1px solid var(--line);padding:3px 9px;border-radius:99px}
+nav.toc a:hover{color:var(--acc);border-color:var(--acc)}
+ol li,ul li{margin:4px 0}
+</style>
+</head>
+<body>
+<main>
+<span class="tag acc">SIGNALS PLAN v2</span><span class="tag">6 Nov 2026</span><span class="tag acc">Closefast</span><span class="tag warn">FOR REVIEW</span>
+<h1>Signals: find people showing buying intent in the last 24 hours, and email them the next day</h1>
+<p class="sub">The Jungler-style module inside Closefast. v2 replaces the "watch a few competitor pages" idea with keywords, intent and audience, after live tests on real LinkedIn data and research into how Jungler and similar tools work. It follows on from the <a href="../thesis/">business thesis</a> and the <a href="../v1/">V1 build plan</a>.</p>
+
+<div class="call"><b>In one line:</b> a signal isn't a page. It's a conversation from the last 24 hours, found by <b>keywords</b> (brands, category, pain phrases), scored for <b>intent</b> (asking, complaining, comparing, switching, pricing), and kept only when the <b>audience</b> is buyers and the person <b>fits</b> (they run a store). It runs every day. You pay per buyer delivered, and you choose how many a day.</div>
+
+<nav class="toc">
+<a href="#why">Why not built yet</a><a href="#tests">Live tests</a><a href="#market">How others do it</a><a href="#model">The model</a><a href="#timing">Timing</a><a href="#volume">How much you get</a><a href="#ux">Setup</a><a href="#money">Economics</a><a href="#eng">Engineering</a><a href="#pilot">Brevo pilot</a><a href="#build">Build order</a><a href="#risks">Risks</a>
+</nav>
+
+<h2 id="why">Why it isn't built yet, and why it goes next</h2>
+<p>The V1 plan built the pipe that every source feeds first (onboarding, finding people, the sending pool, replies, the wallet) and listed Signals as "still to build". When Signals was planned on 21 Oct, treg had a $0 balance, so no live LinkedIn data had been tested. Both reasons are gone: the pipe is live, and today's tests ran the whole chain on real data for about six cents.</p>
+<div class="call"><b>Decision: Signals is next, before InboxKit.</b> The pool has 2 inboxes: phild@trywinningstatics.com for open signups, and farooqchisty@ecombrevo.com, moved from the creator engine today and reserved for your workspace. Sending capacity, not finding, caps the pilot (see <a href="#volume">How much you get</a>), so InboxKit comes back once the pilot wants more than about 10 new buyers a day.</div>
+
+<h2 id="tests">What the live tests showed (6 Nov, about $0.06 in total)</h2>
+<div class="tw"><table>
+<tr><th>Test</th><th>Result</th><th>Lesson</th></tr>
+<tr><td>Klaviyo's company page, 2 posts</td><td>183 engagers. 26% were Klaviyo's own staff, and about 3% run a consumer brand (Olaplex, Moxie Scrubs, Rumours Tea, B.health).</td><td>A brand's own page is mostly staff, fans and vendors. It's one source among several, not the core.</td></tr>
+<tr><td>Keyword search, last 24 hours, newest first</td><td>"Klaviyo": 234 posts a day. "Shopify email marketing": 116. "recommend email marketing platform": 32. "SMS marketing ecommerce": 32. "email marketing too expensive": 11. "Klaviyo alternative": 1.</td><td>There's plenty of volume every day. A brand keyword is too broad on its own, and an exact intent phrase is too narrow on its own.</td></tr>
+<tr><td>Who writes those posts</td><td>Nearly all sellers: agencies, freelancers, recruiters, vendor staff. One was an Omnisend-sponsored creator post telling Klaviyo users to switch.</td><td>Buyers rarely post their own intent. They comment and react.</td></tr>
+<tr><td>Engagers on email-marketing posts (3 posts)</td><td>7 to 12% had a buyer-like headline. On one post, 18 of 28 engagers were agencies or freelancers.</td><td>Talk about the category attracts the people selling it. Those people suit a partner campaign, not the merchant one.</td></tr>
+<tr><td>Engagers on founder-written DTC posts (author filter "founder", last 24h)</td><td>50 such posts a day. The top post had 128 engagers, 43 (34%) with a buyer-like headline: founders of baby, snack and beauty brands, a Silver Cross US owner, a Mars brand manager.</td><td><b>Audience beats keyword.</b> Which creator's crowd we read matters more than which word matched.</td></tr>
+<tr><td>Comment text</td><td>Comments carry the intent ("fewer integrations can mean fewer things going wrong", "look beyond subscription costs"). Reactions carry only presence.</td><td>Classify intent on comments as well as posts. A commenter ranks above a reactor.</td></tr>
+<tr><td>Store check (one free homepage fetch)</td><td>Olaplex and Rumours Tea: both Shopify, and both pay Klaviyo today.</td><td>We can tell who runs a store and what email tool they pay for, for free. Stores already on Brevo are excluded the same way.</td></tr>
+</table></div>
+
+<h2 id="market">How Jungler and the others do it</h2>
+<p>Checked on 6 Nov against each tool's own docs, help center and pricing pages. Trigify has shut down (its team joined HubSpot, access ended 22 Oct, and accounts are not being migrated), and Teamfluence is openly courting its customers. That leaves a gap in the market right now.</p>
+<div class="tw"><table>
+<tr><th>Tool</th><th>Where it looks</th><th>Window and cadence</th><th>Intent</th><th>How volume is metered</th><th>Sends?</th></tr>
+<tr><td><b>Jungler</b></td><td>Profile and company pages (posts plus engagers); keyword search (posts and authors only, engagers need a manual pull per post); creator Discovery (750k B2B creators ranked by audience match)</td><td>Keywords: first run looks back 1 month and keeps the newest ~250, then up to ~250 a day, so broad terms show a "thin slice". Pages: history none, week or month, then daily; engagers re-read at 24h, 3 days and 7 days</td><td>AI filter on keyword posts only: Match or No match against a free-text prompt, reading the post and the author's profile; no built-in categories</td><td>1 credit per post, reaction or comment, including people later filtered out. When credits run out signals pause, then drain the backlog on renewal. $99 / $199 / $299 a month (yearly) for 8k to 60k credits and 5 / 15 / 40 signals</td><td>No (exports to Clay, Instantly, lemlist and others)</td></tr>
+<tr><td><b>Octolens</b></td><td>LinkedIn, Reddit, X, Hacker News, YouTube, GitHub; keywords grouped as own brand, competitor, industry term</td><td>Hourly (Pro) or under 5 minutes; 7-day backfill; admits weaker LinkedIn coverage</td><td>11 AI tags: buy intent, competitor mention, product question, feedback, hiring, promotional and more</td><td>$159 for 15k mentions, and posts the AI rejects still count</td><td>No</td></tr>
+<tr><td><b>Valley</b></td><td>58 "plays": competitor churn, problem talk, influencer and competitor engagers, profile viewers, hiring, funding</td><td>Refills daily, weekly or once; influencer engagers daily</td><td>High, medium or low fit; complaint detection not documented</td><td>$199 to $499 per seat; 25 a day per campaign by default</td><td>Yes (LinkedIn, email add-on)</td></tr>
+<tr><td><b>Gojiberry</b></td><td>Competitor and topic engagement, influencer engagers, job changes, funding, hiring, site visitors</td><td>Agent runs 3 to 4 times a day</td><td>ICP strictness plus must-have and excluded keywords</td><td>$99 a month for 1,800 prospects contacted</td><td>Yes (LinkedIn, email)</td></tr>
+<tr><td><b>Teamfluence</b></td><td>Your own team's viewers, followers and engagers; tracked posts (no LinkedIn-wide search)</td><td>Continuous</td><td>AI ICP rating 1 to 5 with reasoning; strictness setting</td><td>€449 a month for 1,000 qualified leads, counted only when exported</td><td>Connection requests</td></tr>
+<tr><td><b>Amplemarket</b></td><td>Page engagers, followers, keyword posts, competitor content, job changes</td><td>Every 24 hours</td><td>"Bad signal" or "bad company" dismissals exclude for 6 months</td><td>$600 a month</td><td>Yes</td></tr>
+<tr><td><b>Clay, Unify, Common Room</b></td><td>Social listening plus job, hiring and news signals</td><td>Daily to monthly runs (Clay), about 30 minutes for your own page (Common Room)</td><td>Summaries, no intent categories</td><td>Per record checked, with a cost estimate before the run; hard pause at zero (Unify)</td><td>Pushes to other tools (Unify sequences)</td></tr>
+</table></div>
+<div class="grid">
+<div class="card"><h3>What we copy</h3><ul>
+<li>Daily runs on a small overlapping window, with a 7-day first run</li>
+<li>Engager re-reads at 1, 3 and 7 days (Jungler)</li>
+<li>Keyword groups: brand, competitor, category (Octolens)</li>
+<li>Rank creators by how much of their audience matches the buyer (Jungler Discovery)</li>
+<li>Cost estimate before saving, spend cap, hard pause (Clay, Unify)</li>
+<li>Dismissing a person or company excludes them for months (Amplemarket)</li>
+</ul></div>
+<div class="card"><h3>What we beat</h3><ul>
+<li>Fixed intent labels on <b>comments</b> as well as posts; Jungler only says match or no match, and only on posts</li>
+<li>Automatic engager pulls on keyword posts that pass intent; Jungler makes this manual</li>
+<li>Creators found and tracked automatically from the daily keyword run; others make you name 3 to 5</li>
+<li>Bill only buyers delivered; Jungler and Octolens charge for rows they then filter out</li>
+<li>No backlog drain after a pause, and a warning when a broad keyword would hit the daily cap</li>
+<li>The store and email-tool check, and the email actually written and sent; none of them do both</li>
+</ul></div>
+</div>
+
+<h2 id="model">The model: where to look, what counts, who fits</h2>
+<h3>1. Where we look (sources)</h3>
+<div class="tw"><table>
+<tr><th>Source</th><th>How it's chosen</th><th>Window and cadence</th><th>Brevo example</th></tr>
+<tr><td><b>Keyword watches</b></td><td>Three kinds of keyword, combined with boolean logic: <b>brands</b> (competitors and adjacent tools), <b>category</b> (what you sell), <b>pain phrases</b> (too expensive, alternative, switching, recommend). Optional author filter (founder, owner, CEO, plus DTC, ecommerce or Shopify), language and country.</td><td>Posts from the last 24 hours, newest first, once a day</td><td>"Klaviyo" OR "Omnisend" AND (pricing OR alternative OR switch); "email marketing" AND (Shopify OR DTC OR ecommerce)</td></tr>
+<tr><td><b>Creator watches</b> (found automatically)</td><td>Every author we meet through keywords gets an <b>audience fit</b> score: the share of their engagers, sampled on 2 posts, who pass the buyer check. At 20% or more we track all their new posts; after 2 weeks under 10% we drop them. You can also add creators yourself.</td><td>Each tracked creator's new posts, once a day</td><td>DTC founder creators like the 34% post above; Shopify operators; retention newsletter writers whose readers are founders</td></tr>
+<tr><td><b>Competitor watches</b></td><td>Competitor company pages, their executives, and any post that tags the competitor.</td><td>Last 24 hours, once a day</td><td>Klaviyo, Omnisend, Mailchimp, Attentive, Postscript, Yotpo</td></tr>
+<tr><td><b>Later</b></td><td>Hiring posts (a brand hiring a retention or email marketer is investing in the channel); Reddit and X threads.</td><td>Daily</td><td>"hiring retention strategist" at a Shopify brand</td></tr>
+</table></div>
+
+<h3>2. What counts (intent), read on the post and on every comment</h3>
+<div class="tw"><table>
+<tr><th>Intent</th><th>Looks like</th><th>Heat</th></tr>
+<tr><td>Asking</td><td>"Which email tool do you use for a Shopify store under 10k subs?"</td><td>Hot</td></tr>
+<tr><td>Pain</td><td>"Our Klaviyo bill doubled again", "SMS costs are killing us"</td><td>Hot</td></tr>
+<tr><td>Comparing</td><td>"Omnisend vs Klaviyo for a 2-person team?"</td><td>Hot</td></tr>
+<tr><td>Switching</td><td>"Anyone moved off Mailchimp?", "migrating our flows next month"</td><td>Hot</td></tr>
+<tr><td>Price</td><td>"Is it worth paying for SMS on top of email?"</td><td>Hot</td></tr>
+<tr><td>Moment</td><td>BFCM prep, a launch, a new market, a funding round, a milestone month</td><td>Warm</td></tr>
+<tr><td>Hiring</td><td>Hiring for email, retention or CRM</td><td>Warm (contact the founder or head of marketing, not the job)</td></tr>
+<tr><td>Resource</td><td>Commented to get a guide or template on the topic</td><td>Warm</td></tr>
+<tr><td>On topic</td><td>A relevant post with no explicit intent</td><td>Commenter: warm. Reactor: cool.</td></tr>
+<tr><td>None</td><td>Off topic, congratulations, jokes</td><td>Dropped</td></tr>
+</table></div>
+<p>A small model reads the text together with the person's headline, in batches of 20, and returns the intent, the heat and a one-line reason. Each account can add its own intent rule in plain words (for example "people unhappy with SMS costs"), which works like Jungler's AI prompt, but on comments too.</p>
+
+<h3>3. Who fits</h3>
+<ul>
+<li><b>Free filters first, on the headline:</b> the watched competitor's staff, our own staff, recruiters, students and people open to work are dropped.</li>
+<li><b>Paid checks for survivors:</b> profile, then current company, then website, then a homepage fetch. That gives the store platform (Shopify, Woo, BigCommerce, Magento), the email tool in use, and staff and industry. B2B accounts use staff and industry instead of the store check.</li>
+<li><b>Exclusions:</b> stores already running Brevo or Sendinblue, existing customers from an uploaded domain list, and anyone another of your campaigns or the 60-day pool cooldown already holds.</li>
+<li><b>Routing, not dropping:</b> agencies and freelancers fail the merchant check but pass a partner campaign's. Each person goes to the campaign whose buyer they match.</li>
+</ul>
+
+<h3>4. Heat decides who goes first</h3>
+<div class="wf">HOT   author or commenter with Asking / Pain / Comparing / Switching / Price, and fits
+WARM  commenter on an on-topic post, or Moment / Hiring / Resource, and fits;
+      or the same person seen on 2+ signals in 14 days
+COOL  reactor on an on-topic post with a strong fit (runs a store, right role)
+Send queue order: HOT, then WARM, then COOL; within a level, highest fit first</div>
+
+<h2 id="timing">Timing</h2>
+<ul>
+<li><b>Once a day</b>, early morning in the account's timezone, we read posts from the last <b>30 hours</b>. The 6-hour overlap closes gaps, and posts are de-duplicated by post id.</li>
+<li><b>First run:</b> we look back 7 days, so a new account sees buyers on day one. After that, strictly the last 24 hours. Older engagement is stale intent.</li>
+<li><b>Re-reads:</b> a post that turned out on topic with a buyer audience gets its engagers read again 1, 3 and 7 days after it was posted (Jungler's schedule), then never again. Most engagement arrives in the first 2 days.</li>
+<li><b>Email timing:</b> the first email goes out at least 24 hours after the engagement. A hot comment found this morning gets its email tomorrow morning. Polling every hour would add cost and gain nothing, because of this rule.</li>
+<li><b>Free accounts</b> run weekly, with the same 7-day window.</li>
+</ul>
+
+<h2 id="volume">How much each customer gets (pay as you go)</h2>
+<ol>
+<li><b>You choose a daily target</b> per campaign, for example "up to 10 new buyers a day", or a monthly spend cap. The engine fills it hottest first. Anything beyond the target is kept as "found, over your target", showing title, company and reason with the name hidden, so topping up has a visible reason.</li>
+<li><b>We bill only delivered buyers:</b> $0.15 each, for a person who passed the fit check, has a verified work email and was placed in a campaign. Scanning, drops, duplicates and people without an email are free.</li>
+<li><b>The target can't exceed sending capacity.</b> Every new buyer costs about 5 sends (an opener and up to 4 follow-ups), so a 25-a-day inbox supports about 5 new buyers a day at steady state. The target screen shows this limit and offers more inboxes when you hit it.</li>
+<li><b>Presets for people who want a plan feel:</b> Light (3 a day), Steady (10 a day), Max (25 a day, with extra inboxes). They're targets, not subscriptions.</li>
+<li><b>Free:</b> 1 keyword watch (up to 3 keywords) plus auto-found creators, run weekly, up to 50 buyers a month, and a weekly "your buyers this week" email.</li>
+<li><b>Caps pause, they never back-bill.</b> When the spend cap or the wallet runs out, watches pause. After a top-up they resume from that day; there's no backlog drain like Jungler's renewal.</li>
+<li><b>Broad keywords get a warning.</b> When a keyword would return more posts a day than its run can read, the editor says so and suggests narrowing it with an AND, so no matches are lost silently.</li>
+</ol>
+
+<h2 id="ux">Setup and screens</h2>
+<ul>
+<li><b>Onboarding proposes everything.</b> It already reads the website and works out the buyers. Now it also proposes brands (competitors it found), category keywords, pain phrases and 5 seed creators, all with one tick. The first run's 7-day lookback shows real buyers within minutes.</li>
+<li><b>Signals page:</b>
+<ul>
+<li>A funnel: posts read, on topic, engagers, fit, buyers, contacted, replies.</li>
+<li>Each watch with its yield.</li>
+<li>Tracked creators with their audience fit %.</li>
+<li>A live feed of people with their heat, intent, a quote of what they said, and the reason.</li>
+</ul></li>
+<li><b>"Wrong match"</b> on any person teaches the filter (the same learned-rules store as Teach in the Inbox), and "not this company" excludes the company for 6 months.</li>
+<li><b>Cost estimate before saving a watch:</b> expected buyers a month and the cost, from the keyword's daily volume and the measured fit rate.</li>
+<li><b>Copy rule, enforced in code:</b> the signal picks the angle only. The email never mentions the post, the comment, the like or a competitor's name. That's a hard block that no approval can override.</li>
+</ul>
+
+<h2 id="money">Economics (a paid account at 10 buyers a day)</h2>
+<div class="tw"><table>
+<tr><th>Daily step</th><th>Volume</th><th>Cost a day</th></tr>
+<tr><td>Keyword searches (12 queries, about 2 pages each, $0.004 a page)</td><td class="n">~24 calls</td><td class="n">$0.10</td></tr>
+<tr><td>Tracked creators' and competitors' new posts ($0.002)</td><td class="n">~35 calls</td><td class="n">$0.07</td></tr>
+<tr><td>Topic and intent check on posts (model, batched)</td><td class="n">~600 posts</td><td class="n">$0.02</td></tr>
+<tr><td>Engagers on on-topic posts, plus re-reads ($0.003)</td><td class="n">~40 calls</td><td class="n">$0.12</td></tr>
+<tr><td>Headline triage and comment intent (rules plus model)</td><td class="n">~1,500 people</td><td class="n">$0.03</td></tr>
+<tr><td>Profiles for survivors ($0.0015)</td><td class="n">~120</td><td class="n">$0.18</td></tr>
+<tr><td>Company and website ($0.0015), store fetch (free)</td><td class="n">~50</td><td class="n">$0.08</td></tr>
+<tr><td>Work email find and verify (~$0.003)</td><td class="n">~15</td><td class="n">$0.05</td></tr>
+<tr><td><b>Total</b></td><td class="n"><b>~10 buyers</b></td><td class="n"><b>~$0.65 (about $0.065 a buyer)</b></td></tr>
+</table></div>
+<p>At $0.15 a buyer, that's about 55% gross margin on day one, rising as accounts share the cache. Posts, engagers, profiles and companies are fetched once for every account that needs them, and accounts in the same market overlap heavily. A free account's weekly run costs about $1 to $2 a month, inside the thesis budget. Jungler charges per raw record (8k credits on $99), and most raw records are staff and sellers.</p>
+
+<h2 id="eng">Engineering design</h2>
+<h3>Tables</h3>
+<div class="tw"><table>
+<tr><th>Table</th><th>Scope</th><th>Holds</th></tr>
+<tr><td><code>watches</code></td><td>Per account</td><td>Kind (keyword, creator, competitor), query or target, author filter, language, country, intent rule, linked campaigns, daily target, status.</td></tr>
+<tr><td><code>li_posts</code></td><td>Shared cache</td><td>Post id, author, text, posted at, stats, topic and intent verdict, re-read schedule.</td></tr>
+<tr><td><code>li_engagements</code></td><td>Shared cache</td><td>Post, person, kind (reaction, comment, reply), comment text, comment intent, time.</td></tr>
+<tr><td><code>li_people</code>, <code>li_companies</code></td><td>Shared cache, 30-day freshness</td><td>Headline, title, company, country, open to work; website, store platform, email tool, staff, industry.</td></tr>
+<tr><td><code>creators</code></td><td>Shared, plus per-account follow state</td><td>Author, audience fit % per buyer profile, sample size, status (tracked, trial, dropped), last checked.</td></tr>
+<tr><td><code>signal_people</code></td><td>Per account</td><td>Person, watches seen on, best intent, heat, fit score, reason, quote, campaign, prospect id, billed at, "wrong match" feedback.</td></tr>
+</table></div>
+<p>The shared cache holds only public profile data, and no account screen reads it directly. Account tables carry <code>workspace_id</code> and are covered by the tenancy tests. Erasure also removes the person from the cache.</p>
+<h3>Daily job</h3>
+<div class="wf">collect   keyword searches -> creator posts -> competitor posts      (last 30h, dedupe)
+classify  post topic + intent (batched model)                         -> drop off-topic
+engage    engagers of on-topic posts; re-reads at day 1, 3 and 7
+triage    headline rules, then comment intent (batched model)
+enrich    profile -> company -> website -> store + email-tool fetch   (survivors only)
+judge     fit score + heat + reason; route to the matching campaign
+contact   email find + verify, hottest first, until the daily target is met
+deliver   prospect (source: Signal) into the campaign; first email >= 24h after
+learn     update creators' audience fit; promote or drop creators</div>
+<p>Each stage runs inside the existing 5-minute scheduler pass with a time budget and resumes on the next pass, so it never starves sending. There's a per-account daily data cap, the global <code>TREG_MONTHLY_CAP_USD</code> ceiling, and billing through the wallet ledger, idempotent on (account, person, campaign).</p>
+<h3>Providers (through treg, with fallback)</h3>
+<div class="tw"><table>
+<tr><th>Step</th><th>Primary</th><th>Fallback</th><th>Measured success</th></tr>
+<tr><td>Keyword post search (keywords, 24h, sort by date, author keywords, industry, mentions of a company)</td><td>HarvestAPI ($0.004 a page of 50)</td><td>AnyAPI ($0.002), ScrapeCreators</td><td class="n">99.5 to 100%</td></tr>
+<tr><td>A creator's or company's posts</td><td>HarvestAPI or TikHub ($0.001 to $0.004)</td><td>ScrapeCreators</td><td class="n">99.98%</td></tr>
+<tr><td>Engagers (reactions and comments in one call)</td><td>Fetchin ($0.003)</td><td>HarvestAPI reactions and comments</td><td class="n">99.2 to 99.96%</td></tr>
+<tr><td>Profile; company and website</td><td>Fetchin ($0.0015 each)</td><td>AnyAPI, HarvestAPI, treg routed</td><td class="n">99.97%</td></tr>
+<tr><td>Work email find and verify</td><td>The live Closefast treg path</td><td>(routed)</td><td class="n">live</td></tr>
+</table></div>
+<p>If every provider for a step fails for 24 hours, the watch pauses and shows a notice. We never log into LinkedIn or use anyone's LinkedIn account. The data is public profile data bought from providers, the same model Jungler uses.</p>
+
+<h2 id="pilot">Brevo ecommerce pilot setup</h2>
+<div class="grid">
+<div class="card"><h3>Keyword watches</h3><ul>
+<li>Brands: Klaviyo, Omnisend, Mailchimp, Attentive, Postscript, Yotpo, combined with pricing, alternative, switch, migrate, expensive, recommend</li>
+<li>Category: email or SMS marketing combined with Shopify, DTC or ecommerce; abandoned cart; retention; BFCM email</li>
+<li>Founder posts: DTC, ecommerce or Shopify, with the author filter founder, owner or CEO</li>
+</ul></div>
+<div class="card"><h3>Creators and competitors</h3><ul>
+<li>Seed creators: the DTC founder creators found today, then auto-discovery</li>
+<li>Competitor pages and executives, plus posts tagging them</li>
+</ul></div>
+<div class="card"><h3>Who fits</h3><ul>
+<li>Merchants: run a Shopify, Woo or BigCommerce store, 2 to 200 staff, founder, marketing, ecommerce or retention role</li>
+<li>Hotter when the store pays Klaviyo, Omnisend, Attentive or Mailchimp today</li>
+<li>Excluded: stores on Brevo, competitor staff, anyone the creator engine or Partner Voices has contacted</li>
+</ul></div>
+<div class="card"><h3>Campaigns and sending</h3><ul>
+<li>Merchants campaign: live in test mode (previews come to you)</li>
+<li>Agency partners campaign: agencies and freelancers from the same signals, created paused</li>
+<li>Target 10 new buyers a day on farooqchisty@ecombrevo.com plus phild@, hottest first</li>
+</ul></div>
+</div>
+
+<h2 id="build">Build order (parallel tracks, starting on your go)</h2>
+<div class="tw"><table>
+<tr><th>Track</th><th>Scope</th><th>Done when</th></tr>
+<tr><td>A. Collect</td><td>treg LinkedIn client with fallback; keyword, creator and competitor collectors on the 30-hour window; re-read schedule; shared cache; run caps.</td><td>A day's run for the Brevo watches fills the cache, with every call priced in <code>vendor_spend</code>.</td></tr>
+<tr><td>B. Understand</td><td>Topic and intent classifier for posts and comments; headline triage; profile, company and store enrichment; exclusions; heat; campaign routing; creator audience-fit scoring.</td><td>On today's test set it keeps the founders from the DTC post, marks the "SMS costs" comments, and drops Klaviyo staff, recruiters and the SaaS founders.</td></tr>
+<tr><td>C. Product</td><td>Onboarding proposals; Signals page; watch editor with a cost estimate; daily target with the capacity limit; over-target list; "wrong match"; weekly digest; wallet billing on delivery.</td><td>A new free account gets proposed watches at signup and sees its first buyers from the 7-day lookback without typing anything.</td></tr>
+<tr><td>D. Deliver</td><td>Buyers become campaign prospects (source Signal), the 24-hour wait, angle from intent and topic, the hard block on mentions, heat ordering in the send queue.</td><td>Your workspace, in test mode, receives preview openers for real buyers found that morning.</td></tr>
+</table></div>
+<p>A, B and C run in parallel; D joins them. Then the scheduler goes on for your workspace in test mode, and test mode comes off once you like the previews.</p>
+
+<h2 id="risks">Risks and how they're handled</h2>
+<div class="tw"><table>
+<tr><th>Risk</th><th>Handling</th></tr>
+<tr><td>Category talk is mostly sellers</td><td>Audience-fit scoring decides whose engagers we pay to read; sellers route to the partner campaign instead of being wasted.</td></tr>
+<tr><td>A data provider shuts down (LinkedIn sues scrapers)</td><td>Two or more providers per step through treg; the watch pauses with a notice; no LinkedIn login anywhere.</td></tr>
+<tr><td>Intent classifier is wrong</td><td>A one-line reason and a quote on every person; "wrong match" feedback; test mode previews before anything sends.</td></tr>
+<tr><td>Emails feel creepy</td><td>The 24-hour wait; the signal sets the angle only; mentioning the post, comment or competitor is hard-blocked.</td></tr>
+<tr><td>Sending capacity, not finding, is the limit</td><td>The target is capped by capacity; the over-target list shows what more inboxes would unlock; InboxKit when the pilot wants more.</td></tr>
+</table></div>
+</main>
+</body>
+</html>
