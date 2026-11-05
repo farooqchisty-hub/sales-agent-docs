@@ -45,15 +45,15 @@ ol li,ul li{margin:4px 0}
 <h1>Signals: find people showing buying intent in the last 24 hours, and email them the next day</h1>
 <p class="sub">The Jungler-style module inside Closefast. v2 replaces the "watch a few competitor pages" idea with keywords, intent and audience, after live tests on real LinkedIn data and research into how Jungler and similar tools work. It follows on from the <a href="../thesis/">business thesis</a> and the <a href="../v1/">V1 build plan</a>.</p>
 
-<div class="call"><b>In one line:</b> a signal isn't a page. It's a conversation from the last 24 hours, found by <b>keywords</b> (brands, category, pain phrases), scored for <b>intent</b> (asking, complaining, comparing, switching, pricing), and kept only when the <b>audience</b> is buyers and the person <b>fits</b> (they run a store). It runs every day. You pay per buyer delivered, and you choose how many a day.</div>
+<div class="call"><b>In one line:</b> a signal isn't a page. It's a conversation from the last 24 hours, found by <b>keywords</b> (brands, category, pain phrases), scored for <b>intent</b> (asking, complaining, comparing, switching, pricing), and kept only when the <b>audience</b> is buyers and the person <b>fits</b> (they run a store). It runs every day. You pay per qualified prospect delivered, and you choose how many a day. Where this page says "buyer", it means a <a href="#qualify">qualified signal prospect</a>; a lead is still an interested reply.</div>
 
 <nav class="toc">
-<a href="#why">Why not built yet</a><a href="#tests">Live tests</a><a href="#market">How others do it</a><a href="#model">The model</a><a href="#timing">Timing</a><a href="#volume">How much you get</a><a href="#ux">Setup</a><a href="#money">Economics</a><a href="#eng">Engineering</a><a href="#pilot">Brevo pilot</a><a href="#build">Build order</a><a href="#risks">Risks</a>
+<a href="#why">Why not built yet</a><a href="#tests">Live tests</a><a href="#market">How others do it</a><a href="#qualify">Who qualifies</a><a href="#model">The model</a><a href="#timing">Timing</a><a href="#volume">How much you get</a><a href="#ux">Setup</a><a href="#money">Economics</a><a href="#eng">Engineering</a><a href="#pilot">Brevo pilot</a><a href="#build">Build order</a><a href="#risks">Risks</a>
 </nav>
 
 <h2 id="why">Why it isn't built yet, and why it goes next</h2>
 <p>The V1 plan built the pipe that every source feeds first (onboarding, finding people, the sending pool, replies, the wallet) and listed Signals as "still to build". When Signals was planned on 21 Oct, treg had a $0 balance, so no live LinkedIn data had been tested. Both reasons are gone: the pipe is live, and today's tests ran the whole chain on real data for about six cents.</p>
-<div class="call"><b>Decision: Signals is next, before InboxKit.</b> The pool has 2 inboxes: phild@trywinningstatics.com for open signups, and farooqchisty@ecombrevo.com, moved from the creator engine today and reserved for your workspace. Sending capacity, not finding, caps the pilot (see <a href="#volume">How much you get</a>), so InboxKit comes back once the pilot wants more than about 10 new buyers a day.</div>
+<div class="call"><b>Decision: Signals is next, before InboxKit.</b> The pool has 2 inboxes: phild@trywinningstatics.com for open signups, and farooqchisty@ecombrevo.com, moved from the creator engine today and reserved for your workspace. How much the pilot can send per day is parked for now (Farooq, 6 Nov) and gets decided later.</div>
 
 <h2 id="tests">What the live tests showed (6 Nov, about $0.06 in total)</h2>
 <div class="tw"><table>
@@ -97,6 +97,27 @@ ol li,ul li{margin:4px 0}
 <li>The store and email-tool check, and the email actually written and sent; none of them do both</li>
 </ul></div>
 </div>
+
+<h2 id="qualify">Who qualifies: the definition we bill on</h2>
+<p>We use the thesis vocabulary. A <b>signal</b> is the event (a post, comment or reaction). A <b>prospect</b> is a person we can reach. A <b>lead</b> is an interested reply. A <b>qualified signal prospect</b> is a person who passes all five gates below, in order. We bill $0.15 only when all five pass and the person has been placed in a campaign. Each gate stores its result and reason, so any prospect can be traced back to exactly why they qualified.</p>
+<div class="tw"><table>
+<tr><th>Gate</th><th>Passes when</th><th>Checked from</th><th>Brevo pilot setting</th></tr>
+<tr><td>1. Signal</td><td>The person wrote, commented on or reacted to an on-topic post in the last 30 hours (7 days on the first run). They get an intent label and a heat level.</td><td>Post and comment text, model-classified in batches</td><td>The topic is email or SMS marketing, retention, or a store's growth. Any heat level counts, and hot people go first.</td></tr>
+<tr><td>2. Role</td><td>The person decides or influences the purchase, as written in the campaign's buyer profile.</td><td>Headline and profile: rules first, the model only when it's ambiguous</td><td>Founder, co-founder, owner or CEO; a head, VP, director or C-level role in marketing, ecommerce, growth, retention or CRM; ecommerce manager. Not interns, students, people open to work, recruiters or competitor staff. Agencies and freelancers go to the partner campaign.</td></tr>
+<tr><td>3. Company</td><td>Their current company matches the buyer profile.</td><td>Company page (staff, industry, website) plus one homepage fetch (store platform, email tool, Brevo scripts)</td><td>Runs an online store (Shopify, Woo, BigCommerce or Magento detected); 2 to 200 staff; based in the US, UK, Canada, Australia, New Zealand or Ireland (the copy is in English); not running Brevo or Sendinblue; not on an uploaded customer list. Boost: pays Klaviyo, Omnisend, Attentive or Mailchimp today.</td></tr>
+<tr><td>4. Reachable</td><td>A work email is found and verified as deliverable.</td><td>The live treg find and verify path</td><td>Catch-all and unknown results are not sent and not billed (protects the shared pool). A later bounce is refunded automatically.</td></tr>
+<tr><td>5. New</td><td>Not contacted by this account before, not held by the 60-day pool cooldown, not suppressed or opted out, not already a prospect.</td><td>Closefast's own tables</td><td>Also excludes anyone the creator engine or Partner Voices contacted. If the person is already a prospect, the signal is added as a reason, with no new charge.</td></tr>
+</table></div>
+<p><b>Fit score.</b> The model gives each person who passes gates 2 and 3 a score from 0 to 100 against the buyer profile, with a one-line reason. The cut-off is 70; scores of 50 to 69 are kept as "near misses" for the "wrong match" feedback loop, and are never billed.</p>
+<p><b>Where the buyer profile comes from.</b> Onboarding writes it from the website (who buys, B2B or consumer, roles, company type, size and markets). The owner can edit it in plain words on the campaign page. B2B accounts swap the store check for industry, staff range and optionally the tech they use.</p>
+<div class="tw"><table>
+<tr><th>Real person from today's tests</th><th>Outcome</th></tr>
+<tr><td>Founder of Rumours Tea, Singapore; the store runs Shopify and Klaviyo</td><td>Passes gates 1 to 3 on role and store, but fails the pilot's market list (Singapore). Not billed.</td></tr>
+<tr><td>Account executive at Klaviyo who liked a Klaviyo post</td><td>Dropped at gate 2 (competitor staff). Free.</td></tr>
+<tr><td>Founder and CEO of a PHP hosting company who reacted to a Klaviyo post</td><td>Passes gate 2, fails gate 3 (no store). Free.</td></tr>
+<tr><td>Owner of a DTC email agency who wrote an Omnisend switch post</td><td>Fails the merchant profile and goes to the agency partners campaign, where it's judged against that campaign's profile.</td></tr>
+<tr><td>Founder of a US Shopify brand that pays Klaviyo, who commented "our SMS costs keep climbing"</td><td>Passes all five gates with heat hot and a Klaviyo boost. Billed $0.15 and first in the send queue.</td></tr>
+</table></div>
 
 <h2 id="model">The model: where to look, what counts, who fits</h2>
 <h3>1. Where we look (sources)</h3>
