@@ -41,14 +41,14 @@ ol li,ul li{margin:4px 0}
 </head>
 <body>
 <main>
-<span class="tag acc">SIGNALS PLAN v2</span><span class="tag">6 Nov 2026</span><span class="tag acc">Closefast</span><span class="tag warn">FOR REVIEW</span>
+<span class="tag acc">SIGNALS PLAN v3</span><span class="tag">6 Nov 2026</span><span class="tag acc">Closefast</span><span class="tag warn">FOR REVIEW</span>
 <h1>Signals: find people showing buying intent in the last 24 hours, and email them the next day</h1>
 <p class="sub">The Jungler-style module inside Closefast. v2 replaces the "watch a few competitor pages" idea with keywords, intent and audience, after live tests on real LinkedIn data and research into how Jungler and similar tools work. It follows on from the <a href="../thesis/">business thesis</a> and the <a href="../v1/">V1 build plan</a>.</p>
 
-<div class="call"><b>In one line:</b> a signal isn't a page. It's a conversation from the last 24 hours, found by <b>keywords</b> (brands, category, pain phrases), scored for <b>intent</b> (asking, complaining, comparing, switching, pricing), and kept only when the <b>audience</b> is buyers and the person <b>fits</b> (they run a store). It runs every day. You pay per qualified prospect delivered, and you choose how many a day. Where this page says "buyer", it means a <a href="#qualify">qualified signal prospect</a>; a lead is still an interested reply.</div>
+<div class="call"><b>In one line:</b> a signal isn't a page. It's a conversation from the last 24 hours, found by <b>keywords</b> (brands, category, pain phrases), scored for <b>intent</b> (asking, complaining, comparing, switching, pricing), and kept only when the <b>audience</b> is buyers and the person <b>fits</b> (they run a store). It runs every day. Each qualified prospect costs 15 credits, from the same credits as the rest of Closefast, and you set a weekly budget. Where this page says "buyer", it means a <a href="#qualify">qualified signal prospect</a>; a lead is still an interested reply.</div>
 
 <nav class="toc">
-<a href="#why">Why not built yet</a><a href="#tests">Live tests</a><a href="#market">How others do it</a><a href="#qualify">Who qualifies</a><a href="#model">The model</a><a href="#timing">Timing</a><a href="#volume">How much you get</a><a href="#ux">Setup</a><a href="#money">Economics</a><a href="#eng">Engineering</a><a href="#pilot">Brevo pilot</a><a href="#build">Build order</a><a href="#risks">Risks</a>
+<a href="#why">Why not built yet</a><a href="#tests">Live tests</a><a href="#market">How others do it</a><a href="#qualify">Who qualifies</a><a href="#model">The model</a><a href="#timing">Timing</a><a href="#volume">How much you get</a><a href="#ux">Setup</a><a href="#money">Economics</a><a href="#fit">Fits Closefast</a><a href="#eng">Engineering</a><a href="#pilot">Brevo pilot</a><a href="#build">Build order</a><a href="#risks">Risks</a>
 </nav>
 
 <h2 id="why">Why it isn't built yet, and why it goes next</h2>
@@ -99,7 +99,7 @@ ol li,ul li{margin:4px 0}
 </div>
 
 <h2 id="qualify">Who qualifies: the definition we bill on</h2>
-<p>We use the thesis vocabulary. A <b>signal</b> is the event (a post, comment or reaction). A <b>prospect</b> is a person we can reach. A <b>lead</b> is an interested reply. A <b>qualified signal prospect</b> is a person who passes all five gates below, in order. We bill $0.15 only when all five pass and the person has been placed in a campaign. Each gate stores its result and reason, so any prospect can be traced back to exactly why they qualified.</p>
+<p>We use the thesis vocabulary. A <b>signal</b> is the event (a post, comment or reaction). A <b>prospect</b> is a person we can reach. A <b>lead</b> is an interested reply. A <b>qualified signal prospect</b> is a person who passes all five gates below, in order. We charge 15 credits ($0.15, see the <a href="../credits/">Credits plan</a>) only when all five pass and the person has been placed in a campaign. Each gate stores its result and reason, so any prospect can be traced back to exactly why they qualified.</p>
 <div class="tw"><table>
 <tr><th>Gate</th><th>Passes when</th><th>Checked from</th><th>Brevo pilot setting</th></tr>
 <tr><td>1. Signal</td><td>The person wrote, commented on or reacted to an on-topic post in the last 30 hours (7 days on the first run). They get an intent label and a heat level.</td><td>Post and comment text, model-classified in batches</td><td>The topic is email or SMS marketing, retention, or a store's growth. Any heat level counts, and hot people go first.</td></tr>
@@ -116,7 +116,7 @@ ol li,ul li{margin:4px 0}
 <tr><td>Account executive at Klaviyo who liked a Klaviyo post</td><td>Dropped at gate 2 (competitor staff). Free.</td></tr>
 <tr><td>Founder and CEO of a PHP hosting company who reacted to a Klaviyo post</td><td>Passes gate 2, fails gate 3 (no store). Free.</td></tr>
 <tr><td>Owner of a DTC email agency who wrote an Omnisend switch post</td><td>Fails the merchant profile and goes to the agency partners campaign, where it's judged against that campaign's profile.</td></tr>
-<tr><td>Illustration: founder of a US Shopify brand that pays Klaviyo, who commented "our SMS costs keep climbing"</td><td>Passes all five gates with heat hot and a Klaviyo boost. Billed $0.15 and first in the send queue.</td></tr>
+<tr><td>Illustration: founder of a US Shopify brand that pays Klaviyo, who commented "our SMS costs keep climbing"</td><td>Passes all five gates with heat hot and a Klaviyo boost. Charged 15 credits and first in the send queue.</td></tr>
 </table></div>
 
 <h2 id="model">The model: where to look, what counts, who fits</h2>
@@ -169,14 +169,15 @@ Send queue order: HOT, then WARM, then COOL; within a level, highest fit first</
 <li><b>Free accounts</b> run weekly, with the same 7-day window.</li>
 </ul>
 
-<h2 id="volume">How much each customer gets (pay as you go)</h2>
+<h2 id="volume">How much each customer gets (credits, pay as you go)</h2>
+<p>Signals runs on the same credits as the rest of Closefast (see the <a href="../credits/">Credits plan</a>). There's no separate Signals plan, and there are no Signals-only free limits.</p>
 <ol>
-<li><b>You choose a daily target</b> per campaign, for example "up to 10 new buyers a day", or a monthly spend cap. The engine fills it hottest first. Anything beyond the target is kept as "found, over your target", showing title, company and reason with the name hidden, so topping up has a visible reason.</li>
-<li><b>We bill only delivered buyers:</b> $0.15 each, for a person who passed the fit check, has a verified work email and was placed in a campaign. Scanning, drops, duplicates and people without an email are free.</li>
-<li><b>The target can't exceed sending capacity.</b> Every new buyer costs about 5 sends (an opener and up to 4 follow-ups), so a 25-a-day inbox supports about 5 new buyers a day at steady state. The target screen shows this limit and offers more inboxes when you hit it.</li>
-<li><b>Presets for people who want a plan feel:</b> Light (3 a day), Steady (10 a day), Max (25 a day, with extra inboxes). They're targets, not subscriptions.</li>
-<li><b>Free:</b> 1 keyword watch (up to 3 keywords) plus auto-found creators, run weekly, up to 50 buyers a month, and a weekly "your buyers this week" email.</li>
-<li><b>Caps pause, they never back-bill.</b> When the spend cap or the wallet runs out, watches pause. After a top-up they resume from that day; there's no backlog drain like Jungler's renewal.</li>
+<li><b>A qualified signal prospect costs 15 credits ($0.15).</b> It's charged when the prospect is placed in a campaign. Scanning, drops, duplicates, near misses and people without a deliverable email cost nothing.</li>
+<li><b>Free credits work here like everywhere else.</b> Every account's 1,500 welcome credits and 500 monthly credits can go on Signals, data prospects or sending, in any mix.</li>
+<li><b>Each campaign has a weekly credit budget.</b> The engine fills it hottest first. Anything beyond the budget is kept as "found, over budget", showing title, company and reason with the name hidden, so topping up has a visible reason.</li>
+<li><b>At zero credits:</b> watches keep scanning weekly and fill the found-but-locked list, so the reason to top up stays fresh.</li>
+<li><b>Caps pause, they never back-bill.</b> After a top-up, watches resume from that day; there's no backlog drain like Jungler's renewal.</li>
+<li><b>Sending capacity is parked</b> (Farooq, 6 Nov) and gets decided later.</li>
 <li><b>Broad keywords get a warning.</b> When a keyword would return more posts a day than its run can read, the editor says so and suggests narrowing it with an AND, so no matches are lost silently.</li>
 </ol>
 
@@ -208,13 +209,35 @@ Send queue order: HOT, then WARM, then COOL; within a level, highest fit first</
 <tr><td>Work email find and verify (~$0.003)</td><td class="n">~15</td><td class="n">$0.05</td></tr>
 <tr><td><b>Total</b></td><td class="n"><b>~10 buyers</b></td><td class="n"><b>~$0.65 (about $0.065 a buyer)</b></td></tr>
 </table></div>
-<p>At $0.15 a buyer, that's about 55% gross margin on day one, rising as accounts share the cache. Posts, engagers, profiles and companies are fetched once for every account that needs them, and accounts in the same market overlap heavily. A free account's weekly run costs about $1 to $2 a month, inside the thesis budget. Jungler charges per raw record (8k credits on $99), and most raw records are staff and sellers.</p>
+<p>At 15 credits ($0.15) a prospect, that's about 55% gross margin on day one, rising as accounts share the cache. Posts, engagers, profiles and companies are fetched once for every account that needs them, and accounts in the same market overlap heavily. The weekly scan for an account at zero credits costs us about $1 a month, which is what the found-but-locked list costs to keep fresh. Jungler charges per raw record (8k credits on $99), and most raw records are staff and sellers.</p>
+
+<h2 id="fit">How Signals fits into Closefast</h2>
+<p>Signals isn't a separate product bolted on. It's a fourth <b>prospect source</b> next to Database, Local and Your list. It feeds the same campaigns, the same sending engine, the same inbox and the same credits. Only the collecting and qualifying is new.</p>
+<div class="wf">onboarding.js     reads the site -> buyer profile + campaign        + proposes watches (brands, category, pain, creators)
+brief.js          campaign brief, guardrails                       + structured buyer profile (roles, store, staff, markets)
+                                                                    + watch brands auto-added to never_topics
+lead/planner.js   Source Plan per segment: Database, Local, List  + "Signal watches" as a source in the plan
+src/signals/ NEW  collect -> classify -> qualify -> deliver -> learn  (daily, shared cache, treg)
+lead store        people + leads rows, one per person per account  source='signal', reasons kept, next_step_at = engaged + 24h
+billing/wallet    charge on delivery                                 signal_prospect = 15 credits (credits plan)
+outreach/engine   pick due leads, write, gate, send                  + heat priority in queue order (no other change)
+outreach/write    writes the sequence from the brief                 + signal angle (intent + topic) as context
+outreach/gates    never_topics, no_amounts hard blocks               + "never mention the post, like or comment" check
+inbox, results    replies, leads, meetings, call briefs              unchanged; lead timeline shows the signal and quote
+scheduler         5-minute pass                                      + Signals stage with its own time budget
+admin, posthog    accounts, pool, spend                              + signal spend, cache hit rate, first_signal_prospect</div>
+<ul>
+<li><b>One person, one prospect.</b> If the same person is already a prospect from any source, the signal is added to their record as a reason. There's no second row and no second charge.</li>
+<li><b>Same safety for every source:</b> the 60-day pool cooldown, global opt-outs, suppression, test mode, bounce refunds and the send allowlist all apply to signal prospects unchanged.</li>
+<li><b>Same vocabulary across screens:</b> Prospects shows a Source column (Database, Local, Your list, Signal). Signal rows show the heat and the quote that triggered them.</li>
+<li><b>Same tenancy rules:</b> the new per-account tables carry <code>workspace_id</code> and join the tenancy tests. The shared cache holds public profile data only.</li>
+</ul>
 
 <h2 id="eng">Engineering design</h2>
 <h3>Tables</h3>
 <div class="tw"><table>
 <tr><th>Table</th><th>Scope</th><th>Holds</th></tr>
-<tr><td><code>watches</code></td><td>Per account</td><td>Kind (keyword, creator, competitor), query or target, author filter, language, country, intent rule, linked campaigns, daily target, status.</td></tr>
+<tr><td><code>watches</code></td><td>Per account</td><td>Kind (keyword, creator, competitor), query or target, author filter, language, country, intent rule, linked campaigns, status (budgets live on the campaign).</td></tr>
 <tr><td><code>li_posts</code></td><td>Shared cache</td><td>Post id, author, text, posted at, stats, topic and intent verdict, re-read schedule.</td></tr>
 <tr><td><code>li_engagements</code></td><td>Shared cache</td><td>Post, person, kind (reaction, comment, reply), comment text, comment intent, time.</td></tr>
 <tr><td><code>li_people</code>, <code>li_companies</code></td><td>Shared cache, 30-day freshness</td><td>Headline, title, company, country, open to work; website, store platform, email tool, staff, industry.</td></tr>
@@ -229,7 +252,7 @@ engage    engagers of on-topic posts; re-reads at day 1, 3 and 7
 triage    headline rules, then comment intent (batched model)
 enrich    profile -> company -> website -> store + email-tool fetch   (survivors only)
 judge     fit score + heat + reason; route to the matching campaign
-contact   email find + verify, hottest first, until the daily target is met
+contact   email find + verify, hottest first, until the campaign's weekly credit budget is met
 deliver   prospect (source: Signal) into the campaign; first email >= 24h after
 learn     update creators' audience fit; promote or drop creators</div>
 <p>Each stage runs inside the existing 5-minute scheduler pass with a time budget and resumes on the next pass, so it never starves sending. There's a per-account daily data cap, the global <code>TREG_MONTHLY_CAP_USD</code> ceiling, and billing through the wallet ledger, idempotent on (account, person, campaign).</p>
@@ -263,19 +286,20 @@ learn     update creators' audience fit; promote or drop creators</div>
 <div class="card"><h3>Campaigns and sending</h3><ul>
 <li>Merchants campaign: live in test mode (previews come to you)</li>
 <li>Agency partners campaign: agencies and freelancers from the same signals, created paused</li>
-<li>Target 10 new buyers a day on farooqchisty@ecombrevo.com plus phild@, hottest first</li>
+<li>Weekly budget about 2,300 credits (about 10 signal prospects a day, fully worked), hottest first</li>
 </ul></div>
 </div>
 
 <h2 id="build">Build order (parallel tracks, starting on your go)</h2>
 <div class="tw"><table>
 <tr><th>Track</th><th>Scope</th><th>Done when</th></tr>
+<tr><td>0. Credits</td><td>The <a href="../credits/">Credits plan</a>: grant rows with expiry (1,500 welcome, 500 monthly), spend order, paid-only items, holds for follow-ups, pack bonuses, a weekly budget per campaign, abuse guards, the Credits page, tests.</td><td>Your account shows 1,500 welcome credits, and every existing charge (found, worked, warm-inbox email) draws credits in the right order.</td></tr>
 <tr><td>A. Collect</td><td>treg LinkedIn client with fallback; keyword, creator and competitor collectors on the 30-hour window; re-read schedule; shared cache; run caps.</td><td>A day's run for the Brevo watches fills the cache, with every call priced in <code>vendor_spend</code>.</td></tr>
 <tr><td>B. Understand</td><td>Topic and intent classifier for posts and comments; headline triage; profile, company and store enrichment; exclusions; heat; campaign routing; creator audience-fit scoring.</td><td>On today's test set it keeps the founders from the DTC post, marks the "SMS costs" comments, and drops Klaviyo staff, recruiters and the SaaS founders.</td></tr>
-<tr><td>C. Product</td><td>Onboarding proposals; Signals page; watch editor with a cost estimate; daily target with the capacity limit; over-target list; "wrong match"; weekly digest; wallet billing on delivery.</td><td>A new free account gets proposed watches at signup and sees its first buyers from the 7-day lookback without typing anything.</td></tr>
+<tr><td>C. Product</td><td>Onboarding proposals; Signals page; watch editor with a credit estimate; weekly credit budget per campaign; found-but-locked list; "wrong match"; weekly digest; 15 credits charged on delivery.</td><td>A new free account gets proposed watches at signup and sees its first buyers from the 7-day lookback without typing anything.</td></tr>
 <tr><td>D. Deliver</td><td>Buyers become campaign prospects (source Signal), the 24-hour wait, angle from intent and topic, the hard block on mentions, heat ordering in the send queue.</td><td>Your workspace, in test mode, receives preview openers for real buyers found that morning.</td></tr>
 </table></div>
-<p>A, B and C run in parallel; D joins them. Then the scheduler goes on for your workspace in test mode, and test mode comes off once you like the previews.</p>
+<p>0, A and B run in parallel. C builds on 0, and D joins them all. Then the scheduler goes on for your workspace in test mode, and test mode comes off once you like the previews.</p>
 
 <h2 id="risks">Risks and how they're handled</h2>
 <div class="tw"><table>

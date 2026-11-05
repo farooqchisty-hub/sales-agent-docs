@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Closefast Credits Plan</title>
+<style>
+:root{--bg:#0d0f10;--panel:#15181a;--line:#262a2d;--ink:#eceeea;--mute:#9aa19c;--acc:#b6f36b;--warn:#f3c86b;--bad:#f37b6b;--mono:ui-monospace,SFMono-Regular,Menlo,monospace}
+@media (prefers-color-scheme: light){:root:not([data-theme="dark"]){--bg:#f7f7f4;--panel:#fff;--line:#e2e3de;--ink:#15181a;--mute:#5d645f;--acc:#3f7d12;--warn:#9a6a00;--bad:#b23a2a}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 Inter,system-ui,-apple-system,Segoe UI,sans-serif}
+main{max-width:1040px;margin:0 auto;padding:40px 16px 80px}
+h1{font-size:30px;line-height:1.2;margin:0 0 8px}
+h2{font-size:21px;margin:48px 0 12px;padding-top:16px;border-top:1px solid var(--line)}
+h3{font-size:16px;margin:24px 0 8px}
+.sub{color:var(--mute);margin:0 0 24px}
+.tag{display:inline-block;font:12px var(--mono);padding:2px 8px;border:1px solid var(--line);border-radius:99px;color:var(--mute);margin-right:6px}
+.tag.acc{color:var(--acc);border-color:var(--acc)}
+.tag.warn{color:var(--warn);border-color:var(--warn)}
+.grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px}
+.card h3{margin-top:0}
+.card ul{margin:0;padding-left:18px}
+.kpi b{display:block;font:600 24px/1.2 var(--mono);color:var(--acc)}
+.kpi span{color:var(--mute);font-size:13px}
+table{width:100%;border-collapse:collapse;margin:8px 0 16px;font-size:14px}
+th,td{text-align:left;vertical-align:top;padding:8px 10px;border-bottom:1px solid var(--line)}
+th{color:var(--mute);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.04em}
+td.n{font-family:var(--mono);white-space:nowrap}
+.tw{overflow-x:auto}
+code,.mono{font-family:var(--mono);font-size:13px}
+.call{border-left:3px solid var(--acc);background:var(--panel);padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0}
+.call.warn{border-color:var(--warn)}
+.wf{background:var(--panel);border:1px dashed var(--line);border-radius:10px;padding:14px;font:13px/1.55 var(--mono);color:var(--mute);white-space:pre;overflow-x:auto}
+nav.toc{display:flex;flex-wrap:wrap;gap:6px;margin:16px 0 8px}
+nav.toc a{font:12px var(--mono);color:var(--mute);text-decoration:none;border:1px solid var(--line);padding:3px 9px;border-radius:99px}
+nav.toc a:hover{color:var(--acc);border-color:var(--acc)}
+ol li,ul li{margin:4px 0}
+</style>
+</head>
+<body>
+<main>
+<span class="tag acc">CREDITS PLAN v1</span><span class="tag">6 Nov 2026</span><span class="tag acc">Closefast</span><span class="tag warn">FOR REVIEW</span>
+<h1>One currency for everything: credits, pay as you go, free credits for everyone</h1>
+<p class="sub">This replaces the free plan of the <a href="../thesis/">business thesis</a> (a starter boost plus a monthly allowance, each counted per feature) with a single credit balance. Every feature is open to every account. Features that cost us money to deliver use credits, each at its own rate. Every account gets free credits. It covers all of Closefast, including <a href="../signals/">Signals</a>.</p>
+
+<div class="call"><b>In one line:</b> 1 credit = $0.01, always. Every account gets 1,500 free credits at signup (they last 30 days) and 500 free credits every month (no rollover). Paid credits come in packs and never expire. The agent's loop is free: thinking, replies, leads, meetings, the inbox, exports. Credits only pay for fuel: finding people, signals, sending from our inboxes, premium writing, branded inboxes.</div>
+
+<nav class="toc">
+<a href="#why">Why credits</a><a href="#rules">Rules</a><a href="#rates">Rate card</a><a href="#free">Free credits</a><a href="#examples">What credits buy</a><a href="#packs">Packs</a><a href="#controls">Spend controls</a><a href="#upgrade">Upgrade moments</a><a href="#cost">Our cost</a><a href="#eng">Engineering</a><a href="#risks">Risks</a>
+</nav>
+
+<h2 id="why">Why credits instead of a free plan plus a wallet</h2>
+<div class="grid">
+<div class="card"><h3>One meter, any mix</h3><p>Today a user tracks 3 free allowances (prospects, prospects worked, emails), each with its own limit and reset date, plus a wallet in dollars. With credits, there's one number. A user who only wants signals spends everything on signals; another spends it all on sending.</p></div>
+<div class="card"><h3>Free is the whole product</h3><p>There are no feature gates, so a free account can try Signals, premium writing and everything else on its free credits. People upgrade because they've seen it work, not because a button is locked.</p></div>
+<div class="card"><h3>We can price each feature on its own</h3><p>When a data provider gets cheaper or an email costs us more, we change one rate. There are no plans to reprice and no grandfathering. Clay, Explee and the model APIs work this way, so buyers already understand it.</p></div>
+<div class="card"><h3>The upgrade moment is natural</h3><p>Credits run out while results are on screen: replies in the inbox, prospects found but locked. That converts better than a plan comparison table.</p></div>
+</div>
+
+<h2 id="rules">The rules</h2>
+<ol>
+<li><b>1 credit = $0.01, fixed.</b> Prices are shown in credits with the dollar value next to them. We never quietly change what a credit is worth.</li>
+<li><b>Charge for fuel, never for the engine or the outcome.</b> Reading the website, campaigns, previews, test mode, reply handling, leads, meetings, call briefs, exports and support use no credits. We never charge per reply, lead or meeting (thesis decision).</li>
+<li><b>Charge when value is delivered, never for attempts.</b> A qualified prospect placed in a campaign, an email actually sent. Scanning, drops, duplicates and people without a deliverable email are free.</li>
+<li><b>Refund what we got wrong.</b> A found email that bounces gets its credits back automatically. So does a send that failed on our side.</li>
+<li><b>Never back-bill and never surprise.</b> Every campaign and signal shows its expected credits before it starts. When credits run out, new work pauses, and nothing piles up to be charged later.</li>
+<li><b>Spend order:</b> welcome credits first (they expire soonest), then this month's free credits, then paid credits (which never expire).</li>
+</ol>
+
+<h2 id="rates">Rate card</h2>
+<div class="tw"><table>
+<tr><th>What</th><th>Credits</th><th>Charged when</th><th>Free credits can pay?</th></tr>
+<tr><td>Read your website, buyer profile, campaigns, previews, test mode</td><td class="n">0</td><td>Never</td><td>n/a</td></tr>
+<tr><td><b>Prospect found</b> (Database or Local source: fits the buyer profile, verified work email)</td><td class="n">8</td><td>When it's placed in a campaign</td><td>Yes</td></tr>
+<tr><td><b>Signal prospect</b> (passes all 5 <a href="../signals/#qualify">Signals gates</a>)</td><td class="n">15</td><td>When it's placed in a campaign</td><td>Yes</td></tr>
+<tr><td><b>Your list:</b> find and verify an email for a person you uploaded</td><td class="n">3</td><td>When a deliverable email is found (bring verified emails and it's 0)</td><td>Yes</td></tr>
+<tr><td><b>Agent work</b> per prospect contacted: research, writing the whole sequence, every reply handled</td><td class="n">3</td><td>When the first email is sent</td><td>Yes</td></tr>
+<tr><td><b>Email from our warm inboxes</b></td><td class="n">3 per email</td><td>When it's sent (follow-ups are reserved upfront, see <a href="#controls">controls</a>)</td><td>Yes, up to 25 a day per account</td></tr>
+<tr><td>Email from your own connected inbox</td><td class="n">0</td><td>Never</td><td>n/a</td></tr>
+<tr><td><b>Premium:</b> deep research on the prospect and our best writing model</td><td class="n">+10 per prospect</td><td>When the first email is sent</td><td>Yes</td></tr>
+<tr><td>Signal watches running (daily scan, creators, the found-but-locked list)</td><td class="n">0</td><td>Never; the scan is capped per account, and at zero credits it drops to weekly</td><td>n/a</td></tr>
+<tr><td>Replies, leads, meetings, call briefs, inbox, CRM, exports, support, weekly digest</td><td class="n">0</td><td>Never</td><td>n/a</td></tr>
+<tr><td><b>Branded inbox</b> on your own domain (we buy, set up and warm it)</td><td class="n">40 a day per inbox (~$12 a month)</td><td>Daily while it's active</td><td>No, paid credits only (a real cash cost)</td></tr>
+<tr><td>Done-for-you setup call (60 minutes)</td><td class="n">9,900</td><td>When it's booked</td><td>No, paid credits only</td></tr>
+</table></div>
+<p>The rates carry over from the wallet built in V1: found 8, signal 15, worked 3, warm-inbox email 3, premium 10. Only the unit changes, from cents to credits, so nothing in the engines has to be repriced.</p>
+
+<h2 id="free">Free credits</h2>
+<div class="grid">
+<div class="card kpi"><b>1,500 welcome</b><span>At signup, for every account, with no card. They last 30 days, long enough to reach real replies, and the deadline gives a reason to start.</span></div>
+<div class="card kpi"><b>500 every month</b><span>On the 1st, for every account, forever. They don't roll over. This keeps free accounts alive, keeps Signals' weekly digest useful, and keeps people in our database.</span></div>
+<div class="card kpi"><b>Paid never expire</b><span>Packs stay until they're used. Free credits are always spent before paid ones.</span></div>
+</div>
+<ul>
+<li><b>Invisible abuse guards, no signup friction:</b>
+<ul>
+<li>One welcome grant per website domain and per Google account. A duplicate signup gets only the monthly credits.</li>
+<li>Free credits can send at most 25 warm-inbox emails a day per account, which protects the shared inboxes.</li>
+<li>Free credits can't buy branded inboxes or done-for-you.</li>
+</ul></li>
+<li><b>Reminders:</b> on day 23 ("your 1,500 welcome credits expire in 7 days, here's what they've done so far"), and when the monthly credits arrive.</li>
+<li><b>Existing accounts</b> get the welcome grant when this ships. Today that's one account, yours.</li>
+</ul>
+
+<h2 id="examples">What credits buy</h2>
+<div class="tw"><table>
+<tr><th>Use</th><th>Credits each</th><th>1,500 welcome credits</th><th>500 monthly credits</th></tr>
+<tr><td>Found prospect, fully worked from our inboxes (8 found + 3 agent + 5 emails x 3)</td><td class="n">26</td><td class="n">57 prospects</td><td class="n">19 prospects</td></tr>
+<tr><td>Signal prospect, fully worked from our inboxes (15 + 3 + 15)</td><td class="n">33</td><td class="n">45 prospects</td><td class="n">15 prospects</td></tr>
+<tr><td>Found prospect from your own inbox (8 + 3)</td><td class="n">11</td><td class="n">136 prospects</td><td class="n">45 prospects</td></tr>
+<tr><td>Signal prospect from your own inbox (15 + 3)</td><td class="n">18</td><td class="n">83 prospects</td><td class="n">27 prospects</td></tr>
+</table></div>
+<p>At a typical 1 to 3% reply rate, the welcome credits should produce the first real replies, which is the activation goal from the thesis. For comparison, the Brevo pilot at 10 signal prospects a day from our inboxes uses about 330 credits a day, around $99 a month.</p>
+
+<h2 id="packs">Packs</h2>
+<div class="tw"><table>
+<tr><th>Pay</th><th>Credits</th><th>Bonus</th></tr>
+<tr><td class="n">$10</td><td class="n">1,000</td><td>none</td></tr>
+<tr><td class="n">$25</td><td class="n">2,600</td><td class="n">+4%</td></tr>
+<tr><td class="n">$50</td><td class="n">5,500</td><td class="n">+10%</td></tr>
+<tr><td class="n">$100</td><td class="n">12,000</td><td class="n">+20%</td></tr>
+</table></div>
+<p>These are the same 4 Dodo products already live in test mode. The bonus is a separate ledger row, so the payment stays exactly the pack price. Dodo can't charge a saved card automatically, so there's no auto top-up. Instead, there's a low-balance email and a one-click top-up link. If Dodo adds saved-card charges later, auto top-up becomes a setting.</p>
+
+<h2 id="controls">Spend controls</h2>
+<ol>
+<li><b>An estimate before anything starts.</b> A campaign shows its expected credits a week at the chosen pace, and a signal watch shows expected prospects and credits a month, worked out from measured volume and fit rate.</li>
+<li><b>A weekly budget per campaign</b> (this replaces Signals' "daily target"). The engine fills it hottest first. Over-budget prospects are kept as found-but-locked, with the name hidden and no charge.</li>
+<li><b>An optional monthly cap for the account.</b> When it's hit, everything new pauses.</li>
+<li><b>Follow-ups are reserved upfront.</b> When a prospect's first email goes out, credits for its remaining follow-ups are held, so a sequence never stalls halfway. When it ends early (a reply, an opt-out, a bounce), the unused hold is released.</li>
+<li><b>At zero credits:</b>
+<ul>
+<li>No new prospects or first emails go out.</li>
+<li>Sequences that already started keep running on their held credits.</li>
+<li>Signals drop to a weekly scan and fill the found-but-locked list.</li>
+<li>Replies are still read and answered.</li>
+</ul>
+A top-up restarts from that day, with no backlog.</li>
+<li><b>Low-balance email</b> when the balance covers less than 3 days of the current pace.</li>
+</ol>
+
+<h2 id="upgrade">Upgrade moments (what makes people buy credits)</h2>
+<ul>
+<li><b>Found but locked:</b> "23 more prospects engaged with your competitors this week." Their title, company and reason are shown; the name and email are hidden.</li>
+<li><b>Proof before the deadline:</b> on day 23, "Your welcome credits found 48 prospects, sent 190 emails and got 4 replies and 1 lead."</li>
+<li><b>Results in the inbox:</b> when a reply comes in and the balance is low, the top-up link sits next to it.</li>
+<li><b>Capacity:</b> when an account keeps hitting 25 free emails a day, it's offered a pack or its own branded inbox.</li>
+<li><b>Hosting gives us visibility:</b> we can see every account that keeps running dry, and Closefast itself can email them.</li>
+</ul>
+
+<h2 id="cost">Our cost per credit</h2>
+<div class="tw"><table>
+<tr><th>Item</th><th>Price</th><th>Our cost (measured or quoted)</th><th>Margin</th></tr>
+<tr><td>Prospect found</td><td class="n">8</td><td class="n">~1.5 (data ~0.8 + model)</td><td class="n">~80%</td></tr>
+<tr><td>Signal prospect</td><td class="n">15</td><td class="n">~6.5 (falls as accounts share the cache)</td><td class="n">~55%</td></tr>
+<tr><td>Agent work</td><td class="n">3</td><td class="n">~1 (models)</td><td class="n">~65%</td></tr>
+<tr><td>Warm-inbox email</td><td class="n">3</td><td class="n">~1.8 (pre-warmed inboxes)</td><td class="n">~40%</td></tr>
+<tr><td>Premium</td><td class="n">10</td><td class="n">~3</td><td class="n">~70%</td></tr>
+<tr><td>Branded inbox</td><td class="n">40 a day</td><td class="n">~25 to 35 a day (inbox plus domain)</td><td class="n">thin; kept because own-brand accounts stay</td></tr>
+</table></div>
+<p>A typical fully worked found prospect (26 credits) costs us about 11.5 credits, so a mixed account runs at roughly 55% margin. Welcome credits fully used cost us about $6 to $7, and monthly credits about $2, close to the thesis budgets ($4.50 starter, under $3 a month). Most free accounts won't use all of them.</p>
+
+<h2 id="eng">Engineering: what changes in the code</h2>
+<p>The wallet already has the right shape: one append-only ledger, idempotent charges, never below zero, refunds. The change is small and keeps the same <code>charge(db, item)</code> calls in the lead and outreach engines.</p>
+<div class="tw"><table>
+<tr><th>Piece</th><th>Today (V1)</th><th>Change</th></tr>
+<tr><td>Unit</td><td><code>amount_cents</code>, prices in cents</td><td>The same numbers read as credits (1 credit = 1 cent). The column stays, and the UI says credits.</td></tr>
+<tr><td>Free</td><td><code>ALLOWANCES</code>: starter and monthly, counted per item with zero-amount rows</td><td>Grant rows: <code>kind='grant'</code> with <code>source</code> (welcome, monthly, bonus) and <code>expires_at</code>. An expiry row zeroes what's left. The <code>ALLOWANCES</code> and <code>SHARED</code> code is removed.</td></tr>
+<tr><td>Spend order</td><td>Free allowance first, then the wallet</td><td>A charge splits across buckets in order (welcome, monthly, paid). The ledger keeps which bucket paid, so paid-only items are enforced.</td></tr>
+<tr><td>Holds</td><td>none</td><td><code>kind='hold'</code> rows for reserved follow-ups; they turn into spend at send time or are released when the sequence ends.</td></tr>
+<tr><td>New items</td><td>found, worked, signal_match, pool_email, premium</td><td>Rename <code>signal_match</code> to <code>signal_prospect</code>; add <code>list_enrich</code> (3), <code>branded_inbox_day</code> (40), <code>setup_call</code> (9,900), each marked whether free credits can pay for it.</td></tr>
+<tr><td>Packs</td><td>The pack value is credited in cents</td><td>Credits plus a bonus row, idempotent on the payment id.</td></tr>
+<tr><td>Guards</td><td>none</td><td>One welcome grant per website domain and Google account; 25 free warm-inbox emails a day; monthly cap; per-campaign weekly budget.</td></tr>
+<tr><td>Screens</td><td>Wallet page: balance, allowances, prices</td><td>A Credits page with the balance split (welcome with its expiry, monthly, paid), the rate card, burn per campaign, holds and history. Home shows credits left and days at the current pace.</td></tr>
+<tr><td>Tests</td><td>wallet.test.js</td><td>New cases: spend order, expiry, paid-only items, holds and releases, never below zero across concurrent charges, grant de-duplication.</td></tr>
+</table></div>
+
+<h2 id="risks">Risks</h2>
+<div class="tw"><table>
+<tr><th>Risk</th><th>Handling</th></tr>
+<tr><td>"Credits" feel like a trick</td><td>A fixed peg of 1 credit = $0.01, the dollar value shown everywhere, and the rate card one click away.</td></tr>
+<tr><td>Runaway spend</td><td>Estimates before starting, a weekly budget per campaign, an optional account cap, and hard pauses with no back-billing.</td></tr>
+<tr><td>Free abuse</td><td>One welcome grant per domain and Google account, a daily cap on free sends, and no cash-cost items on free credits.</td></tr>
+<tr><td>Thin margin on warm-inbox emails</td><td>Own-inbox sending is free, and branded inboxes and packs push heavy senders off the shared pool. The rate can be raised alone if costs rise.</td></tr>
+<tr><td>Unused paid credits are a liability</td><td>They're prepaid revenue we hold. They never expire, and that's a selling point. Accounting tracks them as deferred revenue.</td></tr>
+</table></div>
+</main>
+</body>
+</html>
