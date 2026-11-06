@@ -41,14 +41,22 @@ ol li,ul li{margin:4px 0}
 </head>
 <body>
 <main>
-<span class="tag acc">CREDITS PLAN v1</span><span class="tag">6 Nov 2026</span><span class="tag acc">Closefast</span><span class="tag warn">FOR REVIEW</span>
+<span class="tag acc">CREDITS PLAN v1.1</span><span class="tag">7 Nov 2026</span><span class="tag acc">Closefast</span><span class="tag warn">UPDATED AFTER PILOT</span>
 <h1>One currency for everything: credits, pay as you go, free credits for everyone</h1>
-<p class="sub">This replaces the free plan of the <a href="../thesis/">business thesis</a> (a starter boost plus a monthly allowance, each counted per feature) with a single credit balance. Every feature is open to every account. Features that cost us money to deliver use credits, each at its own rate. Every account gets free credits. It covers all of Closefast, including <a href="../signals/">Signals</a>.</p>
+<p class="sub">This replaces the free plan of the <a href="../thesis/">business thesis</a> (a starter boost plus a monthly allowance, each counted per feature) with a single credit balance. Every feature is open to every account. Features that cost us money to deliver use credits, each at its own rate. Every account gets free credits. It covers all of Closefast, including <a href="../signals/">Signals</a>. v1.1 (7 Nov) follows the Brevo ecommerce pilot: see <a href="../signals/#v4">Signals v4</a>.</p>
 
 <div class="call"><b>In one line:</b> 1 credit = $0.01, always. Every account gets 1,500 free credits at signup (they last 30 days) and 500 free credits every month (no rollover). Paid credits come in packs and never expire. The agent's loop is free: thinking, replies, leads, meetings, the inbox, exports. Credits only pay for fuel: finding people, signals, sending from our inboxes, premium writing, branded inboxes.</div>
 
+<div class="call warn" id="v11"><b>v1.1 (7 Nov 2026), approved by Farooq after the Brevo ecommerce pilot:</b>
+<ul>
+<li><b>Signal prospect: 40 credits ($0.40), up from 15.</b> It's charged only for a buyer delivered. The pilot's data cost was $0.126 a buyer, so 15 credits gave 16% margin. At 40 it's 69% today and about 82% after cheaper lookups. The target is at least 70%.</li>
+<li><b>New: a yield guard on every signal watch</b> (see <a href="#controls">spend controls</a>).</li>
+<li><b>New: a free search cap</b> of $0.50 of data a day on Signals for accounts that have never bought credits.</li>
+<li><b>Prospect found stays 8 credits</b> for now. The estimated cost is about $0.03, so about 60% margin, to be measured on the first real run.</li>
+</ul></div>
+
 <nav class="toc">
-<a href="#why">Why credits</a><a href="#rules">Rules</a><a href="#rates">Rate card</a><a href="#free">Free credits</a><a href="#examples">What credits buy</a><a href="#packs">Packs</a><a href="#controls">Spend controls</a><a href="#upgrade">Upgrade moments</a><a href="#cost">Our cost</a><a href="#eng">Engineering</a><a href="#risks">Risks</a>
+<a href="#v11">v1.1 changes</a><a href="#why">Why credits</a><a href="#rules">Rules</a><a href="#rates">Rate card</a><a href="#free">Free credits</a><a href="#examples">What credits buy</a><a href="#packs">Packs</a><a href="#controls">Spend controls</a><a href="#upgrade">Upgrade moments</a><a href="#cost">Our cost</a><a href="#eng">Engineering</a><a href="#risks">Risks</a>
 </nav>
 
 <h2 id="why">Why credits instead of a free plan plus a wallet</h2>
@@ -63,7 +71,7 @@ ol li,ul li{margin:4px 0}
 <ol>
 <li><b>1 credit = $0.01, fixed.</b> Prices are shown in credits with the dollar value next to them. We never quietly change what a credit is worth.</li>
 <li><b>Charge for fuel, never for the engine or the outcome.</b> Reading the website, campaigns, previews, test mode, reply handling, leads, meetings, call briefs, exports and support use no credits. We never charge per reply, lead or meeting (thesis decision).</li>
-<li><b>Charge when value is delivered, never for attempts.</b> A qualified prospect placed in a campaign, an email actually sent. Scanning, drops, duplicates and people without a deliverable email are free.</li>
+<li><b>Charge when value is delivered, never for attempts.</b> A qualified prospect placed in a campaign, an email actually sent. Scanning, posts, drops, duplicates, agencies set aside and people without a deliverable email are free.</li>
 <li><b>Refund what we got wrong.</b> A found email that bounces gets its credits back automatically. So does a send that failed on our side.</li>
 <li><b>Never back-bill and never surprise.</b> Every campaign and signal shows its expected credits before it starts. When credits run out, new work pauses, and nothing piles up to be charged later.</li>
 <li><b>Spend order:</b> welcome credits first (they expire soonest), then this month's free credits, then paid credits (which never expire).</li>
@@ -73,19 +81,29 @@ ol li,ul li{margin:4px 0}
 <div class="tw"><table>
 <tr><th>What</th><th>Credits</th><th>Charged when</th><th>Free credits can pay?</th></tr>
 <tr><td>Read your website, buyer profile, campaigns, previews, test mode</td><td class="n">0</td><td>Never</td><td>n/a</td></tr>
-<tr><td><b>Prospect found</b> (Database or Local source: fits the buyer profile, verified work email)</td><td class="n">8</td><td>When it's placed in a campaign</td><td>Yes</td></tr>
-<tr><td><b>Signal prospect</b> (passes all 5 <a href="../signals/#qualify">Signals gates</a>)</td><td class="n">15</td><td>When it's placed in a campaign</td><td>Yes</td></tr>
+<tr><td><b>Prospect found</b> (Database or Local source: fits the buyer profile, verified work email). Stays 8 for now and is repriced once the first real run is measured.</td><td class="n">8</td><td>When it's placed in a campaign</td><td>Yes</td></tr>
+<tr><td><b>Signal prospect</b>, a buyer delivered: a decision maker at a fitting company, engaged recently, verified email, never contacted (passes all 5 <a href="../signals/#qualify">Signals gates</a>). Agency partners are charged the same.</td><td class="n">40 (v1.1, was 15)</td><td>When it's placed in a campaign. Searching, posts, rejects and agencies set aside are never billed.</td><td>Yes</td></tr>
 <tr><td><b>Your list:</b> find and verify an email for a person you uploaded</td><td class="n">3</td><td>When a deliverable email is found (bring verified emails and it's 0)</td><td>Yes</td></tr>
 <tr><td><b>Agent work</b> per prospect contacted: research, writing the whole sequence, every reply handled</td><td class="n">3</td><td>When the first email is sent</td><td>Yes</td></tr>
 <tr><td><b>Email from our warm inboxes</b></td><td class="n">3 per email</td><td>When it's sent (follow-ups are reserved upfront, see <a href="#controls">controls</a>)</td><td>Yes, up to 25 a day per account</td></tr>
 <tr><td>Email from your own connected inbox</td><td class="n">0</td><td>Never</td><td>n/a</td></tr>
 <tr><td><b>Premium:</b> deep research on the prospect and our best writing model</td><td class="n">+10 per prospect</td><td>When the first email is sent</td><td>Yes</td></tr>
-<tr><td>Signal watches running (daily scan, creators, the found-but-locked list)</td><td class="n">0</td><td>Never; the scan is capped per account, and at zero credits it drops to weekly</td><td>n/a</td></tr>
+<tr><td>Signal watches running (daily scan, creators, the found-but-locked list)</td><td class="n">0</td><td>Never; the scan is capped per account, each watch has a yield guard, accounts that never bought credits are capped at $0.50 of data a day, and at zero credits it drops to weekly</td><td>n/a</td></tr>
 <tr><td>Replies, leads, meetings, call briefs, inbox, CRM, exports, support, weekly digest</td><td class="n">0</td><td>Never</td><td>n/a</td></tr>
 <tr><td><b>Branded inbox</b> on your own domain (we buy, set up and warm it)</td><td class="n">40 a day per inbox (~$12 a month)</td><td>Daily while it's active</td><td>No, paid credits only (a real cash cost)</td></tr>
 <tr><td>Done-for-you setup call (60 minutes)</td><td class="n">9,900</td><td>When it's booked</td><td>No, paid credits only</td></tr>
 </table></div>
-<p>The rates carry over from the wallet built in V1: found 8, signal 15, worked 3, warm-inbox email 3, premium 10. Only the unit changes, from cents to credits, so nothing in the engines has to be repriced.</p>
+<p>The rates carry over from the wallet built in V1: found 8, worked 3, warm-inbox email 3, premium 10. The unit changes from cents to credits. One rate changes in v1.1: signal goes from 15 to 40, after the pilot.</p>
+
+<h3>Why a signal prospect is 40 credits (v1.1)</h3>
+<div class="tw"><table>
+<tr><th>Price</th><th>Data cost per buyer</th><th>Margin</th></tr>
+<tr><td>15 credits (v1)</td><td class="n">$0.126 (pilot)</td><td class="n">16%</td></tr>
+<tr><td>15 credits (v1)</td><td class="n">~$0.07 (cheaper lookups)</td><td class="n">52%</td></tr>
+<tr><td><b>40 credits (v1.1)</b></td><td class="n">$0.126 (pilot)</td><td class="n">69%</td></tr>
+<tr><td><b>40 credits (v1.1)</b></td><td class="n">~$0.07 (cheaper lookups)</td><td class="n">~82%</td></tr>
+</table></div>
+<p>Cheaper lookups means person lookups on BlitzAPI ($0.0005, was $0.0015) and company lookups through Crustdata identify (free) first. Benchmarks: Teamfluence is about $0.50 to $0.60 per qualified lead (500 for $299, 1,000 for $499 a month), counted on export, with no verified email. Clay is about $0.10 to $0.15 for an email lookup alone. Jungler charges 1 credit per post, reaction or comment, including people it filters out. We deliberately don't.</p>
 
 <h2 id="free">Free credits</h2>
 <div class="grid">
@@ -99,6 +117,7 @@ ol li,ul li{margin:4px 0}
 <li>One welcome grant per website domain and per Google account. A duplicate signup gets only the monthly credits.</li>
 <li>Free credits can send at most 25 warm-inbox emails a day per account, which protects the shared inboxes.</li>
 <li>Free credits can't buy branded inboxes or done-for-you.</li>
+<li>Free search cap (v1.1): accounts that have never bought credits spend at most $0.50 of data a day on Signals. Ops can override it per workspace.</li>
 </ul></li>
 <li><b>Reminders:</b> on day 23 ("your 1,500 welcome credits expire in 7 days, here's what they've done so far"), and when the monthly credits arrive.</li>
 <li><b>Existing accounts</b> get the welcome grant when this ships. Today that's one account, yours.</li>
@@ -108,11 +127,11 @@ ol li,ul li{margin:4px 0}
 <div class="tw"><table>
 <tr><th>Use</th><th>Credits each</th><th>1,500 welcome credits</th><th>500 monthly credits</th></tr>
 <tr><td>Found prospect, fully worked from our inboxes (8 found + 3 agent + 5 emails x 3)</td><td class="n">26</td><td class="n">57 prospects</td><td class="n">19 prospects</td></tr>
-<tr><td>Signal prospect, fully worked from our inboxes (15 + 3 + 15)</td><td class="n">33</td><td class="n">45 prospects</td><td class="n">15 prospects</td></tr>
+<tr><td>Signal prospect, fully worked from our inboxes (40 + 3 + 15)</td><td class="n">58</td><td class="n">25 prospects</td><td class="n">8 prospects</td></tr>
 <tr><td>Found prospect from your own inbox (8 + 3)</td><td class="n">11</td><td class="n">136 prospects</td><td class="n">45 prospects</td></tr>
-<tr><td>Signal prospect from your own inbox (15 + 3)</td><td class="n">18</td><td class="n">83 prospects</td><td class="n">27 prospects</td></tr>
+<tr><td>Signal prospect from your own inbox (40 + 3)</td><td class="n">43</td><td class="n">34 prospects</td><td class="n">11 prospects</td></tr>
 </table></div>
-<p>At a typical 1 to 3% reply rate, the welcome credits should produce the first real replies, which is the activation goal from the thesis. For comparison, the Brevo pilot at 10 signal prospects a day from our inboxes uses about 330 credits a day, around $99 a month.</p>
+<p>At a typical 1 to 3% reply rate, the welcome credits should produce the first real replies, which is the activation goal from the thesis. For comparison, 10 signal prospects a day from our inboxes now use about 580 credits a day, around $174 a month. The Brevo pilot measured about 2 to 3 a day at its first targeting, which is about $35 to $52 a month.</p>
 
 <h2 id="packs">Packs</h2>
 <div class="tw"><table>
@@ -126,9 +145,11 @@ ol li,ul li{margin:4px 0}
 
 <h2 id="controls">Spend controls</h2>
 <ol>
-<li><b>An estimate before anything starts.</b> A campaign shows its expected credits a week at the chosen pace, and a signal watch shows expected prospects and credits a month, worked out from measured volume and fit rate.</li>
+<li><b>An estimate before anything starts.</b> A campaign shows its expected credits a week at the chosen pace, and a signal watch shows expected prospects and credits a month, worked out from measured volume and fit rate. A Signals backfill (7, 14 or 30 days) shows about how many buyers and credits it would add before you confirm.</li>
 <li><b>A weekly budget per campaign</b> (this replaces Signals' "daily target"). The engine fills it hottest first. Over-budget prospects are kept as found-but-locked, with the name hidden and no charge.</li>
 <li><b>An optional monthly cap for the account.</b> When it's hit, everything new pauses.</li>
+<li><b>A yield guard on every signal watch (v1.1).</b> A watch may spend on data at most 30% of what its delivered buyers earn (40 credits each), measured over the last 7 days. It applies once the watch has spent more than $0.40 and has nothing left in its pipeline. Past that line, the watch pauses itself. It tells the customer how many buyers it found for how much searching, so they can widen or replace it. Resuming restarts its count. Example: a watch that spent $0.60 on data in 7 days needs 5 buyers ($2.00 earned) to keep running.</li>
+<li><b>A free search cap (v1.1).</b> Accounts that have never bought credits can spend at most $0.50 of data a day on Signals. Buying any pack lifts it. Ops can override it per workspace.</li>
 <li><b>Follow-ups are reserved upfront.</b> When a prospect's first email goes out, credits for its remaining follow-ups are held, so a sequence never stalls halfway. When it ends early (a reply, an opt-out, a bounce), the unused hold is released.</li>
 <li><b>At zero credits:</b>
 <ul>
@@ -153,14 +174,14 @@ A top-up restarts from that day, with no backlog.</li>
 <h2 id="cost">Our cost per credit</h2>
 <div class="tw"><table>
 <tr><th>Item</th><th>Price</th><th>Our cost (measured or quoted)</th><th>Margin</th></tr>
-<tr><td>Prospect found</td><td class="n">8</td><td class="n">~1.5 (data ~0.8 + model)</td><td class="n">~80%</td></tr>
-<tr><td>Signal prospect</td><td class="n">15</td><td class="n">~6.5 (falls as accounts share the cache)</td><td class="n">~55%</td></tr>
+<tr><td>Prospect found</td><td class="n">8</td><td class="n">~3 (v1.1 estimate; v1 said ~1.5), measured on the first real run</td><td class="n">~60%</td></tr>
+<tr><td>Signal prospect</td><td class="n">40</td><td class="n">12.6 measured on the pilot; ~7 after cheaper lookups</td><td class="n">69% today, ~82% after</td></tr>
 <tr><td>Agent work</td><td class="n">3</td><td class="n">~1 (models)</td><td class="n">~65%</td></tr>
 <tr><td>Warm-inbox email</td><td class="n">3</td><td class="n">~1.8 (pre-warmed inboxes)</td><td class="n">~40%</td></tr>
 <tr><td>Premium</td><td class="n">10</td><td class="n">~3</td><td class="n">~70%</td></tr>
 <tr><td>Branded inbox</td><td class="n">40 a day</td><td class="n">~25 to 35 a day (inbox plus domain)</td><td class="n">thin; kept because own-brand accounts stay</td></tr>
 </table></div>
-<p>A typical fully worked found prospect (26 credits) costs us about 11.5 credits, so a mixed account runs at roughly 55% margin. Welcome credits fully used cost us about $6 to $7, and monthly credits about $2, close to the thesis budgets ($4.50 starter, under $3 a month). Most free accounts won't use all of them.</p>
+<p>A typical fully worked found prospect (26 credits) costs us about 13 credits at the v1.1 estimate, about 50% margin. A fully worked signal prospect (58 credits) costs about 23 today, about 60%. Welcome credits fully used cost us about $6 to $7.50, and monthly credits about $2 to $2.50, against the thesis budgets of $4.50 starter and under $3 a month. Most free accounts won't use all of them, and the free search cap limits Signals data spend until an account buys credits.</p>
 
 <h2 id="eng">Engineering: what changes in the code</h2>
 <p>The wallet already has the right shape: one append-only ledger, idempotent charges, never below zero, refunds. The change is small and keeps the same <code>charge(db, item)</code> calls in the lead and outreach engines.</p>
@@ -170,11 +191,11 @@ A top-up restarts from that day, with no backlog.</li>
 <tr><td>Free</td><td><code>ALLOWANCES</code>: starter and monthly, counted per item with zero-amount rows</td><td>Grant rows: <code>kind='grant'</code> with <code>source</code> (welcome, monthly, bonus) and <code>expires_at</code>. An expiry row zeroes what's left. The <code>ALLOWANCES</code> and <code>SHARED</code> code is removed.</td></tr>
 <tr><td>Spend order</td><td>Free allowance first, then the wallet</td><td>A charge splits across buckets in order (welcome, monthly, paid). The ledger keeps which bucket paid, so paid-only items are enforced.</td></tr>
 <tr><td>Holds</td><td>none</td><td><code>kind='hold'</code> rows for reserved follow-ups; they turn into spend at send time or are released when the sequence ends.</td></tr>
-<tr><td>New items</td><td>found, worked, signal_match, pool_email, premium</td><td>Rename <code>signal_match</code> to <code>signal_prospect</code>; add <code>list_enrich</code> (3), <code>branded_inbox_day</code> (40), <code>setup_call</code> (9,900), each marked whether free credits can pay for it.</td></tr>
+<tr><td>New items</td><td>found, worked, signal_match, pool_email, premium</td><td>Rename <code>signal_match</code> to <code>signal_prospect</code> and set it to 40 (v1.1); add <code>list_enrich</code> (3), <code>branded_inbox_day</code> (40), <code>setup_call</code> (9,900), each marked whether free credits can pay for it.</td></tr>
 <tr><td>Packs</td><td>The pack value is credited in cents</td><td>Credits plus a bonus row, idempotent on the payment id.</td></tr>
-<tr><td>Guards</td><td>none</td><td>One welcome grant per website domain and Google account; 25 free warm-inbox emails a day; monthly cap; per-campaign weekly budget.</td></tr>
+<tr><td>Guards</td><td>none</td><td>One welcome grant per website domain and Google account; 25 free warm-inbox emails a day; monthly cap; per-campaign weekly budget. v1.1: a yield guard per signal watch (data spend over 7 days vs 30% of its buyers' credits), and a $0.50 daily Signals data cap for accounts with no paid credits ever, with an ops override per workspace.</td></tr>
 <tr><td>Screens</td><td>Wallet page: balance, allowances, prices</td><td>A Credits page with the balance split (welcome with its expiry, monthly, paid), the rate card, burn per campaign, holds and history. Home shows credits left and days at the current pace.</td></tr>
-<tr><td>Tests</td><td>wallet.test.js</td><td>New cases: spend order, expiry, paid-only items, holds and releases, never below zero across concurrent charges, grant de-duplication.</td></tr>
+<tr><td>Tests</td><td>wallet.test.js</td><td>New cases: spend order, expiry, paid-only items, holds and releases, never below zero across concurrent charges, grant de-duplication, the yield guard pause and restart, and the free search cap with its override.</td></tr>
 </table></div>
 
 <h2 id="risks">Risks</h2>
@@ -182,7 +203,8 @@ A top-up restarts from that day, with no backlog.</li>
 <tr><th>Risk</th><th>Handling</th></tr>
 <tr><td>"Credits" feel like a trick</td><td>A fixed peg of 1 credit = $0.01, the dollar value shown everywhere, and the rate card one click away.</td></tr>
 <tr><td>Runaway spend</td><td>Estimates before starting, a weekly budget per campaign, an optional account cap, and hard pauses with no back-billing.</td></tr>
-<tr><td>Free abuse</td><td>One welcome grant per domain and Google account, a daily cap on free sends, and no cash-cost items on free credits.</td></tr>
+<tr><td>Free abuse</td><td>One welcome grant per domain and Google account, a daily cap on free sends, no cash-cost items on free credits, and (v1.1) the $0.50 daily free search cap on Signals.</td></tr>
+<tr><td>A signal watch spends on data and finds few buyers</td><td>The v1.1 yield guard pauses it past 30% of what its buyers earned and tells the customer why. The pilot looked up 528 people to deliver 16, so this is a real cost.</td></tr>
 <tr><td>Thin margin on warm-inbox emails</td><td>Own-inbox sending is free, and branded inboxes and packs push heavy senders off the shared pool. The rate can be raised alone if costs rise.</td></tr>
 <tr><td>Unused paid credits are a liability</td><td>They're prepaid revenue we hold. They never expire, and that's a selling point. Accounting tracks them as deferred revenue.</td></tr>
 </table></div>
