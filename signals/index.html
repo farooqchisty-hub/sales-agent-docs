@@ -92,7 +92,7 @@ ol li,ul li{margin:4px 0}
 <h3>2. Cheaper lookups</h3>
 <ul>
 <li><b>Person lookups</b> move to BlitzAPI at $0.0005 (was $0.0015). The old provider stays as the fallback.</li>
-<li><b>Company lookups</b> try Crustdata identify first (free), then BlitzAPI, then the old provider.</li>
+<li><b>Company lookups</b> go to BlitzAPI first, then the old provider. Crustdata's free identify was tried on the pilot and dropped: at 30 calls a minute and up to 14 seconds an answer, it stalled whole runs.</li>
 <li>Expected data cost: about $0.07 per buyer.</li>
 </ul>
 
@@ -159,7 +159,7 @@ ol li,ul li{margin:4px 0}
 <tr><td>2 to 200 staff as a gate</td><td>Size is a label. A size range is opt-in.</td></tr>
 <tr><td>Agencies never delivered, routed to a paused partner campaign</td><td>Agency owners delivered as Agency partners (default)</td></tr>
 <tr><td>A fixed 7-day first run</td><td>A backfill of 7, 14 or 30 days, picked when a campaign or watch starts</td></tr>
-<tr><td>Profiles and companies at $0.0015 each</td><td>BlitzAPI at $0.0005; Crustdata identify (free) first for companies</td></tr>
+<tr><td>Profiles and companies at $0.0015 each</td><td>BlitzAPI at $0.0005 for people and companies</td></tr>
 <tr><td>About $0.065 a buyer (estimate)</td><td>$0.126 measured; about $0.07 after cheaper lookups</td></tr>
 </table></div>
 
@@ -314,7 +314,7 @@ Send queue order: HOT, then WARM, then COOL; within a level, highest fit first</
 </ul>
 
 <h2 id="money">Economics (v3 estimate: a paid account at 10 buyers a day)</h2>
-<div class="call warn"><b>Superseded by v4.</b> The pilot measured $0.126 a buyer, not $0.065, and about 2 to 3 buyers a day, not 10. Person lookups now cost $0.0005, and company lookups try Crustdata identify (free) first. See <a href="#v4">v4</a> for the measured split and the 40-credit price. The v3 table is kept for reference.</div>
+<div class="call warn"><b>Superseded by v4.</b> The pilot measured $0.126 a buyer, not $0.065, and about 2 to 3 buyers a day, not 10. Person lookups now cost $0.0005, and company lookups go to BlitzAPI first. See <a href="#v4">v4</a> for the measured split and the 40-credit price. The v3 table is kept for reference.</div>
 <div class="tw"><table>
 <tr><th>Daily step</th><th>Volume</th><th>Cost a day</th></tr>
 <tr><td>Keyword searches (12 queries, about 2 pages each, $0.004 a page)</td><td class="n">~24 calls</td><td class="n">$0.10</td></tr>
@@ -382,7 +382,7 @@ guard     per watch: data spend over 7 days vs 30% of buyers earned; pause and t
 <tr><td>A creator's or company's posts</td><td>HarvestAPI or TikHub ($0.001 to $0.004)</td><td>ScrapeCreators</td><td class="n">99.98%</td></tr>
 <tr><td>Engagers (reactions and comments in one call)</td><td>Fetchin ($0.003)</td><td>HarvestAPI reactions and comments</td><td class="n">99.2 to 99.96%</td></tr>
 <tr><td>Person lookup (profile)</td><td>v4: BlitzAPI ($0.0005)</td><td>The old provider, Fetchin ($0.0015), then AnyAPI, HarvestAPI, treg routed</td><td class="n">99.97% (Fetchin); BlitzAPI to measure</td></tr>
-<tr><td>Company and website</td><td>v4: Crustdata identify (free), then BlitzAPI</td><td>The old provider, Fetchin ($0.0015), then AnyAPI, HarvestAPI, treg routed</td><td class="n">99.97% (Fetchin); new ones to measure</td></tr>
+<tr><td>Company and website</td><td>v4: BlitzAPI ($0.0005)</td><td>The old provider, Fetchin ($0.0015), then AnyAPI, HarvestAPI, treg routed</td><td class="n">99.97% (Fetchin); new ones to measure</td></tr>
 <tr><td>Work email find and verify</td><td>The live Closefast treg path</td><td>(routed)</td><td class="n">live</td></tr>
 </table></div>
 <p>If every provider for a step fails for 24 hours, the watch pauses and shows a notice. We never log into LinkedIn or use anyone's LinkedIn account. The data is public profile data bought from providers, the same model Jungler uses.</p>
@@ -418,7 +418,7 @@ guard     per watch: data spend over 7 days vs 30% of buyers earned; pause and t
 <tr><td>B. Understand</td><td>Topic and intent classifier for posts and comments; headline triage; profile, company and store enrichment; exclusions; heat; campaign routing; creator audience-fit scoring.</td><td>On today's test set it keeps the founders from the DTC post, marks the "SMS costs" comments, and drops Klaviyo staff, recruiters and the SaaS founders.</td></tr>
 <tr><td>C. Product</td><td>Onboarding proposals; Signals page; watch editor with a credit estimate; weekly credit budget per campaign; found-but-locked list; "wrong match"; weekly digest; 40 credits charged on delivery (v4).</td><td>A new free account gets proposed watches at signup and sees its first buyers from the backfill (7 days by default) without typing anything.</td></tr>
 <tr><td>D. Deliver</td><td>Buyers become campaign prospects (source Signal), the 24-hour wait, angle from intent and topic, the hard block on mentions, heat ordering in the send queue.</td><td>Your workspace, in test mode, receives preview openers for real buyers found that morning.</td></tr>
-<tr><td>E. v4 pilot changes</td><td>40-credit price; BlitzAPI and Crustdata lookups with fallback; yield guard per watch; free search cap with ops override; country, size and platform as labels with opt-in filters and the consent-country rule; "website did not load" passes; Agency partners segment and the agency setting; backfill picker with an estimate; the "Who counts as a buyer" panel with a free re-check.</td><td>The pilot's already-checked people, sent back through the new rules at no extra data cost, give about 40 buyers from the same 7 days, and each watch shows its yield guard.</td></tr>
+<tr><td>E. v4 pilot changes</td><td>40-credit price; BlitzAPI lookups with fallback; yield guard per watch; free search cap with ops override; country, size and platform as labels with opt-in filters and the consent-country rule; "website did not load" passes; Agency partners segment and the agency setting; backfill picker with an estimate; the "Who counts as a buyer" panel with a free re-check.</td><td>The pilot's already-checked people, sent back through the new rules at no extra data cost, give about 40 buyers from the same 7 days, and each watch shows its yield guard.</td></tr>
 </table></div>
 <p>0, A and B run in parallel. C builds on 0, and D joins them all. E follows the pilot and changes A to D in place. Then the scheduler goes on for your workspace in test mode, and test mode comes off once you like the previews.</p>
 
