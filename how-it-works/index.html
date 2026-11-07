@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Closefast How It Works</title>
+<style>
+:root{--bg:#0d0f10;--panel:#15181a;--line:#262a2d;--ink:#eceeea;--mute:#9aa19c;--acc:#b6f36b;--warn:#f3c86b;--mono:ui-monospace,SFMono-Regular,Menlo,monospace}
+@media (prefers-color-scheme: light){:root:not([data-theme="dark"]){--bg:#f7f7f4;--panel:#fff;--line:#e2e3de;--ink:#15181a;--mute:#5d645f;--acc:#3f7d12;--warn:#9a6a00}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 Inter,system-ui,-apple-system,Segoe UI,sans-serif}
+main{max-width:1120px;margin:0 auto;padding:40px 16px 80px}
+h1{font-size:30px;line-height:1.2;margin:0 0 8px}
+h2{font-size:21px;margin:48px 0 6px;padding-top:16px;border-top:1px solid var(--line)}
+.sub{color:var(--mute);margin:0 0 24px}
+.lede{color:var(--mute);margin:0 0 14px;max-width:820px}
+.tag{display:inline-block;font:12px var(--mono);padding:2px 8px;border:1px solid var(--line);border-radius:99px;color:var(--mute);margin-right:6px}
+.tag.acc{color:var(--acc);border-color:var(--acc)}
+.dia{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;overflow-x:auto;margin:10px 0 14px}
+.dia .mermaid{min-width:640px;text-align:center}
+.steps{margin:0 0 8px;padding-left:20px;max-width:900px}
+.steps li{margin:5px 0}
+table{width:100%;border-collapse:collapse;margin:8px 0 16px;font-size:14px}
+th,td{text-align:left;vertical-align:top;padding:8px 10px;border-bottom:1px solid var(--line)}
+th{color:var(--mute);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.04em}
+.tw{overflow-x:auto}
+code{font-family:var(--mono);font-size:13px}
+nav.toc{display:flex;flex-wrap:wrap;gap:6px;margin:16px 0 8px}
+nav.toc a{font:12px var(--mono);color:var(--mute);text-decoration:none;border:1px solid var(--line);padding:3px 9px;border-radius:99px}
+nav.toc a:hover{color:var(--acc);border-color:var(--acc)}
+.call{border-left:3px solid var(--acc);background:var(--panel);padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0}
+.map svg{display:block;width:100%;min-width:900px;height:auto}
+.map .col{fill:none;stroke:var(--line);stroke-dasharray:4 4}
+.map .ch{fill:var(--mute);font:600 12px Inter,system-ui,sans-serif;text-anchor:middle;letter-spacing:.06em;text-transform:uppercase}
+.map .box{fill:var(--bg);stroke:var(--line);stroke-width:1.2}
+.map .box.key{stroke:var(--acc);stroke-width:1.6}
+.map .t{fill:var(--ink);font:600 13px Inter,system-ui,sans-serif;text-anchor:middle}
+.map .s{fill:var(--mute);font:11.5px Inter,system-ui,sans-serif;text-anchor:middle}
+.map .e{fill:none;stroke:var(--mute);stroke-width:1.3;opacity:.85}
+.map .e.dash{stroke-dasharray:5 4}
+.map .ah{fill:var(--mute)}
+.map .el{fill:var(--mute);font:11px Inter,system-ui,sans-serif;text-anchor:middle}
+</style>
+</head>
+<body>
+<main>
+<span class="tag acc">HOW CLOSEFAST WORKS</span><span class="tag">7 Nov 2026</span><span class="tag">matches deploy 327f8b7c</span>
+<h1>Closefast end to end: who uses it, what happens, and where it runs</h1>
+<p class="sub">One page with the whole product as diagrams: the big picture, the customer's journey, where prospects come from, the 5-minute agent pass, an email's life, the money, the operator, and the code. Each diagram has a short walkthrough under it.</p>
+
+<div class="call"><b>In one line:</b> a business owner signs up and pastes their website. The agent works out who buys from them. The owner gets prospects from any source into a Pipeline and chooses who to start. A pass that runs every 5 minutes then writes, checks, sends and follows up emails, reads the replies, answers them and books meetings. Every step is paid for in credits, and owners who bring their own list and inbox pay nothing.</div>
+
+<nav class="toc"><a href="#map">1. Big picture</a><a href="#journey">2. Customer journey</a><a href="#sources">3. Where prospects come from</a><a href="#pass">4. The 5-minute pass</a><a href="#email">5. An email's life</a><a href="#money">6. Money</a><a href="#admin">7. Operator</a><a href="#code">8. Code and data</a><a href="#safety">9. Safety</a></nav>
+
+<h2 id="map">1. The big picture</h2>
+<p class="lede">Three kinds of people touch the system. Everything runs on Cloudflare: one Worker serves both the dashboard and the API, with one database. Outside services supply data, AI, email and payments.</p>
+<div class="dia map"><svg viewBox="0 0 1100 580" role="img" aria-label="Closefast system map: people, the Cloudflare stack and outside services">
+<defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ah"/></marker></defs>
+<rect class="col" x="10" y="44" width="200" height="526" rx="12"/><text class="ch" x="110" y="34">People</text>
+<rect class="col" x="240" y="44" width="430" height="526" rx="12"/><text class="ch" x="455" y="34">Cloudflare (our stack)</text>
+<rect class="col" x="700" y="44" width="240" height="526" rx="12"/><text class="ch" x="820" y="34">Outside services</text>
+<rect class="col" x="965" y="44" width="125" height="526" rx="12"/><text class="ch" x="1027" y="34">Prospects</text>
+<rect class="box" x="30" y="72" width="160" height="56" rx="9"/>
+<text class="t" x="110.0" y="96">Customer</text>
+<text class="s" x="110.0" y="114">business owner</text>
+<rect class="box" x="30" y="470" width="160" height="56" rx="9"/>
+<text class="t" x="110.0" y="494">Operator (you)</text>
+<text class="s" x="110.0" y="512">ops token</text>
+<rect class="box" x="260" y="72" width="190" height="56" rx="9"/>
+<text class="t" x="355.0" y="96">Front door</text>
+<text class="s" x="355.0" y="114">closefast-cloud.pages.dev</text>
+<rect class="box" x="470" y="72" width="180" height="56" rx="9"/>
+<text class="t" x="560.0" y="96">Cron, every 5 min</text>
+<text class="s" x="560.0" y="114">behind a switch: OFF</text>
+<rect class="box key" x="270" y="190" width="370" height="96" rx="9"/>
+<text class="t" x="455.0" y="226">Worker: closefast-cloud</text>
+<text class="s" x="455.0" y="243">dashboard files, API, the agent,</text>
+<text class="s" x="455.0" y="260">billing and admin, all in one</text>
+<rect class="box" x="270" y="350" width="170" height="60" rx="9"/>
+<text class="t" x="355.0" y="376">D1 database</text>
+<text class="s" x="355.0" y="394">everything stored</text>
+<rect class="box" x="470" y="350" width="170" height="60" rx="9"/>
+<text class="t" x="555.0" y="376">Workers AI</text>
+<text class="s" x="555.0" y="394">cheap open models</text>
+<rect class="box" x="290" y="470" width="330" height="56" rx="9"/>
+<text class="t" x="455.0" y="494">Closefast system mail</text>
+<text class="s" x="455.0" y="512">previews, alerts, summaries to owners</text>
+<rect class="box" x="715" y="64" width="210" height="52" rx="9"/>
+<text class="t" x="820.0" y="86">treg</text>
+<text class="s" x="820.0" y="104">people, LinkedIn, emails, search</text>
+<path class="e" marker-end="url(#ar)" d="M640,204 C682,204 672,90 713,90"/>
+<rect class="box" x="715" y="132" width="210" height="52" rx="9"/>
+<text class="t" x="820.0" y="154">Customer inboxes</text>
+<text class="s" x="820.0" y="172">Gmail, Outlook, SMTP/IMAP</text>
+<path class="e" marker-start="url(#ar)" marker-end="url(#ar)" d="M640,216 C682,216 672,158 713,158"/>
+<rect class="box" x="715" y="200" width="210" height="52" rx="9"/>
+<text class="t" x="820.0" y="222">Instantly</text>
+<text class="s" x="820.0" y="240">our warm inboxes</text>
+<path class="e" marker-start="url(#ar)" marker-end="url(#ar)" d="M640,228 C682,228 672,226 713,226"/>
+<rect class="box" x="715" y="268" width="210" height="52" rx="9"/>
+<text class="t" x="820.0" y="290">Backup AI</text>
+<text class="s" x="820.0" y="308">OpenRouter, if AI fails</text>
+<path class="e" marker-end="url(#ar)" d="M640,240 C682,240 672,294 713,294"/>
+<rect class="box" x="715" y="336" width="210" height="52" rx="9"/>
+<text class="t" x="820.0" y="358">Dodo</text>
+<text class="s" x="820.0" y="376">card payments for credits</text>
+<path class="e" marker-start="url(#ar)" marker-end="url(#ar)" d="M640,252 C682,252 672,362 713,362"/>
+<rect class="box" x="715" y="404" width="210" height="52" rx="9"/>
+<text class="t" x="820.0" y="426">Google</text>
+<text class="s" x="820.0" y="444">sign-in</text>
+<path class="e" marker-start="url(#ar)" marker-end="url(#ar)" d="M640,264 C682,264 672,430 713,430"/>
+<rect class="box" x="715" y="472" width="210" height="52" rx="9"/>
+<text class="t" x="820.0" y="494">PostHog</text>
+<text class="s" x="820.0" y="512">product analytics</text>
+<path class="e" marker-end="url(#ar)" d="M640,276 C682,276 672,498 713,498"/>
+<rect class="box" x="975" y="150" width="105" height="70" rx="9"/>
+<text class="t" x="1027.5" y="173">Prospect</text>
+<text class="s" x="1027.5" y="190">gets the</text>
+<text class="s" x="1027.5" y="207">cold email</text>
+<path class="e" marker-end="url(#ar)" d="M190,92 L258,92"/><text class="el" x="224" y="86">browser</text>
+<path class="e" marker-end="url(#ar)" d="M190,498 L222,498 L222,112 L258,112"/><text class="el" x="232" y="300" transform="rotate(-90 232 300)">admin console</text>
+<path class="e" marker-end="url(#ar)" d="M355,128 L355,188"/>
+<path class="e" marker-end="url(#ar)" d="M560,128 L560,188"/><text class="el" x="592" y="162">wakes it</text>
+<path class="e" marker-start="url(#ar)" marker-end="url(#ar)" d="M355,288 L355,348"/>
+<path class="e" marker-end="url(#ar)" d="M555,286 L555,348"/>
+<path class="e" marker-end="url(#ar)" d="M455,286 L455,468"/>
+<path class="e" marker-start="url(#ar)" marker-end="url(#ar)" d="M927,158 C950,158 950,176 973,176"/>
+<path class="e" marker-start="url(#ar)" marker-end="url(#ar)" d="M927,226 C950,226 950,196 973,196"/>
+<text class="el" x="1027" y="245">replies come</text><text class="el" x="1027" y="260">back the same way</text>
+<path class="e dash" marker-end="url(#ar)" d="M985,150 L985,20 L355,20 L355,70"/><text class="el" x="690" y="14">unsubscribe link in every email</text>
+</svg></div>
+<ul class="steps">
+<li><b>Front door:</b> everyone reaches the app at closefast-cloud.pages.dev. Dashboard files load straight away, and anything under <code>/api</code>, <code>/auth</code> or <code>/oauth</code> goes to the Worker's code.</li>
+<li><b>One Worker</b> holds the dashboard, the API, the agent, billing and the admin routes. <b>One D1 database</b> stores everything.</li>
+<li><b>The cron</b> wakes the agent every 5 minutes, but only acts when the scheduler switch is on. It's off until you say go.</li>
+</ul>
+
+<h2 id="journey">2. The customer's journey</h2>
+<p class="lede">From signup to a booked meeting. Nobody is emailed until the owner starts them, and test mode sends the first emails to the owner instead.</p>
+<div class="dia"><pre class="mermaid">
+flowchart TD
+  A["Sign up<br/>email + website, or Google"] --> B["Onboarding 1: paste website"]
+  B --> C["AI reads the site"]
+  C --> D["Onboarding 2: Who buys from you<br/>business, buyer groups, true facts, goal and ask, sender name"]
+  D --> E["Campaign created<br/>'I choose' who starts, approve the first 20"]
+  E --> F["Onboarding 3: Where should prospects come from?"]
+  F --> G1["Search people"]
+  F --> G2["LinkedIn signals"]
+  F --> G3["Upload your list"]
+  F --> G4["Web research"]
+  G1 --> H["Pipeline: everyone bought or uploaded<br/>status: Not started"]
+  G2 --> H
+  G3 --> H
+  G4 --> H
+  H -->|"owner selects people, or a rule picks them"| I["Start outreach<br/>now, on a date, or spread over N days"]
+  I --> J["Agent drafts first emails"]
+  J --> K{"Approval mode"}
+  K -->|"every email, selected people,<br/>or the first 20"| L["Approvals: owner reads, edits, approves"]
+  K -->|"autopilot"| M["Queued"]
+  L --> M
+  M --> N{"Test mode?"}
+  N -->|"on"| N1["Preview goes to the owner"]
+  N -->|"off"| O["Sent to the prospect<br/>in their working hours"]
+  O --> P["Follow-ups on a schedule"]
+  O --> Q["Prospect replies"]
+  Q --> R["Agent reads it and acts"]
+  R --> S["Inbox: replies, hand-offs, opt-outs"]
+  R --> T["Results: meetings booked, goals reached"]
+</pre></div>
+<ul class="steps">
+<li><b>Signup:</b> a Google signup gets 1,500 welcome credits straight away. An email signup gets them once onboarding claims a website no other account has used.</li>
+<li><b>Onboarding</b> turns the website into a brief: who buys, which facts are true, what to ask for, and who signs. Every campaign is built from that brief. "New campaign" runs the same three steps.</li>
+<li><b>The Pipeline</b> holds everyone the owner bought or uploaded. Being in the Pipeline is not being emailed: the owner, or a rule they set, starts people.</li>
+</ul>
+
+<h2 id="sources">3. Where prospects come from</h2>
+<p class="lede">Four sources, one shared intake. Each source runs the same checks before it charges, and charges only for people with a checked work email.</p>
+<div class="dia"><pre class="mermaid">
+flowchart TD
+  subgraph SRC["Sources"]
+    S1["Search people<br/>BlitzAPI, QuickEnrich backup"]
+    S2["LinkedIn signals<br/>keyword, competitor and creator watches"]
+    S3["Your CSV list"]
+    S4["Web research<br/>directories and company sites, on request"]
+  end
+  S1 --> E1["Estimate: how many match, masked sample,<br/>price, credits cover (free, 30 a day)"]
+  E1 --> B1["Buy N"]
+  S2 --> T1["Read posts and score intent"]
+  T1 --> T2["Who reacted or commented"]
+  B1 --> G["Checks: not a rival, not selling the same thing,<br/>not a job seeker or student, real company,<br/>consent countries, title fits"]
+  T2 --> G
+  S4 --> G
+  G --> EF["Find and verify a work email"]
+  S3 --> V["Check the emails you gave"]
+  EF --> CH{"Charge credits"}
+  CH -->|"search or web: 8"| PI
+  CH -->|"signal: 40"| PI
+  V -->|"free; 3 if we find a missing email"| PI
+  PI["Shared intake<br/>dedupe, do-not-contact, tags,<br/>campaign's auto-start rule"] --> PL["Pipeline"]
+</pre></div>
+<ul class="steps">
+<li><b>Search people</b> is the Explee-style path: describe the buyers, see the count and a sample, then buy as many as you want. Saved searches continue from where they stopped, so nobody is bought twice.</li>
+<li><b>Signals</b> watch LinkedIn for people who engaged with posts about the topic or a competitor. They go through the same checks plus an AI fit score, and a yield guard pauses watches that cost more than they deliver.</li>
+<li><b>Your list</b> is free. With your own inbox, the agent's work on those people is free too (up to 1,500 new people a month).</li>
+<li><b>Tags</b> (role, country, size, platform, heat) are labels you filter by later, not filters that block delivery.</li>
+</ul>
+
+<h2 id="pass">4. The 5-minute agent pass (the cron)</h2>
+<p class="lede">This is the engine. Every 5 minutes the cron checks the switch. If it's on, it runs one pass for every active workspace, and each step is isolated so one failure doesn't stop the rest.</p>
+<div class="dia"><pre class="mermaid">
+flowchart TD
+  CR["Cron fires every 5 minutes"] --> SW{"Scheduler switch on?"}
+  SW -->|"off (today)"| X["Nothing happens"]
+  SW -->|"on"| POOL["Read our warm inboxes, once for everyone"]
+  POOL --> WS["For each active workspace, in its own sealed context"]
+  WS --> S1["1. Read new email from the workspace's inboxes"]
+  S1 --> S2["2. Handle replies: classify, act, draft answers"]
+  S2 --> S3["3. Spot meetings booked through the booking link"]
+  S3 --> S4["4. Web research, only for open requests"]
+  S4 --> S5["5. Signals: read LinkedIn, check people, deliver to Pipeline"]
+  S5 --> S6["6. Write first emails for people who were started"]
+  S6 --> S7["7. Follow-ups and win-backs that are due"]
+  S7 --> S8["8. Send what's queued: send window, daily inbox caps,<br/>credits, test mode, do-not-contact"]
+  S8 --> S9["9. Daily jobs and the owner's summary email"]
+</pre></div>
+<ul class="steps">
+<li><b>Order matters:</b> replies are read before anything is drafted or sent, so a reply cancels the next follow-up.</li>
+<li><b>Locks</b> stop two passes from drafting or sending the same email twice.</li>
+<li>The operator can also run a single step for one workspace without the cron, which is how the pilot was run.</li>
+</ul>
+
+<h2 id="email">5. One email's life, and what happens when someone replies</h2>
+<p class="lede">Every email is written by AI, then checked, then approved (by you or by the mode you picked), then sent in the prospect's working hours.</p>
+<div class="dia"><pre class="mermaid">
+flowchart TD
+  D["AI writes it<br/>brief, true facts,<br/>signal theme, learned rules"] --> G["Checks<br/>no made-up numbers, clients or links,<br/>no leaked notes, opt-out footer"]
+  G -->|"fails"| RW["Rewritten once;<br/>else safe template<br/>or held for you"]
+  G -->|"passes"| AP{"Approval<br/>mode"}
+  RW --> AP
+  AP -->|"needs you"| AQ["Approvals"]
+  AQ -->|"approved"| Q["Queued"]
+  AP -->|"autopilot"| Q
+  Q --> SEND["Sent in their<br/>working hours"]
+  SEND --> FU["Follow-ups until<br/>a reply or the end"]
+</pre></div>
+<p class="lede">When a reply comes in, the agent reads it (the text is treated as data, never as instructions) and does one of these:</p>
+<div class="dia"><pre class="mermaid">
+flowchart LR
+  RP["Reply arrives"] --> CL{"AI classifies it"}
+  CL -->|"interested"| I1["Answers with your booking link;<br/>a booked call lands in Results"]
+  CL -->|"question"| I2["Answers from your FAQ;<br/>anything unusual waits for you"]
+  CL -->|"not now"| I3["Stops; a win-back later"]
+  CL -->|"unsubscribe"| I4["Never emailed again, by any campaign"]
+  CL -->|"out of office"| I5["Waits, then carries on"]
+  CL -->|"talk to my colleague"| I6["Adds them; outside companies wait for you"]
+  CL -->|"real bounce report"| I7["Marked lost; the email credit comes back"]
+</pre></div>
+
+<h2 id="money">6. The money</h2>
+<div class="dia"><pre class="mermaid">
+flowchart LR
+  IN1["Welcome: 1,500 credits<br/>(Google, or a claimed website)"] --> WAL[("Wallet<br/>1 credit = $0.01<br/>free credits used first")]
+  IN2["Monthly: 500 free"] --> WAL
+  IN3["Credit packs via Dodo"] --> WAL
+  WAL --> C1["Signal prospect: 40"]
+  WAL --> C2["Search or web prospect: 8"]
+  WAL --> C3["Email found for your list: 3"]
+  WAL --> C4["Agent work per new person: 3<br/>FREE with your list + your inbox (1,500/mo)"]
+  WAL --> C5["Email from our warm inboxes: 3<br/>follow-ups held up front"]
+  WAL --> C6["Premium research and writing: 10"]
+  GU["Guards: campaign weekly budget, data share per workspace<br/>($5/mo until it buys, $50 after), platform cap $100/mo,<br/>signals yield guard, estimate limits"] -.-> WAL
+</pre></div>
+<ul class="steps">
+<li><b>What a customer pays for:</b> results (a checked prospect, an email we found or sent), never raw searching. Our data cost is about $0.01 per search prospect and $0.07 to $0.13 per signal prospect, against prices of $0.08 and $0.40.</li>
+<li><b>Free AI:</b> workspaces that haven't bought credits run on the cheapest open models.</li>
+</ul>
+
+<h2 id="admin">7. The operator (you, with the ops token)</h2>
+<div class="dia"><pre class="mermaid">
+flowchart LR
+  O["Operator + ops token"] --> CON["Admin console (admin.html)"]
+  O --> API["Admin API (/api/admin/*), operator-only"]
+  CON --> API
+  API --> A1["Scheduler switch: on or off"]
+  API --> A2["Tenants: list, suspend, reactivate"]
+  API --> A3["Grant credits"]
+  API --> A4["Run one step: draft, signals, full pass"]
+  API --> A5["Warm inbox pool: add, pause, buy via InboxKit"]
+  API --> A6["Erase a workspace's data"]
+  API --> A7["Act as a workspace (x-workspace-id)"]
+  A7 --> LOG["Every action on a workspace is logged in its activity feed"]
+</pre></div>
+
+<h2 id="code">8. Code and data map</h2>
+<div class="tw"><table>
+<tr><th>Layer</th><th>Where</th><th>What it does</th></tr>
+<tr><td>Dashboard (front end)</td><td><code>public/</code>: app.js (shell, Home, Sending, Settings, login), views.js (campaigns, Pipeline, inbox, approvals, results), find.js (Find prospects, people search), signals.js, onboarding.js, wallet.js (Credits), support.js (Help), admin.html/js, app.css, _headers (security headers)</td><td>Plain JS, no build step. Talks only to the Worker's API.</td></tr>
+<tr><td>API and routing</td><td><code>src/index.js</code>, <code>src/api.js</code>, <code>src/auth.js</code>, <code>src/lib/</code></td><td>Routes, sessions, tenancy (every query is scoped to one workspace), rate limits, CSRF and error handling, the cron entry.</td></tr>
+<tr><td>Onboarding and brief</td><td><code>src/onboarding.js</code>, <code>src/brief.js</code></td><td>Reads the site, builds the brief, creates campaigns, the source step.</td></tr>
+<tr><td>Sources</td><td><code>src/sources/</code> (people search, gates, rivals), <code>src/signals/</code> (watches, engine, rules, targeting), <code>src/lead/</code> (web research, email finding)</td><td>Finding, checking and pricing prospects.</td></tr>
+<tr><td>Pipeline</td><td><code>src/pipeline/</code> (intake, API)</td><td>One door in for every source; start, pause, move, export.</td></tr>
+<tr><td>Outreach</td><td><code>src/outreach/</code> (engine, write, gates, meetings, summary, time)</td><td>Drafting, checking, approvals, sending, follow-ups, replies, meetings.</td></tr>
+<tr><td>Mail</td><td><code>src/mail/</code> (gmail, microsoft, smtpimap, instantly, system, bounce, mime), <code>src/pool.js</code></td><td>Every way an email goes out or comes in; warm-inbox pool; unsubscribe links.</td></tr>
+<tr><td>Money</td><td><code>src/billing/wallet.js</code>, <code>src/vendors/dodo.js</code></td><td>Credits ledger, prices, holds, refunds, free plan, packs.</td></tr>
+<tr><td>AI and data vendors</td><td><code>src/model.js</code>, <code>src/vendors/treg.js</code></td><td>Model routing and fallbacks; every paid data call logged with its cost and capped.</td></tr>
+<tr><td>Help</td><td><code>src/support.js</code>, <code>src/support/kb.js</code></td><td>Help chat answering from articles and the account's real state.</td></tr>
+<tr><td>Database</td><td>D1 <code>closefast-cloud</code>, <code>schema.sql</code>, <code>migrations/</code> (001 to 024)</td><td>Main tables: workspaces, users, campaigns (+ versions), leads, people, companies, messages, mailboxes, pool_inboxes, sources, watches, signal_people, wallet_ledger, vendor_spend, meetings, suppression, events, heartbeats, platform_flags.</td></tr>
+<tr><td>Tests</td><td><code>test/</code> (346 tests), <code>test/security/</code></td><td>Run on every change; include a tenant-isolation sweep of every route and a scan for unescaped output.</td></tr>
+</table></div>
+
+<h2 id="safety">9. Safety built in</h2>
+<ul class="steps">
+<li><b>Nothing sends by accident:</b> the scheduler switch, "I choose" by default, approve the first 20, test mode, send windows and daily caps, and do-not-contact checked everywhere.</li>
+<li><b>Tenants stay apart:</b> every query is scoped to one workspace, and a test calls every route as another workspace.</li>
+<li><b>Untrusted text stays data:</b> LinkedIn posts, websites, CSVs and replies never act as instructions, and the dashboard escapes everything it shows.</li>
+<li><b>Accounts:</b> login lockout, sessions that end on logout and on password change, and confirmed emails before Closefast mails them.</li>
+<li><b>Server-side fetches</b> can't reach internal addresses. Security headers are set on every page.</li>
+</ul>
+<p class="lede">Details: <a href="../sources/">Sources plan</a> · <a href="../signals/">Signals plan</a> · <a href="../credits/">Credits plan</a> · <a href="../qa/">QA and security</a></p>
+</main>
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs';
+const dark = matchMedia('(prefers-color-scheme: dark)').matches;
+mermaid.initialize({
+  startOnLoad: true, securityLevel: 'strict', theme: 'base',
+  flowchart: { curve: 'basis', htmlLabels: true, padding: 10, nodeSpacing: 34, rankSpacing: 44 },
+  themeVariables: dark
+    ? { background: '#15181a', primaryColor: '#1d2124', primaryTextColor: '#eceeea', primaryBorderColor: '#3c4347', lineColor: '#7d857f', secondaryColor: '#1a1e20', tertiaryColor: '#121517', clusterBkg: '#121517', clusterBorder: '#2c3235', edgeLabelBackground: '#15181a', fontFamily: 'Inter, system-ui, sans-serif', fontSize: '14px' }
+    : { background: '#ffffff', primaryColor: '#f3f5ee', primaryTextColor: '#15181a', primaryBorderColor: '#c9cfc2', lineColor: '#7b847d', secondaryColor: '#f7f7f4', tertiaryColor: '#fafaf8', clusterBkg: '#fafaf8', clusterBorder: '#e2e3de', edgeLabelBackground: '#ffffff', fontFamily: 'Inter, system-ui, sans-serif', fontSize: '14px' },
+});
+</script>
+</body>
+</html>
