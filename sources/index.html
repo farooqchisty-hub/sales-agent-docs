@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Closefast Sources Plan</title>
+<style>
+:root{--bg:#0d0f10;--panel:#15181a;--line:#262a2d;--ink:#eceeea;--mute:#9aa19c;--acc:#b6f36b;--warn:#f3c86b;--bad:#f37b6b;--mono:ui-monospace,SFMono-Regular,Menlo,monospace}
+@media (prefers-color-scheme: light){:root:not([data-theme="dark"]){--bg:#f7f7f4;--panel:#fff;--line:#e2e3de;--ink:#15181a;--mute:#5d645f;--acc:#3f7d12;--warn:#9a6a00;--bad:#b23a2a}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 Inter,system-ui,-apple-system,Segoe UI,sans-serif}
+main{max-width:1040px;margin:0 auto;padding:40px 16px 80px}
+h1{font-size:30px;line-height:1.2;margin:0 0 8px}
+h2{font-size:21px;margin:48px 0 12px;padding-top:16px;border-top:1px solid var(--line)}
+h3{font-size:16px;margin:24px 0 8px}
+.sub{color:var(--mute);margin:0 0 24px}
+.tag{display:inline-block;font:12px var(--mono);padding:2px 8px;border:1px solid var(--line);border-radius:99px;color:var(--mute);margin-right:6px}
+.tag.acc{color:var(--acc);border-color:var(--acc)}
+.tag.warn{color:var(--warn);border-color:var(--warn)}
+.grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px}
+.card h3{margin-top:0}
+.card ul{margin:0;padding-left:18px}
+.kpi b{display:block;font:600 24px/1.2 var(--mono);color:var(--acc)}
+.kpi span{color:var(--mute);font-size:13px}
+table{width:100%;border-collapse:collapse;margin:8px 0 16px;font-size:14px}
+th,td{text-align:left;vertical-align:top;padding:8px 10px;border-bottom:1px solid var(--line)}
+th{color:var(--mute);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.04em}
+td.n{font-family:var(--mono);white-space:nowrap}
+.tw{overflow-x:auto}
+code,.mono{font-family:var(--mono);font-size:13px}
+.call{border-left:3px solid var(--acc);background:var(--panel);padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0}
+.call.warn{border-color:var(--warn)}
+.wf{background:var(--panel);border:1px dashed var(--line);border-radius:10px;padding:14px;font:13px/1.55 var(--mono);color:var(--mute);white-space:pre;overflow-x:auto}
+nav.toc{display:flex;flex-wrap:wrap;gap:6px;margin:16px 0 8px}
+nav.toc a{font:12px var(--mono);color:var(--mute);text-decoration:none;border:1px solid var(--line);padding:3px 9px;border-radius:99px}
+nav.toc a:hover{color:var(--acc);border-color:var(--acc)}
+ol li,ul li{margin:4px 0}
+</style>
+</head>
+<body>
+<main>
+<span class="tag acc">SOURCES PLAN v1</span><span class="tag">7 Nov 2026</span><span class="tag acc">Closefast</span><span class="tag warn">AWAITING APPROVAL</span>
+<h1>Sources, pipeline, outreach: buy prospects from any source, then choose who gets emailed and when</h1>
+<p class="sub">Farooq's review on 7 Nov 2026 found that the core flow was missing. You can't search for people, see a count and buy them, the way Explee does. Signals is one source among several, not the product. This plan makes <b>buying prospects</b> the core loop, adds sources to it as plug-ins (people search, signals, your list, web research, later Reddit or any connector), and separates <b>being in the pipeline</b> (bought, yours) from <b>being in outreach</b> (the agent is emailing them, starting when you say). It follows the <a href="../signals/">Signals plan</a> and the <a href="../credits/">Credits plan</a>.</p>
+
+<div class="call"><b>In one line:</b> Find prospects (pick a source, see the count, sample and price, buy N) → they land in the <b>Pipeline</b>, tagged and charged → you <b>select</b> who to start, when, and how much the agent may send without you → the agent runs outreach. Bring your own list and inboxes and the agent is free.</div>
+
+<nav class="toc">
+<a href="#today">What exists today</a><a href="#market">How others do it</a><a href="#flow">The new flow</a><a href="#sources">Sources</a><a href="#pipeline">Pipeline</a><a href="#outreach">Outreach control</a><a href="#onboarding">Onboarding</a><a href="#home">Home</a><a href="#money">Economics</a><a href="#free">Free plan</a><a href="#eng">Backend changes</a><a href="#order">Build order</a>
+</nav>
+
+<h2 id="today">What exists today (from the code, 7 Nov)</h2>
+<div class="tw"><table>
+<tr><th>Piece</th><th>How it works now</th><th>Problem</th></tr>
+<tr><td>People data</td><td>A campaign's background engine plans searches from the brief, crawls company sites (web search, directories, OpenStreetMap, Companies House, NPI), finds a founder email and charges 8 credits per verified prospect. It runs on its own, up to the campaign's "new prospects a day".</td><td>There's no search, count, sample or "buy N". The customer can't steer it or see what they'll get before paying, and it's slow and expensive per prospect for normal B2B searches.</td></tr>
+<tr><td>Signals</td><td>Its own tab. Delivered people are charged 40 credits and placed straight into a campaign.</td><td>It behaves like a separate product, not a source feeding one pipeline.</td></tr>
+<tr><td>Your list</td><td>CSV import on the campaign page.</td><td>Hidden. It's the cheapest way in, and it's buried.</td></tr>
+<tr><td>Into outreach</td><td>Every delivered or imported lead joins the campaign and gets drafted automatically. Signal leads wait 24 hours after they engaged.</td><td>The customer can't choose who gets emailed or when. The 24-hour wait is our rule, not theirs.</td></tr>
+<tr><td>Email approval</td><td>Per campaign: approve every email, approve the first 20, or autopilot.</td><td>There's no "approve only these leads" option.</td></tr>
+</table></div>
+
+<h2 id="market">How others do it</h2>
+<h3>Explee (the reference flow)</h3>
+<ol>
+<li><b>No signup to start:</b> paste a website (or answer three questions). The agent proposes customer segments with fit scores, finds companies, then people, then writes the emails, and shows sample contacts with "and N more". (<a href="https://web.archive.org/web/20261106080748/https://explee.com/">home</a>, <a href="https://web.archive.org/web/2026/https://explee.com/auto-gtm/company/adroit-media.com/explore?phase=final">demo</a>)</li>
+<li><b>Paywall at the end:</b> email and card, permission to email on your behalf, $30 trial credit.</li>
+<li><b>Per campaign:</b> setup, lead search, review (an Approve button), sending. With autopilot on, the list auto-approves after a 12-hour review window. You approve the whole list; picking single leads isn't shown in their API. Some users report sends started sooner than they expected. (<a href="https://api.explee.com/public/api/openapi.json">API spec</a>, <a href="https://www.trustpilot.com/review/explee.com">Trustpilot</a>)</li>
+<li><b>Billing:</b> finding leads is free. They charge $0.04 per email sent from their own warmed mailboxes; leads without a verified email are never billed; replies are free. Data credits (1 credit = $0.01) apply on the API: 1 per person searched, 1.5 or 5 per email found. (<a href="https://web.archive.org/web/20260922182853/https://explee.com/pricing">pricing</a>)</li>
+<li><b>Sources:</b> their own database (105M companies, 536M people), Google Maps places, CSV upload (up to 30,000). No intent signals.</li>
+</ol>
+<div class="call"><b>What we copy from Explee:</b> results before payment (prospects and drafted emails from just a website), and a whole flow that ends in "emails ready to send".<br><b>Where we differ:</b> we charge per verified prospect plus per email from our inboxes, not per email alone; you pick exactly who is emailed and when; signals are a source; and with your own list and inboxes, the agent is free.</div>
+<div class="tw"><table>
+<tr><th>Pattern</th><th>Who</th><th>What we take</th></tr>
+<tr><td>Search, see a count and sample, then buy or reveal</td><td>Explee, Apollo, Clay</td><td>A live estimate (count, 10 sample rows, price, credits left) before any charge</td></tr>
+<tr><td>Fit filters before paying for enrichment</td><td>Teamfluence, Gojiberry, 11x, lemlist, Common Room</td><td>Mechanical "can't buy" gates before we spend on email lookups (rivals, vendors selling the same thing, job seekers, no real company)</td></tr>
+<tr><td>The user picks review or auto per signal or play</td><td>lemlist (review, auto-task, auto-push, daily cap), Amplemarket Duo, Gojiberry Review Mode, Artisan Copilot or Autopilot</td><td>Nothing enters outreach unless you start it or set a rule that does</td></tr>
+<tr><td>Billing raw rows or enrichments</td><td>Trigify, Jungler, Clay, Teamfluence (per signal, lead and email)</td><td>We charge per verified prospect only (see <a href="#money">Economics</a>)</td></tr>
+</table></div>
+
+<h2 id="flow">The new flow</h2>
+<div class="wf">  FIND PROSPECTS                 PIPELINE                         OUTREACH
+  (pick a source)                (bought or imported: yours)      (the agent emails them)
+
+  People search  --+
+  Signals        --+--> qualify --> charge --> [ Not started ] --select--> [ Scheduled ] --> [ In outreach ]
+  Your list      --+   (gates,     (only a     tags: source, role,  or a rule   start date      cadence, replies,
+  Web research   --+    tags)       verified   country, size, heat, picks them  you chose       booking
+  Later: Reddit, --+                email)     fit, list name                                       |
+  any connector                                                                     Replied / Booked / Lost / Opted out</div>
+<ol>
+<li><b>Find prospects.</b> One hub, a card per source. Each card shows its price per prospect and its last yield.</li>
+<li><b>See before you pay.</b> Every source answers an estimate first: how many match, 10 sample rows (name and email hidden until bought), price, and how many your credits cover.</li>
+<li><b>Buy N.</b> A slider or number. Only people with a verified email who pass the gates are charged. Duplicates of people already in your pipeline are free and skipped.</li>
+<li><b>Pipeline.</b> Everyone bought or imported lands here as "Not started", tagged and grouped by the list they came from.</li>
+<li><b>Start outreach.</b> Select rows (or a saved filter), pick a campaign, pick when (now, a date, or spread over N days), and pick how much the agent may send without you.</li>
+</ol>
+
+<h2 id="sources">Sources (plug-ins)</h2>
+<div class="tw"><table>
+<tr><th>Source</th><th>What you give it</th><th>Data underneath</th><th>Price</th><th>Status</th></tr>
+<tr><td><b>People search</b> (new, the Explee equivalent)</td><td>Plain English ("founders of US Shopify brands, 10 to 50 staff") or filters prefilled from your website: titles, seniority, industry, size, country, keywords</td><td>BlitzAPI people search ($0.0005 a row, ICP filters, 76% hit), BlitzAPI email find ($0.0005 a hit), treg email verify (about $0.003). The treg waterfall is the fallback for missed emails.</td><td class="n">8 credits</td><td>New</td></tr>
+<tr><td><b>Signals</b></td><td>Keywords, competitors, creators</td><td>LinkedIn posts and engagers (built)</td><td class="n">40 credits</td><td>Built. It now feeds the pipeline instead of a campaign.</td></tr>
+<tr><td><b>Your list</b></td><td>CSV or paste. Later Google Sheets, HubSpot, Pipedrive</td><td>Ours only for missing emails</td><td class="n">Free (3 if we find the email)</td><td>Built. It moves to the hub.</td></tr>
+<tr><td><b>Web research</b></td><td>A niche that people databases miss: local businesses, clinics, trades, non-LinkedIn markets</td><td>The current crawl engine (directories, OpenStreetMap, Companies House, NPI)</td><td class="n">8 credits</td><td>Built. It's renamed and becomes on-demand.</td></tr>
+<tr><td>Later: Reddit, website visitors, webhook / API</td><td>Subreddits and keywords; a pixel; any system that can POST a person</td><td>treg (Reddit), our pixel, the customer's own system</td><td class="n">Per source</td><td>Same contract</td></tr>
+</table></div>
+<p><b>One contract for every source</b>, so new ones plug in without touching the pipeline:</p>
+<ul>
+<li><code>estimate(spec)</code> returns the count, 10 masked samples, cost per prospect and expected yield.</li>
+<li><code>fetch(spec, n, cursor)</code> returns raw candidates, then the next cursor.</li>
+<li>Everything after that is shared: dedupe (suppression list, already in pipeline, opted out anywhere), the "can't buy" gates, tags, email find and verify, charge, then <code>addToPipeline()</code>.</li>
+</ul>
+<p>A saved search is a <b>list</b>. "Get 100 more" continues its cursor, so no row is bought twice.</p>
+
+<h2 id="pipeline">Pipeline (the Prospects tab, renamed)</h2>
+<ul>
+<li><b>Rows:</b> everyone bought or imported. Columns: name, title, company, source and list, tags (role, country, size, platform, heat, fit), outreach state, bought date.</li>
+<li><b>Outreach state:</b> Not started → Scheduled → In outreach → Replied / Interested / Booked / Won / Lost, plus Paused, Opted out and Bounced.</li>
+<li><b>Filters and saved views:</b> source, list, campaign, any tag, state, heat, fit, date. For example, "Hot signals, founders, US" is one click.</li>
+<li><b>Bulk actions:</b> <b>Start outreach</b> (campaign, when, approval), Pause, Move to another campaign (only before outreach starts), Export CSV, Wrong match (teaches the gates).</li>
+<li><b>Row drawer:</b> why they're here (the signal quote and post, or the search filters they matched), the company, and the history.</li>
+<li><b>Signals freshness:</b> heat cools with time, and Home nudges ("9 hot signal prospects from this week aren't started yet"). There's no forced wait. Copy never mentions the post, so emailing soon after someone engaged doesn't read as creepy.</li>
+</ul>
+
+<h2 id="outreach">Outreach control (per campaign, and per start)</h2>
+<div class="tw"><table>
+<tr><th>Setting</th><th>Options</th><th>Default</th></tr>
+<tr><td><b>Who enters outreach</b></td><td>I choose (nothing starts until I select people) · Auto-start people who match a rule (any tags or source, for example "Signals AND hot AND role Founder"), with a daily cap · Everyone from chosen sources (for example "my list")</td><td>I choose</td></tr>
+<tr><td><b>When</b></td><td>Now · On a date and time · Spread over N days (the campaign's daily limit still paces it, sending in each prospect's local hours)</td><td>Now, paced</td></tr>
+<tr><td><b>Email approval</b></td><td>Approve every email · Approve selected people (people you flag need approval, the rest run on autopilot) · Approve the first 20, then autopilot · Autopilot</td><td>Approve every email until 20 have been approved, then a prompt to switch</td></tr>
+</table></div>
+<p>The 24-hour wait for signal prospects is removed. A start is always the customer's choice, or a rule they set.</p>
+
+<h2 id="onboarding">Onboarding</h2>
+<ol>
+<li><b>Website</b> → we build the brief: what you sell, who buys, proof (built).</li>
+<li><b>"Where should prospects come from?"</b> Cards: Search people (recommended) · LinkedIn signals · Upload your list (the agent is free) · Web research for niches. Pick one or more.</li>
+<li><b>Set up each source with a live estimate.</b> People search arrives with filters prefilled from your website and a count. Signals proposes its watches (built). Your list is an upload.</li>
+<li><b>Buy the first batch</b> with welcome credits. 1,500 credits buy about 187 people-search prospects or 37 signal prospects.</li>
+<li><b>Connect an inbox</b> (your own keeps the agent free) or use our warm inboxes.</li>
+<li><b>Pipeline</b> → select → Start outreach. Test mode previews come to you first.</li>
+</ol>
+
+<h2 id="home">Home and navigation</h2>
+<ul>
+<li><b>Nav:</b> Home · Find prospects · Pipeline · Campaigns · Inbox · Approvals · Results · Sending · Credits · Settings. Signals stays as a page inside Find prospects; its watch list and feed are unchanged.</li>
+<li><b>Home tiles:</b> bought this week (by source), not started, in outreach, replied, booked, credits left (and how many prospects they buy).</li>
+<li><b>Home actions:</b> "34 prospects waiting to start", "Signals: 8 hot this week", "Your people search 'US Shopify founders' has 2,300 more".</li>
+</ul>
+
+<h2 id="money">Economics: can we charge only for qualified prospects?</h2>
+<p>Yes, as long as the data cost per qualified prospect stays at or under 30% of its price (a 70% margin).</p>
+<div class="tw"><table>
+<tr><th>Source</th><th>Data cost per qualified prospect</th><th>Price</th><th>Margin</th></tr>
+<tr><td>People search (BlitzAPI)</td><td class="n">$0.005 to $0.02</td><td class="n">$0.08</td><td class="n">75 to 94%</td></tr>
+<tr><td>Signals (pilot, measured)</td><td class="n">$0.07 to $0.13</td><td class="n">$0.40</td><td class="n">69 to 82%</td></tr>
+<tr><td>Web research (current engine)</td><td class="n">about $0.03 to $0.08 (estimate, no hosted volume yet)</td><td class="n">$0.08</td><td class="n">Thin. Keep it for niches, and measure before scaling.</td></tr>
+</table></div>
+<p>People-search maths: about 2.4 rows per email found (41% hit) × $0.0005, plus $0.0005 for the hit and about $0.003 to verify. That's roughly $0.005, or about $0.01 to $0.02 when the gates reject half the rows.</p>
+<p><b>Explee shows the other way to price:</b> data looks free and the cost is folded into $0.04 per email sent. A prospect who gets three emails pays $0.12. That works because their data is their own database. Ours costs about $0.005 to $0.02 a prospect through BlitzAPI, so either model clears 70%. We keep per-prospect pricing, because the customer owns what they bought whether or not they email it, and sending is billed only on our inboxes.</p>
+<p><b>Why others bill raw rows:</b> it moves the yield risk (a narrow ideal customer, missing emails) onto the customer, it's easy to audit, and "qualified" invites disputes. We take that risk on, with four controls:</p>
+<ol>
+<li>An estimate before every buy.</li>
+<li>Gates that are mechanical, not taste: a verified email, not a rival, a real company.</li>
+<li>The yield guard and the daily data cap for free accounts.</li>
+<li>A per-order spend ceiling.</li>
+</ol>
+
+<h2 id="free">Free plan: your leads, your inboxes</h2>
+<ul>
+<li>Bring your own list and connect your own inboxes, and the whole agent is free: drafting, follow-ups, replies, booking, summaries, autopilot. No model key needed.</li>
+<li>Fair use is 1,500 new prospects contacted a month. Past that, agent work is 3 credits per prospect.</li>
+<li>Free workspaces (no purchase yet) run on the cheapest open models: Workers AI by default, with Llama 3.3 70B on OpenRouter as the only fallback. Our LLM cost is a fraction of a cent per prospect.</li>
+<li>These still cost credits: data we find (people search, signals, web research), finding missing emails for your list, our warm inboxes, premium research and writing.</li>
+<li>Status: <b>being built</b> (7 Nov). It ships with this plan's first deploy.</li>
+</ul>
+
+<h2 id="eng">Backend changes</h2>
+<div class="tw"><table>
+<tr><th>Area</th><th>Change</th></tr>
+<tr><td>Schema</td><td><code>sources</code> table (kind, name, spec, campaign, cursor, stats, status). <code>leads</code> gains <code>source_id</code>, <code>outreach</code> (held, scheduled, active, paused, done), <code>start_at</code> and <code>review</code> (approve-selected). <code>campaigns</code> gains <code>enroll_mode</code> and <code>enroll_rule</code>, and <code>approval_mode</code> gains <code>selected</code>.</td></tr>
+<tr><td>Shared intake</td><td>One <code>addToPipeline()</code> used by signals (<code>placeLead</code>), people search, web research and CSV import. It applies dedupe, gates, tags, charge, and the campaign's auto-start rule.</td></tr>
+<tr><td>Drafter</td><td>Drafts only <code>outreach IN ('scheduled','active') AND start_at &lt;= now</code>. The signals <code>not_before</code> wait is dropped. Approve-selected holds emails for leads with <code>review=1</code>.</td></tr>
+<tr><td>People search</td><td>The brief is turned into BlitzAPI filters by the cheap model. <code>estimate</code> uses <code>max_results=1</code> for the total and 10 samples (about $0.006). A buy runs search, gates, email find, verify and charge in pages, with progress. The cursor is saved on the list.</td></tr>
+<tr><td>API</td><td><code>GET/POST /api/sources</code>, <code>POST /api/sources/estimate</code>, <code>POST /api/sources/:id/buy {n}</code>, <code>GET /api/pipeline</code> (filters), <code>POST /api/pipeline/start {ids or filter, campaign_id, start_at, spread_days, review}</code>, <code>/pause</code>, <code>/move</code>.</td></tr>
+<tr><td>UI</td><td>The Find prospects hub, the people-search builder (filters, live count, samples, price, buy), the Pipeline table with bulk actions, the campaign Outreach settings, and onboarding step 2.</td></tr>
+<tr><td>Existing data</td><td>Today's leads are marked <code>outreach='active'</code> if they have messages, and <code>held</code> otherwise. The 33 pilot drafts stay in Approvals.</td></tr>
+</table></div>
+
+<h2 id="order">Build order</h2>
+<ol>
+<li>Pipeline and outreach control: the outreach state, select and start, approve-selected, no 24-hour wait. This unblocks the pilot.</li>
+<li>Shared intake, with signals and CSV moved onto it.</li>
+<li>People search: estimate, buy and lists.</li>
+<li>The Find prospects hub, onboarding step 2, and Home.</li>
+<li>Web research made on-demand. Then Reddit and the webhook source.</li>
+</ol>
+</main>
+</body>
+</html>
