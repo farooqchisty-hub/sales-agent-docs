@@ -157,7 +157,7 @@ ol li,ul li{margin:4px 0}
 <div class="tw"><table>
 <tr><th>Source</th><th>Data cost per qualified prospect</th><th>Price</th><th>Margin</th></tr>
 <tr><td>People search (BlitzAPI)</td><td class="n">$0.005 to $0.02</td><td class="n">$0.08</td><td class="n">75 to 94%</td></tr>
-<tr><td>Signals (pilot, measured)</td><td class="n">$0.07 to $0.13</td><td class="n">$0.40</td><td class="n">69 to 82%</td></tr>
+<tr><td>Signals (Brevo campaign, measured)</td><td class="n">$0.07 to $0.13</td><td class="n">$0.40</td><td class="n">69 to 82%</td></tr>
 <tr><td>Web research (current engine)</td><td class="n">about $0.03 to $0.08 (estimate, no hosted volume yet)</td><td class="n">$0.08</td><td class="n">Thin. Keep it for niches, and measure before scaling.</td></tr>
 </table></div>
 <p>People-search maths: about 2.4 rows per email found (41% hit) × $0.0005, plus $0.0005 for the hit and about $0.003 to verify. That's roughly $0.005, or about $0.01 to $0.02 when the gates reject half the rows.</p>
@@ -188,12 +188,12 @@ ol li,ul li{margin:4px 0}
 <tr><td>People search</td><td>The brief is turned into BlitzAPI filters by the cheap model. <code>estimate</code> uses <code>max_results=1</code> for the total and 10 samples (about $0.006). A buy runs search, gates, email find, verify and charge in pages, with progress. The cursor is saved on the list.</td></tr>
 <tr><td>API</td><td><code>GET/POST /api/sources</code>, <code>POST /api/sources/estimate</code>, <code>POST /api/sources/:id/buy {n}</code>, <code>GET /api/pipeline</code> (filters), <code>POST /api/pipeline/start {ids or filter, campaign_id, start_at, spread_days, review}</code>, <code>/pause</code>, <code>/move</code>.</td></tr>
 <tr><td>UI</td><td>The Find prospects hub, the people-search builder (filters, live count, samples, price, buy), the Pipeline table with bulk actions, the campaign Outreach settings, and onboarding step 2.</td></tr>
-<tr><td>Existing data</td><td>Today's leads are marked <code>outreach='active'</code> if they have messages, and <code>held</code> otherwise. The 33 pilot drafts stay in Approvals.</td></tr>
+<tr><td>Existing data</td><td>Today's leads are marked <code>outreach='active'</code> if they have messages, and <code>held</code> otherwise. The 33 Brevo drafts stay in Approvals.</td></tr>
 </table></div>
 
 <h2 id="order">Build order</h2>
 <ol>
-<li>Pipeline and outreach control: the outreach state, select and start, approve-selected, no 24-hour wait. This unblocks the pilot.</li>
+<li>Pipeline and outreach control: the outreach state, select and start, approve-selected, no 24-hour wait. This unblocks the Brevo launch.</li>
 <li>Shared intake, with signals and CSV moved onto it.</li>
 <li>People search: estimate, buy and lists.</li>
 <li>The Find prospects hub, onboarding step 2, and Home.</li>

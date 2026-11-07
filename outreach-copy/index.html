@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Closefast Cold Email Framework</title>
+<style>
+:root{--bg:#0d0f10;--panel:#15181a;--line:#262a2d;--ink:#eceeea;--mute:#9aa19c;--acc:#b6f36b;--warn:#f3c86b;--mono:ui-monospace,SFMono-Regular,Menlo,monospace}
+@media (prefers-color-scheme: light){:root:not([data-theme="dark"]){--bg:#f7f7f4;--panel:#fff;--line:#e2e3de;--ink:#15181a;--mute:#5d645f;--acc:#3f7d12;--warn:#9a6a00}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 Inter,system-ui,-apple-system,Segoe UI,sans-serif}
+main{max-width:1040px;margin:0 auto;padding:40px 16px 80px}
+h1{font-size:30px;line-height:1.2;margin:0 0 8px}
+h2{font-size:21px;margin:44px 0 6px;padding-top:16px;border-top:1px solid var(--line)}
+h3{font-size:16px;margin:22px 0 4px}
+.sub{color:var(--mute);margin:0 0 24px}
+.lede{color:var(--mute);margin:0 0 14px;max-width:820px}
+.tag{display:inline-block;font:12px var(--mono);padding:2px 8px;border:1px solid var(--line);border-radius:99px;color:var(--mute);margin-right:6px}
+.tag.acc{color:var(--acc);border-color:var(--acc)}
+table{width:100%;border-collapse:collapse;margin:8px 0 16px;font-size:14px}
+th,td{text-align:left;vertical-align:top;padding:8px 10px;border-bottom:1px solid var(--line)}
+th{color:var(--mute);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.04em}
+td.n{text-align:right;white-space:nowrap}
+.tw{overflow-x:auto}
+code{font-family:var(--mono);font-size:13px}
+nav.toc{display:flex;flex-wrap:wrap;gap:6px;margin:16px 0 8px}
+nav.toc a{font:12px var(--mono);color:var(--mute);text-decoration:none;border:1px solid var(--line);padding:3px 9px;border-radius:99px}
+nav.toc a:hover{color:var(--acc);border-color:var(--acc)}
+.call{border-left:3px solid var(--acc);background:var(--panel);padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0}
+.parts{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin:12px 0}
+.part{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.part b{display:block;color:var(--acc);font:600 12px var(--mono);letter-spacing:.05em;text-transform:uppercase;margin-bottom:4px}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0 18px}
+@media (max-width:720px){.pair{grid-template-columns:1fr}}
+.mail{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-size:14px;white-space:pre-wrap}
+.mail .h{display:block;color:var(--mute);font:12px var(--mono);margin-bottom:6px;white-space:normal}
+.mail.old{opacity:.8}
+ul.tight{margin:4px 0 10px;padding-left:20px}
+ul.tight li{margin:3px 0}
+a{color:var(--acc)}
+</style>
+</head>
+<body>
+<main>
+<span class="tag acc">COLD EMAIL FRAMEWORK</span><span class="tag">8 Nov 2026</span><span class="tag">live in the writer, deploy 387064b0</span>
+<h1>The one framework every first email follows</h1>
+<p class="sub">Built from 10 GitHub repos and agent skills, plus vendor data from about 1.3 billion sent emails (Gong, Hunter, Belkins, Instantly, Smartlead, Lavender, lemlist) and the named practitioners. It's in the writer and enforced by the checks, and all 32 Brevo first emails were redrafted with it.</p>
+
+<div class="call"><b>In one line:</b> open on the strongest true thing we know about them (their own words first), name one problem people like them hit, say what we offer in one sentence, and ask one easy yes or no. 45 to 75 words. The subject names their topic in 2 to 4 words.</div>
+
+<nav class="toc"><a href="#shape">1. The shape</a><a href="#premise">2. The premise ladder</a><a href="#subject">3. Subject lines</a><a href="#followups">4. Follow-ups</a><a href="#enforced">5. What the code enforces</a><a href="#before">6. Before and after</a><a href="#evidence">7. The evidence</a><a href="#calls">8. Where sources disagree</a><a href="#sources">9. Sources</a></nav>
+
+<h2 id="shape">1. The shape: premise, tension, bridge, ask</h2>
+<p class="lede">Four short paragraphs, 4 sentences, each under 25 words. It has to fit a phone screen.</p>
+<div class="parts">
+<div class="part"><b>1. Premise</b>Line 1 is about them, never about us. It never starts with "I" or "We" and never praises them ("sharp point", "spot on"). It builds on what they said instead.</div>
+<div class="part"><b>2. Tension</b>One problem people like them run into, put as what's common, never as a claim about them. In our own words: no stock lead-ins like "The catch most teams hit".</div>
+<div class="part"><b>3. Bridge</b>What we offer, in one plain sentence tied to that problem. No feature list, no percentages or ROI claims, no buzzwords, no links.</div>
+<div class="part"><b>4. Ask</b>One yes or no question about interest, under 12 words, with no meeting or time in it. A yes leads to the call. It's the only question mark in the email.</div>
+</div>
+<p class="lede">Why problem before product: Gong's 28 million emails show pitching cuts replies by up to 57%. Why an interest ask: Gong's CTA study of 304,174 emails found asking about interest beats asking for a meeting on cold emails.</p>
+
+<h2 id="premise">2. The premise ladder: what line 1 stands on</h2>
+<p class="lede">The writer always uses the highest step it has, in Becc Holland's order: content they wrote beats content they engaged with, which beats company facts. One premise per email; anything else waits for a follow-up.</p>
+<div class="tw"><table>
+<tr><th>Step</th><th>When</th><th>What line 1 does</th><th>Never</th><th class="n">Brevo now</th></tr>
+<tr><td><b>Their post</b></td><td>A Signals prospect who wrote the post, 60 days old or less</td><td>Restates their specific point in our words (2 to 5 of their words at most) and builds on it. May say "your post" once, mid-sentence.</td><td>"Saw/loved/read your post", a link, the word LinkedIn, a whole sentence of theirs, any person, brand or tool from the post</td><td class="n">8</td></tr>
+<tr><td><b>Their point</b></td><td>They wrote a comment in someone else's discussion</td><td>Builds on their idea as an observation we share</td><td>Any hint of where we saw it: "your comment", "you said", "thread", LinkedIn</td><td class="n">2</td></tr>
+<tr><td><b>Site fact</b></td><td>They only liked a post, or came from people search or a list</td><td>Opens on one fact from their own website (a product, collection, offer or where they ship) and ties it to the problem</td><td>Mentioning the like, or presenting the post's topic as something they're doing</td><td class="n">20</td></tr>
+<tr><td><b>Theme</b></td><td>A like, and their site couldn't be read</td><td>Names the problem people in their role are discussing, as a general observation</td><td>Stating it as a fact about them</td><td class="n">2</td></tr>
+<tr><td><b>Role</b></td><td>Nothing known but title and company</td><td>Names their role's usual problem (Josh Braun's neutral "most people in your seat say..." pattern)</td><td>Inventing anything</td><td class="n">0</td></tr>
+</table></div>
+<p class="lede">Site facts are new: the first time we write to someone at a company, the agent reads its homepage once and keeps up to 2 plain facts on the company record for 90 days. Colleagues and later emails reuse them. An unreadable site gives no facts rather than invented ones.</p>
+
+<h2 id="subject">3. Subject lines</h2>
+<ul class="tight">
+<li>2 to 4 words, lowercase, naming their topic or priority in their own vocabulary: "bfcm email readiness", "true cac", "kuvola repeat purchase messaging".</li>
+<li>A statement, never a question (Lavender: questions cut opens 56%). No first name (Salesloft via Lavender: 12% fewer replies). No numbers, no product name, no "quick question", no fake "re:" or "fwd:", never "your post".</li>
+<li>Personalised to the topic, not the person: Belkins' 5.5 million emails show personalised subjects at 7% replies against 3% for generic.</li>
+<li>Follow-ups reply in the same thread, so they keep the first subject.</li>
+</ul>
+
+<h2 id="followups">4. Follow-ups</h2>
+<ul class="tight">
+<li>Each one reads like a short reply in the same thread (Instantly: about 30% better than a formal follow-up) and brings one new angle.</li>
+<li>Follow-up 1: a different problem people like them hit. The middle ones: a different kind of value (time, revenue, or cost). The last: under 30 words, makes a no easy and leaves the door open.</li>
+<li>Never repeats the first email's premise or bridge. No "just checking in", no "bumping this", at most one question.</li>
+</ul>
+
+<h2 id="enforced">5. What the code enforces</h2>
+<p class="lede">A style rule nobody checks drifts, so the mechanical half is a check every first email passes. A failed check gets one rewrite with the problem named; if it still fails, the email waits in Approvals with the reason shown (on autopilot it never sends).</p>
+<div class="tw"><table>
+<tr><th>Check</th><th>Fails when</th><th>Type</th></tr>
+<tr><td>LinkedIn activity</td><td>It mentions a like, comment, reaction, "engaged with", LinkedIn, or "saw/loved/read your post". Also when someone who didn't write the post is told "your post".</td><td>Hard block: nobody can approve it through</td></tr>
+<tr><td>Watched brands</td><td>It names a brand a Signals watch tracks (Klaviyo, Omnisend and so on)</td><td>Hard block</td></tr>
+<tr><td>Post mentioned twice</td><td>"Your post" appears more than once</td><td>Held for approval</td></tr>
+<tr><td>Copied words</td><td>8 words in a row come straight from their post or comment</td><td>Held for approval</td></tr>
+<tr><td>Opener shape</td><td>The subject is over 6 words, a question, uses their first name, says "quick question" or fakes re:/fwd:. Or line 1 starts with I/We or praises them, there's more than one question, or the email runs over 90 words.</td><td>Held for approval</td></tr>
+<tr><td>Repetition</td><td>Not a check: each new draft is shown the tension and ask lines from the campaign's last 5 first emails and told not to reuse that wording</td><td>Writer instruction</td></tr>
+<tr><td>Existing checks</td><td>Unbacked claims, amounts, promises, leaked notes, em dashes, cliches, a missing opt-out line</td><td>As before</td></tr>
+</table></div>
+<p class="lede">An owner's fixed template is their own words, so it skips the site read and the shape check.</p>
+
+<h2 id="before">6. Before and after (Brevo campaign, names removed)</h2>
+<p class="lede">Before: all 33 drafts shared one subject and an offer-first body. After: 32 drafts (one rival removed) with 32 different subjects, 54 to 79 words, average 64.</p>
+<h3>A CRM director who wrote about BFCM email readiness</h3>
+<div class="pair">
+<div class="mail old"><span class="h">BEFORE · subject: email and sms, one bill</span>Hi [first],
+
+Brevo runs email, SMS and WhatsApp for ecommerce stores in one platform, and we price by emails sent rather than by contacts. So a growing list doesn't inflate your bill.
+
+Most CRM leads I speak with are wrestling with channel costs that scale with list size, not with actual sending. If that resonates, worth a quick chat.
+
+Do you have 15 minutes this week?</div>
+<div class="mail"><span class="h">AFTER · subject: bfcm email readiness</span>Hi [first],
+
+Nine days out is a tight window to fix authentication, list hygiene and send warming before BFCM hits.
+
+Many teams in that spot also find their email and SMS bills climb with list size, since pricing is usually per contact.
+
+We price by emails sent instead, and keep email and SMS on one platform.
+
+Worth comparing that model against your setup?</div>
+</div>
+<h3>A store founder who only liked a post (so the like is never mentioned)</h3>
+<div class="pair">
+<div class="mail old"><span class="h">BEFORE · subject: email and sms, one bill</span>Same offer-first body as every other draft, opening with what Brevo does.</div>
+<div class="mail"><span class="h">AFTER · subject: [store] repeat purchase messaging</span>Hi [first],
+
+The [product] seems built for repeat use, and replacement filters give buyers a natural reason to come back.
+
+For stores leaning on that kind of repeat purchase, messaging bills often climb as the list grows, with email and SMS priced per contact in separate tools.
+
+Brevo prices by emails sent instead, and puts email and SMS on one platform.
+
+Would that pricing model be worth a look?</div>
+</div>
+
+<h2 id="evidence">7. The evidence</h2>
+<div class="tw"><table>
+<tr><th>Finding</th><th>Source</th></tr>
+<tr><td>3 to 4 sentences and 100 words or fewer win; pitching cuts replies by up to 57%; numbers and buzzwords in subjects cut opens</td><td><a href="https://www.gong.io/blog/does-cold-email-even-work-any-more-heres-what-the-data-says">Gong, 28M emails</a></td></tr>
+<tr><td>Interest asks beat meeting asks on cold email; a specific-time ask books only 15% cold</td><td><a href="https://www.gong.io/blog/this-surprising-cold-email-cta-will-help-you-book-a-lot-more-meetings">Gong Labs, 304k emails</a></td></tr>
+<tr><td>Executives reply more to an insight than to a meeting ask; 1 to 4 word subjects open best</td><td><a href="https://www.gong.io/blog/do-execs-really-reply-to-cold-email-here-s-what-the-data-says">Gong exec study, 2026</a></td></tr>
+<tr><td>ROI and percentage claims cut success by 15%</td><td><a href="https://www.gong.io/resources/labs/avoid-this-tempting-cold-email-mistake-at-all-costs/">Gong Labs, 132k emails</a></td></tr>
+<tr><td>Two-word subjects are optimal; question subjects cut opens 56%, numbers 46%; first names cut replies 12%</td><td><a href="https://www.lavender.ai/blog/cold-email-subject-line-tips">Lavender</a></td></tr>
+<tr><td>Personalised subjects 7% replies vs 3%; 2 to 4 words open best; letter case barely matters</td><td><a href="https://belkins.io/blog/b2b-cold-email-subject-line-statistics">Belkins, 5.5M emails</a></td></tr>
+<tr><td>Real custom fields in the body: 5.6% vs 3.6% replies; tracking off 7.4% vs 4.4%; 3 messages beat 1 (6.8% vs 3.3%)</td><td><a href="https://hunter.io/the-state-of-cold-email">Hunter, 31M emails</a></td></tr>
+<tr><td>Best first emails are under 80 words; 58% of replies come from step 1; reply-style follow-ups beat formal ones by about 30%</td><td><a href="https://instantly.ai/cold-email-benchmark-report-2026">Instantly 2026 benchmark</a></td></tr>
+<tr><td>First emails under 50 words reply best; replies fall with every extra step</td><td><a href="https://www.smartlead.ai/benchmarks">Smartlead, 850M emails</a></td></tr>
+<tr><td>Name and company merge fields no longer count as personalisation</td><td><a href="https://www.lemlist.com/blog/how-to-write-cold-emails-that-get-high-reply-rates">lemlist</a></td></tr>
+<tr><td>The premise order: content they wrote, content they engaged with, their self-description, then company news. The premise is line 1.</td><td><a href="https://www.persistiq.com/?p=1778">Becc Holland via PersistIQ</a></td></tr>
+<tr><td>Lead with their idea, not "I saw your post"; one reference only</td><td><a href="https://getfuzzy.ai/blog/reference-prospect-linkedin-post-cold-email">Fuzzy</a> (vendor guide, no hard data)</td></tr>
+</table></div>
+<p class="lede">The figures were checked on these pages by the research pass. Lavender's "5th grade reading level" rule and the widely repeated "18% reply rate for signal-based emails" have no primary source we could find, so neither is used.</p>
+
+<h2 id="calls">8. Where sources disagree, and what we picked</h2>
+<div class="tw"><table>
+<tr><th>Question</th><th>The split</th><th>Our call</th></tr>
+<tr><td>Name the post, or only its topic?</td><td>Corey Haines, ColdIQ, oneshot, coldoutboundskills and BenAI cite the post. julienamorgan and Peter Cools only cite the topic, never how you found them.</td><td>Both, by signal type. A post they wrote is public writing of theirs: we build on it and may say "your post" once. Likes and comments are never referenced.</td></tr>
+<tr><td>Quote them or paraphrase?</td><td>ColdIQ and Corey say quote exactly; BenAI says never quote</td><td>Paraphrase, reusing at most a few of their words. A check stops 8 words in a row copied from them.</td></tr>
+<tr><td>Subject about the post?</td><td>Some allow "saw your post"; Corey and Sellbird keep subjects internal-looking</td><td>The post's topic in their words, never "your post"</td></tr>
+<tr><td>Product in email 1?</td><td>Sellbird and oneshot hold it back; ColdIQ and others put a proof line in</td><td>One plain sentence, after the problem (the bridge)</td></tr>
+<tr><td>Ask for a meeting?</td><td>Gong data favours an interest ask; Nowoslawski asks for a meeting in email 1</td><td>Interest ask in email 1; the call comes after a yes</td></tr>
+<tr><td>Length</td><td>Hunter's best is 20 to 39 words; lemlist likes 75 to 125; most data says under 100 and the gaps are small</td><td>45 to 75 words, checked at 90</td></tr>
+</table></div>
+
+<h2 id="sources">9. Sources</h2>
+<h3>GitHub repos and agent skills (read in full)</h3>
+<ul class="tight">
+<li><a href="https://github.com/coreyhaines31/marketingskills">coreyhaines31/marketingskills</a> (cold-email and prospecting skills, 59k stars): the "delete the opener" test, interest asks, a two-step research process, and "no hook found" as a valid result.</li>
+<li><a href="https://github.com/ethanplusai/sellbird">ethanplusai/sellbird</a> (4.8k stars): one signal per email, stale signals expire, and "a wrong specific is worse than a right generic".</li>
+<li><a href="https://github.com/growthenginenowoslawski/coldoutboundskills">growthenginenowoslawski/coldoutboundskills</a>: posts from the last 3 months only, skip personal or charged posts, never invent a post.</li>
+<li><a href="https://github.com/Cold-IQ/ColdIQ-s-GTM-Skills">Cold-IQ/ColdIQ-s-GTM-Skills</a>: what the prospect wrote ranked as the most valuable data; strong vs lite hooks.</li>
+<li><a href="https://github.com/swan-gtm/gtm-skills">swan-gtm/gtm-skills</a> (signal-anchored message): open on the change, never hint at how the lead was found.</li>
+<li><a href="https://github.com/oneshot-agent/oneshot-gtm">oneshot-agent/oneshot-gtm</a>: a 12 to 22 word opener with one verifiable fact, and no product in line 1.</li>
+<li><a href="https://github.com/naveedharri/benai-skills">naveedharri/benai-skills</a>: cite a post only if it relates to what you sell; paraphrase, never quote.</li>
+<li><a href="https://github.com/julienamorgan/signal-prospecting-kit">julienamorgan/signal-prospecting-kit</a>: use the topic, never the platform.</li>
+<li><a href="https://github.com/BrianRWagner/ai-marketing-claude-code-skills">BrianRWagner/ai-marketing-claude-code-skills</a>: personalisation tiers by how much is known.</li>
+<li><a href="https://github.com/tech-leads-club/agent-skills">tech-leads-club/agent-skills</a>: a 3-line email (pain, proof, ask).</li>
+</ul>
+<h3>Practitioners</h3>
+<p class="lede">Josh Braun (neutral "poke the bear" questions), Becc Holland (premise order), 30 Minutes to President's Club (3x3 email, trigger and tension), Eric Nowoslawski (the signal must connect to the problem; no trivia hooks), Justin Michael and Alex Berman (short, phone-sized, yes or no asks).</p>
+</main>
+</body>
+</html>
