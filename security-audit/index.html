@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Security Audit Plan</title>
+<style>
+:root{--bg:#0d0f10;--panel:#15181a;--line:#262a2d;--ink:#eceeea;--mute:#9aa19c;--acc:#b6f36b;--warn:#f3c86b;--mono:ui-monospace,SFMono-Regular,Menlo,monospace}
+@media (prefers-color-scheme: light){:root:not([data-theme="dark"]){--bg:#f7f7f4;--panel:#fff;--line:#e2e3de;--ink:#15181a;--mute:#5d645f;--acc:#3f7d12;--warn:#9a6a00}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 Inter,system-ui,-apple-system,Segoe UI,sans-serif}
+main{max-width:1040px;margin:0 auto;padding:40px 16px 80px}
+h1{font-size:30px;line-height:1.2;margin:0 0 8px}
+h2{font-size:21px;margin:44px 0 6px;padding-top:16px;border-top:1px solid var(--line)}
+h3{font-size:16px;margin:22px 0 4px}
+.sub{color:var(--mute);margin:0 0 24px}
+.lede{color:var(--mute);margin:0 0 14px;max-width:820px}
+.tag{display:inline-block;font:12px var(--mono);padding:2px 8px;border:1px solid var(--line);border-radius:99px;color:var(--mute);margin-right:6px}
+.tag.acc{color:var(--acc);border-color:var(--acc)}
+table{width:100%;border-collapse:collapse;margin:8px 0 16px;font-size:14px}
+th,td{text-align:left;vertical-align:top;padding:8px 10px;border-bottom:1px solid var(--line)}
+th{color:var(--mute);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.04em}
+td.n{text-align:right;white-space:nowrap}
+.tw{overflow-x:auto}
+code{font-family:var(--mono);font-size:13px}
+nav.toc{display:flex;flex-wrap:wrap;gap:6px;margin:16px 0 8px}
+nav.toc a{font:12px var(--mono);color:var(--mute);text-decoration:none;border:1px solid var(--line);padding:3px 9px;border-radius:99px}
+nav.toc a:hover{color:var(--acc);border-color:var(--acc)}
+.call{border-left:3px solid var(--acc);background:var(--panel);padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0}
+.call.warn{border-left-color:var(--warn)}
+.parts{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin:12px 0}
+.part{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.part b{display:block;color:var(--acc);font:600 12px var(--mono);letter-spacing:.05em;text-transform:uppercase;margin-bottom:4px}
+ul.tight{margin:4px 0 10px;padding-left:20px}
+ul.tight li{margin:3px 0}
+a{color:var(--acc)}
+</style>
+</head>
+<body>
+<main>
+<span class="tag acc">SECURITY AUDIT PLAN</span><span class="tag">8 Nov 2026</span><span class="tag">skill pinned at c1c8a8c</span>
+<h1>How we use Cloudflare's security-audit skill</h1>
+<p class="sub">Cloudflare open-sourced the skill that its internal vulnerability scanner grew out of (MIT licence). This page covers what it does, the order we run it on our projects, how Closefast's first run is set up, and how it keeps running after that.</p>
+
+<div class="call"><b>In one line:</b> install the skill pinned to one commit, run a full audit on Closefast first (live sending, multi-account, wallet), fix every confirmed finding with a regression test, run it again (one run finds about half of what repeated runs find), then move to One-Click Launch and the email engines. After that, a smaller audit runs on the changed code before any deploy that touches login, money, sending or replies.</div>
+
+<nav class="toc"><a href="#what">1. What it is</a><a href="#vs">2. Versus our 7 Nov pass</a><a href="#order">3. Run order</a><a href="#setup">4. Closefast run 1 setup</a><a href="#focus">5. Where hunters start</a><a href="#safety">6. Run safety</a><a href="#after">7. After the run</a><a href="#ongoing">8. Keeping it running</a><a href="#notyet">9. Not building yet</a><a href="#sources">10. Sources</a></nav>
+
+<h2 id="what">1. What the skill is</h2>
+<p class="lede">It's a set of instructions for a coding agent (here, me in Claude Code) to split a security audit across many separate agents, so no single context fills up and no agent gets to grade its own work. It runs six phases:</p>
+<div class="parts">
+<div class="part"><b>1. Map</b>Recon agents map the architecture, trust boundaries and every input, and write a coverage ledger: each part of the code paired with the attack classes that apply to it.</div>
+<div class="part"><b>2. Hunt</b>One isolated hunter per ledger unit tries to break the code. Coverage critics then look for units nobody checked and send hunters to them.</div>
+<div class="part"><b>3. Disprove</b>Every candidate goes to a fresh verifier whose job is to prove it wrong. The agent that found a bug never confirms it.</div>
+<div class="part"><b>4. Record</b>Findings are written to <code>findings.json</code> in a fixed schema with one of three verdicts (confirmed, needs validation, rejected), and two scripts check them mechanically.</div>
+<div class="part"><b>5. Re-verify</b>New agents check every final claim against the source again.</div>
+<div class="part"><b>6. Report</b><code>REPORT.md</code>, <code>FINDINGS-DETAIL.md</code> and <code>NEEDS-VALIDATION.md</code> are written from the verified records only.</div>
+</div>
+<p class="lede">The rules that keep the findings honest:</p>
+<ul class="tight">
+<li>A finding has to name who the attacker is, which boundary they cross and what they end up with. Missing best practice alone doesn't count.</li>
+<li>Severity follows demonstrated impact.</li>
+<li>Anything that depends on settings outside the code (Cloudflare dashboard, provider config) stays "needs validation" with the exact fact that's missing.</li>
+<li>Runs add up: a second run reads the first one's ledger, re-checks code that changed and hunts what was left uncovered.</li>
+</ul>
+<p class="lede">I read the whole skill before adopting it: 12 instruction files, 10 attack-class files, the JSON schema and the two validators. The validators only read and write files: no network calls and no processes spawned outside their own tests.</p>
+
+<h2 id="vs">2. What it adds over our 7 Nov security pass</h2>
+<p class="lede">The 7 Nov pass on Closefast was one checklist review. It found 25 issues (1 critical, 5 high, 11 medium, 8 low). 24 are fixed, and one is a tracked baseline that only shrinks.</p>
+<div class="tw"><table>
+<tr><th>7 Nov pass</th><th>This skill</th></tr>
+<tr><td>A list of what we found.</td><td>A ledger of what was checked, so "nothing found here" means something and gaps are visible.</td></tr>
+<tr><td>The same reviewer found and judged each issue.</td><td>A separate agent tries to disprove each candidate, and fresh agents re-verify the final records.</td></tr>
+<tr><td>General web checks (XSS, SSRF, sessions, rate limits).</td><td>Domain files we didn't have: prompt injection into agents that act on their own, tenant isolation across deletion and exports, operator spend, webhook replay.</td></tr>
+<tr><td>Ran once.</td><td>Built to re-run and pick up where the last run stopped.</td></tr>
+</table></div>
+<p class="lede">The 25 issues go to recon as earlier evidence. They guide the hunt, but they don't count as covered, because fixes can regress, so each of the 24 fixes gets re-checked against today's code.</p>
+
+<h2 id="order">3. Where we run it, in order</h2>
+<p class="lede">Ordered by what a bug could cost: real people emailed, real money moved, real customer accounts. The cap is the most agent runs a single audit may use. The skill stops and reports instead of going over it.</p>
+<div class="tw"><table>
+<tr><th>#</th><th>Project</th><th>Why it's here</th><th>Profile</th><th class="n">Agent-run cap</th></tr>
+<tr><td>1</td><td>Closefast (closefast-cloud)</td><td>Real sending on autopilot since 8 Nov. Many accounts share one reply inbox. It has a wallet, Dodo payments, an operator console and LLM agents reading text written by strangers.</td><td>standard</td><td class="n">80</td></tr>
+<tr><td>2</td><td>Closefast run 2</td><td>Runs right after the run 1 fixes land: re-checks changed code and hunts the units run 1 left uncovered.</td><td>standard</td><td class="n">60</td></tr>
+<tr><td>3</td><td>One-Click Launch</td><td>Live Dodo payments. Browser automation on URLs customers give us, and customer accounts.</td><td>standard</td><td class="n">60</td></tr>
+<tr><td>4</td><td>Link engine, Partner Voices, Creator engine</td><td>They send from real inboxes to real people and hold provider keys.</td><td>quick, each</td><td class="n">25 each</td></tr>
+<tr><td>5</td><td>Winning Statics backend</td><td>No users yet, so this runs as a scoped audit of the backend and payments before launch.</td><td>standard, scoped</td><td class="n">60</td></tr>
+</table></div>
+
+<h2 id="setup">4. Closefast run 1: how it's set up</h2>
+<div class="tw"><table>
+<tr><th>Setting</th><th>Decision</th><th>Why</th></tr>
+<tr><td>Install</td><td>Copy the skill into <code>~/.claude/skills/security-audit</code> from commit <code>c1c8a8c</code>. No <code>npx</code> install.</td><td>A pinned copy means upstream changes reach us only when we re-read and re-pin.</td></tr>
+<tr><td>What gets audited</td><td>A clean <code>git archive</code> export of the deployed commit, not the working folder.</td><td>It leaves out <code>.dev.vars</code> (local test login), <code>.wrangler</code> state and anything gitignored, and the audited commit is exact.</td></tr>
+<tr><td>Where results go</td><td><code>~/security-audit-skill/closefast-cloud/run-1/</code>, outside the repo.</td><td>Finding details never get committed or pushed.</td></tr>
+<tr><td>Sandbox for running code</td><td>A macOS seatbelt wrapper (<code>sandbox-exec</code>) with no network, an empty environment, writes only to the agent's scratch folder and home-folder secrets unreadable. CPU and file-size limits are set, and a watchdog outside the sandbox kills the run on a memory, process-count or time limit.</td><td>The skill won't run target code without these controls. Network blocking was tested on this Mac and worked. Docker Desktop here is from 2022 and its daemon doesn't start, so we're not using it.</td></tr>
+<tr><td>Proof tests</td><td>Hunters write proof tests against our existing test harness (<code>test/helpers/d1.js</code>, built on node:sqlite).</td><td>Closefast has no runtime dependencies, so tests run with no install and no network. Proofs run against unmodified code.</td></tr>
+<tr><td>Models</td><td>Hunters on Opus 5.5, candidate verifiers on Sonnet 5.5, final re-verification on fresh Opus 5.5 agents.</td><td>Cloudflare's own lesson: a different model checking the first one's findings catches what one set of weights misses.</td></tr>
+<tr><td>Domain files</td><td>AI and LLM, data isolation, resource exhaustion and spend, web auth, protocols and webhooks, cloud and deployment, client side, supply chain (light). Memory safety and desktop or mobile are skipped.</td><td>They match what Closefast actually has: Workers, D1, LLM agents, a browser dashboard and webhooks. There's no native code and no mobile app.</td></tr>
+<tr><td>Profile</td><td>standard (deep is saved for run 2's riskiest units if run 1 confirms anything high).</td><td>It's live and multi-account, so a quick pass is too thin. Deep everywhere would spend the cap on low-risk code.</td></tr>
+</table></div>
+
+<h2 id="focus">5. Where the hunters start</h2>
+<p class="lede">The ledger covers everything in scope. These five areas get the first hunting wave, because they're where Closefast touches money, strangers or other accounts:</p>
+<div class="parts">
+<div class="part"><b>1. Autopilot replies</b>A prospect's reply is drafted into an answer and sent without a human. Can text in that reply change what we send, who we send it to, or pull the brief's private notes into the email? (AI and LLM)</div>
+<div class="part"><b>2. Text from outside</b>LinkedIn posts, homepage text and imported CSVs all reach the writer and the support agent. Can any of them act as instructions? (AI and LLM)</div>
+<div class="part"><b>3. Account boundaries</b>Replies to the shared inbox are routed between accounts. Can one account read or act on another account's leads, replies, wallet or erased data? (data isolation)</div>
+<div class="part"><b>4. Money and spend</b>Credits, the wallet ledger, Dodo webhooks, welcome credits, and the data and Signals caps. Can anyone mint credits, replay a payment, or run up our provider bills? (spend, webhooks)</div>
+<div class="part"><b>5. Login and the operator key</b>Sessions, Google account linking, password reset, the operator token's reach, and the admin console rendering prospect content. (web auth, client side)</div>
+</div>
+
+<h2 id="safety">6. Run safety rules</h2>
+<ul class="tight">
+<li>Read-only on source. No request to the production app, no reads or writes to the production database, no emails, no deploys while the run is going.</li>
+<li>Agents get the exported source copy and their own scratch folder. They never see <code>~/.closefast_cloud_*</code>, <code>~/.cloudflare_keys</code> or any other key file.</li>
+<li>Only dummy accounts, dummy keys and local fixtures. No paid API calls (treg, OpenRouter, Instantly) from inside the run.</li>
+<li>Anything that depends on live settings stays "needs validation". I check those afterwards myself, read-only, through our own account APIs (section 7).</li>
+</ul>
+
+<h2 id="after">7. After the run</h2>
+<h3>Fix loop</h3>
+<ul class="tight">
+<li>Every confirmed finding gets the smallest fix at the point where the decision is made, plus a regression test in <code>test/security-*.test.js</code>. The full suite (356 tests today) must pass before deploy.</li>
+<li>A fresh agent checks each fix against the original proof test. A fix counts only when that proof now fails.</li>
+<li>Critical and high get fixed and deployed first, medium in the same round, and low in one batch after that.</li>
+<li>Where a fix changes something users see, it ships with my chosen default, and the summary says what changed.</li>
+</ul>
+<h3>Owner-side checks for "needs validation"</h3>
+<p class="lede">Read-only checks through our own API access:</p>
+<ul class="tight">
+<li>The Cloudflare Worker and Pages settings (workers.dev off, routes, secrets present, API token scopes).</li>
+<li>GitHub repo visibility.</li>
+<li>The Google sign-in client's redirect list.</li>
+<li>Dodo's webhook settings.</li>
+<li>Instantly account limits.</li>
+</ul>
+<h3>What gets published</h3>
+<p class="lede">This site is public (noindex only), so the results page lists fixed findings and counts. Open findings stay in the local run folder until they're fixed.</p>
+
+<h2 id="ongoing">8. Keeping it running</h2>
+<div class="tw"><table>
+<tr><th>When</th><th>What runs</th></tr>
+<tr><td>Right after run 1 fixes</td><td>Closefast run 2 (additive: it reads run 1's ledger and findings).</td></tr>
+<tr><td>Before a deploy that touches login, the wallet, credits or billing, sending or the pool, reply handling, gates, admin routes or the support agent</td><td>A scoped quick audit of the diff between the deployed commit and the new one, up to 15 agent runs. A confirmed high or critical blocks the deploy until it's fixed.</td></tr>
+<tr><td>First week of each month</td><td>A full standard re-run on Closefast and One-Click Launch, building on the last ledger.</td></tr>
+<tr><td>When the skill updates upstream</td><td>Read the diff, re-pin, then do one re-run.</td></tr>
+</table></div>
+
+<h2 id="notyet">9. What we're not building yet</h2>
+<p class="lede">Cloudflare's own advice for a small setup is to start with the skill and add harness stages only when their absence is what's slowing you down. So these wait:</p>
+<ul class="tight">
+<li><b>A custom harness</b> (database-backed stages, a separate dedup system). It waits until we audit more than 3 repos every month and comparing runs by hand gets slow. Then we build the minimal version Cloudflare describes: recon, hunt and validate in SQLite, with a validator that can't file its own findings.</li>
+<li><b>Cross-repo tracing.</b> Closefast's dependencies are external APIs, not our own repos, so there's nothing to trace yet.</li>
+<li><b>Static analysis wiring (Semgrep).</b> Cloudflare's hunters called it zero times in a month. They read and ran the code instead.</li>
+</ul>
+
+<h2 id="sources">10. Sources</h2>
+<ul class="tight">
+<li><a href="https://github.com/cloudflare/security-audit-skill">cloudflare/security-audit-skill</a> (MIT), read in full at commit c1c8a8c.</li>
+<li><a href="https://blog.cloudflare.com/build-your-own-vulnerability-harness">Build your own vulnerability harness</a>, Cloudflare blog, 18 Jun 2026: single runs find about half; use different models for finding and judging; persistence before parallelism; skip the harness until you need it.</li>
+<li><a href="https://x.com/cloudflaredev/status/2118013149538390253">@CloudflareDev announcement</a>, 4 Nov 2026.</li>
+<li>Closefast's 7 Nov security pass (25 findings), from <code>qa/SECURITY.md</code> in closefast-cloud.</li>
+</ul>
+</main>
+</body>
+</html>
