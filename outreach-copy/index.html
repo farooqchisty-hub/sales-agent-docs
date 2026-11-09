@@ -49,7 +49,7 @@ a{color:var(--acc)}
 
 <div class="call"><b>In one line:</b> sound like one person who looked at their business and cares how it goes. Open on something true about them, name one problem the way it feels in everyday words, say who we are only in paragraph 3 along with what changes for them, and ask one real question about them. 70 to 85 words. The subject is a small detail from their world.</div>
 
-<nav class="toc"><a href="#shape">1. The shape</a><a href="#premise">2. The premise ladder</a><a href="#subject">3. Subject lines</a><a href="#followups">4. Follow-ups</a><a href="#enforced">5. What the code enforces</a><a href="#before">6. Before and after</a><a href="#evidence">7. The evidence</a><a href="#calls">8. Where sources disagree</a><a href="#sources">9. Sources</a></nav>
+<nav class="toc"><a href="#shape">1. The shape</a><a href="#premise">2. The premise ladder</a><a href="#subject">3. Subject lines</a><a href="#followups">4. Follow-ups</a><a href="#enforced">5. What the code enforces</a><a href="#standard">5a. How the standard holds</a><a href="#before">6. Before and after</a><a href="#evidence">7. The evidence</a><a href="#calls">8. Where sources disagree</a><a href="#sources">9. Sources</a></nav>
 
 <h2 id="shape">1. The shape: notice, problem, who and what changes, ask</h2>
 <p class="lede">Four short paragraphs, most sentences under 18 words. It has to fit a phone screen. Changed 9 Nov after the owner read the queue: the 8 Nov version got to the product too fast, leaned on product terms and sounded straight rather than genuine.</p>
@@ -84,9 +84,10 @@ a{color:var(--acc)}
 
 <h2 id="followups">4. Follow-ups</h2>
 <ul class="tight">
-<li>Each one reads like a short reply in the same thread (Instantly: about 30% better than a formal follow-up) and brings one new angle.</li>
-<li>Follow-up 1: a different problem people like them hit. The middle ones: a different kind of value (time, revenue, or cost). The last: under 30 words, makes a no easy and leaves the door open.</li>
-<li>Never repeats the first email's premise or bridge. No "just checking in", no "bumping this", at most one question.</li>
+<li>Same person, same voice, a short note in the same thread: 45 to 60 words, one or two short paragraphs, one real question about them.</li>
+<li>Follow-up 1: a different way the problem shows up for them, with no meeting ask. The middle ones: one small practical idea they can use even if they never reply. The last: about 20 words (under 30 is the limit), makes a no easy and leaves the door open.</li>
+<li>Never repeats the earlier email and never chases: no "just checking in", "following up" or "bumping this".</li>
+<li>Follow-ups get the same library, variety check and second-model review as first emails.</li>
 </ul>
 
 <h2 id="enforced">5. What the code enforces</h2>
@@ -98,10 +99,23 @@ a{color:var(--acc)}
 <tr><td>Post mentioned twice</td><td>"Your post" appears more than once</td><td>Held for approval</td></tr>
 <tr><td>Copied words</td><td>8 words in a row come straight from their post or comment</td><td>Held for approval</td></tr>
 <tr><td>Opener shape</td><td>The subject is over 6 words, a question, has a number, uses their first name, says "quick question" or fakes re:/fwd:. Or line 1 starts with I/We or praises them, there's more than one question, the ask requests a meeting, it uses a stock pivot, it skips contractions, it names us before paragraph 3, or it runs over 100 words.</td><td>Held for approval (skipped on autopilot)</td></tr>
-<tr><td>Repetition</td><td>Not a check: each new draft is shown every paragraph of the campaign's last 8 first emails and told not to reuse that wording</td><td>Writer instruction</td></tr>
+<tr><td>Variety</td><td>A sentence in paragraph 2 or 3 shares a run of 8 words with one of the campaign's last 12 first emails, or with an example it was shown. The line that says who we are may repeat. The rewrite is told exactly which line.</td><td>Rewrite, then hold</td></tr>
+<tr><td>Borrowed details</td><td>It uses a name or product from an example written to someone else</td><td>Rewrite, then hold</td></tr>
+<tr><td>Second-model review</td><td>A different model from the writer scores every draft on five things: sounds like a person, plain words, specific to them, makes sense, true to the facts. Below the bar it's rewritten up to twice with the specific fix. A review that can't be completed counts as below the bar.</td><td>Rewrite, then hold</td></tr>
+
 <tr><td>Existing checks</td><td>Unbacked claims, amounts, promises, leaked notes, em dashes, cliches, a missing opt-out line</td><td>As before</td></tr>
 </table></div>
 <p class="lede">An owner's fixed template is their own words, so it skips the site read and the shape check.</p>
+
+<h2 id="standard">5a. How the standard holds without anyone watching</h2>
+<ul class="tight">
+<li><b>Approved examples.</b> Each draft is shown three emails the owner approved, matched to what we know about this person and whether they're a store, an agency or neither. Different people see different examples. Approving or editing a draft adds it to the library. An account with none yet gets built-in examples from invented sellers, so no product claim can leak.</li>
+<li><b>Different problem paragraphs.</b> A brief with no problem angles gets six written once from the brief and kept on that version. Each person is given one, and follow-up 1 is given a different one.</li>
+<li><b>Better models where it counts.</b> Paying accounts write with Claude Sonnet 5.5 and are reviewed by Claude Haiku 5.5. Never-paid accounts stay on open models (GLM, reviewed by gpt-oss-120b) with their own review bar. An owner who set their own model keeps it.</li>
+<li><b>Calibrated bar.</b> Tested on 104 real emails: it passed 44 of the 52 the owner approved and 4 of the 52 AI drafts he wouldn't send.</li>
+<li><b>A bad sentence never costs someone their place.</b> Craft failures hold the draft for 6 hours and try again. After three holds it goes to Approvals. Only a draft that can't be made true or safe counts against the lead.</li>
+<li><b>The exam.</b> <code>npm run deploy</code> runs the tests, and any change to the writer, the checks, the examples or the model routing must pass <code>scripts/eval-writer.mjs</code> on invented prospects with the real models before it can ship.</li>
+</ul>
 
 <h2 id="before">6. Before and after (Brevo campaign, 8 Nov round, names removed)</h2>
 <p class="lede">These two show the 8 Nov step. The 9 Nov voice replaces the "after" column: see the shape in section 1.</p>
