@@ -1,0 +1,303 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex"><title>Production Readiness Audit</title><style>
+:root{--bg:#0d0f10;--panel:#15181a;--line:#262a2d;--ink:#eceeea;--mute:#9aa19c;--acc:#b6f36b;--warn:#f3c86b;--mono:ui-monospace,SFMono-Regular,Menlo,monospace}
+@media (prefers-color-scheme: light){:root:not([data-theme="dark"]){--bg:#f7f7f4;--panel:#fff;--line:#e2e3de;--ink:#15181a;--mute:#5d645f;--acc:#3f7d12;--warn:#9a6a00}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 Inter,system-ui,-apple-system,Segoe UI,sans-serif}
+main{max-width:1040px;margin:0 auto;padding:40px 16px 80px}
+h1{font-size:30px;line-height:1.2;margin:0 0 8px}
+h2{font-size:21px;margin:44px 0 6px;padding-top:16px;border-top:1px solid var(--line)}
+h3{font-size:16px;margin:22px 0 4px}
+.sub{color:var(--mute);margin:0 0 24px}
+.lede{color:var(--mute);margin:0 0 14px;max-width:820px}
+.tag{display:inline-block;font:12px var(--mono);padding:2px 8px;border:1px solid var(--line);border-radius:99px;color:var(--mute);margin-right:6px}
+.tag.acc{color:var(--acc);border-color:var(--acc)}
+table{width:100%;border-collapse:collapse;margin:8px 0 16px;font-size:14px}
+th,td{text-align:left;vertical-align:top;padding:8px 10px;border-bottom:1px solid var(--line)}
+th{color:var(--mute);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.04em}
+td.n{text-align:right;white-space:nowrap}
+.tw{overflow-x:auto}
+code{font-family:var(--mono);font-size:13px}
+nav.toc{display:flex;flex-wrap:wrap;gap:6px;margin:16px 0 8px}
+nav.toc a{font:12px var(--mono);color:var(--mute);text-decoration:none;border:1px solid var(--line);padding:3px 9px;border-radius:99px}
+nav.toc a:hover{color:var(--acc);border-color:var(--acc)}
+.call{border-left:3px solid var(--acc);background:var(--panel);padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0}
+.call.warn{border-left-color:var(--warn)}
+.parts{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin:12px 0}
+.part{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.part b{display:block;color:var(--acc);font:600 12px var(--mono);letter-spacing:.05em;text-transform:uppercase;margin-bottom:4px}
+ul.tight{margin:4px 0 10px;padding-left:20px}
+ul.tight li{margin:3px 0}
+a{color:var(--acc)}
+.sev{display:inline-block;font:600 11px var(--mono);padding:1px 7px;border-radius:99px;border:1px solid var(--line)}
+.sev.P0{color:#ff7a7a;border-color:#ff7a7a}.sev.P1{color:var(--warn);border-color:var(--warn)}.sev.P2{color:var(--acc);border-color:var(--line)}.sev.P3{color:var(--mute)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:12px 0}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.kpi b{display:block;font:600 24px/1.2 Inter,system-ui,sans-serif}.kpi span{color:var(--mute);font-size:13px}
+details{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin:10px 0}
+summary{cursor:pointer;font-weight:600}
+td.id{font:12px var(--mono);white-space:nowrap;color:var(--mute)}
+.status{font:12px var(--mono);color:var(--mute)}
+td.pk{font:12px var(--mono);color:var(--mute);min-width:90px;word-break:break-word}
+@media (max-width:600px){td,th{padding:7px 6px}}
+</style></head><body><main>
+<h1>Closefast production readiness</h1>
+<p class="sub">Audit and fix plan, 19 Nov 2026. Covers Closefast Cloud as a new customer meets it, and the Brevo Ecom campaign running on it.</p>
+<nav class="toc"><a href="#verdict">Verdict</a><a href="#brevo">Brevo Ecom</a><a href="#how">How we audited</a><a href="#p0">P0 issues</a><a href="#packages">Fix packages</a><a href="#concurrency">Many users at once</a><a href="#features">New features</a><a href="#verify">Verification</a><a href="#owner">Owner actions</a><a href="#all">All findings</a></nav>
+<h2 id="verdict">Verdict</h2>
+<div class="call warn"><b>Not production ready today.</b> The audit found 10 P0 issues: things that send email people asked us not to send, send the same email twice, charge without delivering, or let one account stall everyone. None of them is hard to fix. All are being fixed now, together with 34 P1 and 58 P2 issues, before anything ships.</div>
+<p class="lede">Release gate: every P0 and P1 fixed and reviewed. The full test suite green. The multi-tenant battle test passing every invariant under load and injected failures. A new-customer browser walkthrough clean at desktop and phone width. A production smoke check after deploy.</p>
+<div class="kpis"><div class="kpi"><b>10</b><span>P0, must fix before customers</span></div><div class="kpi"><b>34</b><span>P1, breaks a core journey</span></div><div class="kpi"><b>58</b><span>P2, rough edge or trust issue</span></div><div class="kpi"><b>24</b><span>P3, polish (backlog)</span></div></div>
+<h2 id="brevo">Brevo Ecom outreach</h2>
+<p class="lede">Production numbers for workspace 1, as of 18 Nov 2026 about 20:15 UTC.</p>
+<div class="kpis"><div class="kpi"><b>135</b><span>emails sent to 76 people</span></div><div class="kpi"><b>76 / 59</b><span>openers / follow-ups</span></div><div class="kpi"><b>0</b><span>positive replies</span></div><div class="kpi"><b>1 / 1 / 1</b><span>out of office / unsubscribe / bounce</span></div><div class="kpi"><b>5</b><span>drafts waiting for approval</span></div><div class="kpi"><b>18</b><span>prospects left to email</span></div></div>
+<ul class="tight">
+<li>Sending has been steady since the 16 Nov fix: 27, 25 and 19 emails on 16, 17 and 18 Nov.</li>
+<li>Signals delivered no new prospects from 16 Nov because one email lookup hung on every pass. We parked that prospect by hand on 18 Nov and Signals moved again, but a slow company check now uses most of each pass, so new posts are still not being collected. The durable fix is in flight (package WP3).</li>
+<li>With 18 prospects left and Signals starved, the campaign runs dry soon. The fixes add a runway warning so this never happens silently again.</li>
+<li>The one known bounce came from a warm inbox. Today those bounces never reach Closefast, so the address is not suppressed and nothing is refunded. Fixed in WP1 and WP2.</li>
+</ul>
+<h2 id="how">How we audited</h2>
+<div class="parts">
+<div class="part"><b>2 new-customer walkthroughs</b>Real clicks in a browser on a local copy of the product. One customer brings their own inbox and lead list. The other has no list and wants the product to find buyers. Every click was checked against the database and a mock mail server.</div>
+<div class="part"><b>7 code audits</b>Every button and its backend handler, growth screens, Signals durability, sending and replies, lead lists and import, platform limits, and product and positioning research against Instantly, Smartlead, lemlist, Apollo, Clay and others.</div>
+<div class="part"><b>Mock inbox and lists</b>A local SMTP and IMAP server that delivers nothing, plus CSV files with every edge case: semicolons, a BOM, duplicates, missing and malformed emails, formula injection, unicode and role addresses.</div>
+<div class="part"><b>Synthesis</b>185 raw findings, deduplicated to 126, ranked, and split into fix packages that can be built in parallel without touching the same files.</div>
+</div>
+<h2 id="p0">P0 issues</h2>
+<div class="tw"><table><tr><th>ID</th><th>What goes wrong</th><th>Package</th></tr>
+<tr><td class="id">CF-001</td><td>One workspace can sink the whole cron pass: every tenant shares one sequential invocation and the send loop alone can run about 2,500 D1 queries for one workspace</td><td class="id">WP1</td></tr>
+<tr><td class="id">CF-002</td><td>Do-not-contact entries typed as a bare domain are saved but never block anyone; bad entries vanish and &#x27;Added&#x27; miscounts</td><td class="id">WP5</td></tr>
+<tr><td class="id">CF-003</td><td>Removing an inbox stops reading its replies, stalls campaigns that use it, moves mid-thread prospects to another sender, and the dialog promises the opposite</td><td class="id">WP1</td></tr>
+<tr><td class="id">CF-004</td><td>No timeouts on mail sockets or vendor fetches: one silent mail server hangs the connect test and every cron pass for every workspace after it</td><td class="id">WP1</td></tr>
+<tr><td class="id">CF-005</td><td>Unsubscribing through our own List-Unsubscribe mailto is classed as an auto-reply, so follow-ups keep going</td><td class="id">WP2</td></tr>
+<tr><td class="id">CF-006</td><td>An email the provider accepted is recorded as &#x27;failed&#x27; if any DB write after the send throws; the step is re-drafted and sent twice, and &#x27;sending&#x27; rows are never reconciled</td><td class="id">WP2</td></tr>
+<tr><td class="id">CF-007</td><td>One hanging email lookup starves every later Signals phase on every pass (the production 0-delivered stall); the stuck person and failing posts are retried first forever and late answers are bought again</td><td class="id">WP3</td></tr>
+<tr><td class="id">CF-008</td><td>Signals delivery ignores the query ceiling: about 40 counted queries per prospect plus uncounted addToPipeline queries, so one batch of 25 can break the whole cron invocation</td><td class="id">WP3</td></tr>
+<tr><td class="id">CF-009</td><td>Prospects of an archived campaign are still charged 40 credits and delivered into it, and its watches keep buying searches</td><td class="id">WP3</td></tr>
+<tr><td class="id">CF-010</td><td>Instantly bounces never reach Closefast: follow-ups continue to bounced addresses, nothing is suppressed or refunded, and the bounce auto-pause is blind</td><td class="id">WP1</td></tr>
+</table></div>
+<h2 id="packages">Fix packages</h2><p class="lede">Each package is built in its own branch by one engineer agent, then reviewed by an independent adversarial reviewer, fixed, and reviewed again until it passes. Then the packages are merged one at a time, with the full test suite run after each merge.</p><div class="parts">
+<div class="part"><b>WP1 Platform: cron isolation, mail I/O, inbox lifecycle, pool and money</b>Make the cron and the mail layer bounded and fail-safe. Each workspace gets its own time and query budget. Every network wait gets a timeout. Removing or pausing an inbox never loses a reply, and stop/resume no longer rewrites the queue. Instantly bounces feed back into Closefast. Hot tables get indexes. Failing stages raise incidents and operator alerts, and incidents clear when fixed. Erasure removes the data.<div class="status" style="margin-top:8px">15 findings &middot; building</div></div>
+<div class="part"><b>WP2 Outreach engine: send durability, replies and stop rules</b>Never lose a send and never send twice. Retry temporary errors and treat recipient rejections as bounces. Honour every way of saying stop (mailto unsubscribe, &#x27;no&#x27;). Surface warm replies and refund bounced prospects whatever the source. Keep the agent from booking times without a link. Thread correctly, space cold sends, fix the writing gates for meeting-adjacent sellers, and finish the small stop-rule gaps.<div class="status" style="margin-top:8px">16 findings &middot; building</div></div>
+<div class="part"><b>WP3 Signals: durability, spend control and clarity</b>Make every Signals phase run every pass under a hard time and query budget, with poison-item backoff. Stop all spending for paused watches, archived campaigns and rejected people. Close the locked-row leak. Parse buyer countries correctly. Give owners a one-line health status and honest estimates. Add delete and dedupe for watches, near-miss actions, correct lock reasons, and brief-aware copy.<div class="status" style="margin-top:8px">20 findings &middot; building</div></div>
+<div class="part"><b>WP4 Lists, import, sourcing and pipeline backend</b>Make bring-your-own-list bulletproof: a real CSV parser (delimiters, quoted newlines, encodings, header aliases), the full result summary with a preview and column mapping (FT-05), upload-id limits, DNS-failure-safe checks, case-insensitive identity, gates on imports, list rows that never vanish, and enrollment that matches its copy. Fix people-search charging (workspace dedupe, title gate) and its stale UI.<div class="status" style="margin-top:8px">24 findings &middot; building</div></div>
+<div class="part"><b>WP5 Campaign, Pipeline, Inbox, Approvals and Results (views.js and api.js)</b>Make every campaign-level control do what it says. Fix do-not-contact domains plus remove and search. Make Send from clear correctly. Closing a lead stops its sequence. Approvals gets true totals, bulk approve and keyboard review (FT-03). Pages and buttons become resilient (error cards, busy states). Inbox drafts survive refresh. Use one vocabulary and one metric definition everywhere, with capFor shown as enforced.<div class="status" style="margin-top:8px">17 findings &middot; building</div></div>
+<div class="part"><b>WP6 App shell, onboarding, Sending and Settings, Credits and Help</b>Make the first-run journey seamless. Confirming your email has a clear banner, a resend and a checklist step. The postal address is required before real sending. Alerts settings mean what they say. Inboxes can be edited after connecting. Dialogs are keyboard-safe. Switching back to test mode warns. Skip-setup is remembered. Welcome credits are always granted. Onboarding no longer auto-spends on five signals.<div class="status" style="margin-top:8px">10 findings &middot; building</div></div>
+<div class="part"><b>WP7 Multi-tenant concurrency</b>A load and chaos harness that runs many customers at once, plus race tests and fixes. See the next section.<div class="status" style="margin-top:8px">new &middot; building</div></div></div>
+<h2 id="concurrency">Many users at once</h2>
+<p class="lede">Goal: when many customers use Closefast at the same time, none of them can slow down, starve or break another. None can see or change another's data. Races can never cause a double send, a double charge, a lost reply or a stuck state. Any failure stays inside the account it belongs to.</p>
+<div class="parts">
+<div class="part"><b>Fair scheduling</b>Each account gets its own cron invocation through a queue, so its own 1,000 D1 queries and CPU time (Cloudflare limits checked 19 Nov). Without the queue, accounts run in fair rotation with their own time and query budget.</div>
+<div class="part"><b>Race safety</b>Atomic locks and claims for overlapping passes. Idempotent sends and charges. Double clicks, two teammates at once, and the cron racing pause, approve, remove inbox, import and archive.</div>
+<div class="part"><b>Failure containment</b>Timeouts on every mail and vendor call. One account's silent mail server, failing vendor or huge import cannot hold up anyone else.</div>
+<div class="part"><b>Proof</b>30 simulated accounts under load for at least 10 minutes, with overlapping cron passes and injected faults: hangs, greylisting, rejects, dropped connections and crashes mid-send. An invariant checker must pass every rule.</div>
+</div>
+<h3>Invariants the battle test enforces</h3>
+<ul class="tight"><li>No step of a sequence is ever sent twice, and the outbox matches the sent records one to one.</li><li>Nothing goes to paused, stopped, suppressed, archived or opted-out people.</li><li>Every message's inbox belongs to the same account as its prospect.</li><li>Wallet balance equals the ledger, with no duplicate charge or refund.</li><li>Nothing stays stuck in 'sending' after a crash.</li><li>Every active account makes progress within a bounded number of passes.</li><li>Replies land in the right account and conversation.</li><li>Shared warm inbox caps are never exceeded across accounts.</li><li>Core pages stay fast under load.</li></ul>
+<h2 id="features">New features</h2><p class="lede">Chosen for raising reply and meeting rates or removing setup friction, kept deliberately small.</p><div class="tw"><table><tr><th>Feature</th><th>Why</th><th>Effort</th></tr>
+<tr><td>Prospect runway and source health alerts</td><td>Live campaigns run dry and stuck sources (Signals delivering 0 for days) are invisible, so sending quietly stops.</td><td class="n">S</td></tr>
+<tr><td>Positive reply push to Slack plus a generic CRM webhook</td><td>An interested reply sits in the Inbox until the owner opens the app; the existing Slack hook only gets generic notices.</td><td class="n">S</td></tr>
+<tr><td>Bulk approve and keyboard review</td><td>The recommended &#x27;approve the first 20&#x27; mode is 20 separate clicks with scrolling.</td><td class="n">S</td></tr>
+<tr><td>Guided inbox connect for company domains (MX provider detection, app-password guide, SPF/DKIM/DMARC chips)</td><td>B2B senders use custom domains on Google Workspace or Microsoft 365, and connect fails with &#x27;We do not know this provider&#x27;.</td><td class="n">S</td></tr>
+<tr><td>Import preview with column mapping and per-row verdicts</td><td>Uploads are all-or-nothing; users only learn afterwards that 20 of 21 rows will not be emailed, and EU exports (semicolon, &#x27;E-mail&#x27;, combined Name) need guessing.</td><td class="n">M</td></tr>
+<tr><td>All-in cost shown before spending</td><td>Users see 8 or 40 credits but pay 23 or 55 per person emailed from warm inboxes.</td><td class="n">S</td></tr>
+<tr><td>Reply rate by opener angle and source, with a campaign filter on Results</td><td>An interested reply sits in the Inbox until the owner opens the app; the existing Slack hook only gets generic notices.</td><td class="n">M</td></tr>
+<tr><td>Meeting detection from Cal.com and Calendly booking webhooks</td><td>Calls booked via the booking link must be marked by hand, so Results under-reports meetings and call briefs are late.</td><td class="n">M</td></tr>
+</table></div>
+<h3>Positioning</h3><p class="lede">Closefast is the AI sales agent for small B2B teams that want booked conversations without hiring an SDR or learning five tools. Paste your website and it works out who buys, finds them three ways (people search, your own list, or people engaging with LinkedIn posts about your problem right now), writes short honest emails from your inbox or our warm ones, follows up, answers replies and hands you the interested ones. Nothing goes out until you start people, every claim comes from facts you approved, and you pay only for prospects delivered and emails sent, with your own list from your own inbox free. Versus Instantly or lemlist you do not build sequences; versus 11x or Artisan you do not sign an annual contract.</p>
+<h2 id="verify">Verification after the merge</h2><p class="lede">Browser walkthroughs as new customers at 1366 px and 375 px, in light and dark mode, checking the database and the mock outbox after every step.</p><div class="part" style="white-space:pre-wrap;font-size:14px">Re-run these journeys in agent-browser on localhost after the six packages merge, each in a fresh workspace, at 1366 px and 375 px in light and dark. Check local D1 and the mock outbox after every step.
+
+J1 New founder with their own inbox and list:
+1. Sign up with email; see the confirm banner with Resend. Confirm.
+2. Onboard savvycal.com: one signal pre-ticked and a budget shown.
+3. Connect a company-domain inbox: MX fills the hosts, and DNS chips show. The campaign switches to that inbox.
+4. Upload the semicolon, Work Email, multi-line, Windows-1252, email-only and 5,000-row files through the preview and mapping. Check the full summary and Continue.
+5. Start people. Test-mode previews arrive. Switching test mode off asks for the business address. Go live.
+6. Check that sends are spaced and the footer carries the address.
+7. Drop replies: a subject-only unsubscribe, an OOO with a queued follow-up, a &#x27;no&#x27;, an interested reply proposing Thursday with no booking link, a colleague at the same domain, a DSN bounce, and a referral.
+8. Pause sending with a reply arriving, then Resume: the queue is intact and the reply was read.
+9. Remove inbox B mid-thread: the dialog shows counts, campaigns are cleaned and replies are still read.
+10. Cancel an opener, and Take over then Hand back: both return to Not started.
+11. Remove an emailed lead: no further drafts. Approve-all in Approvals. Edit inbox From name and daily limit.
+
+J2 New founder with no list:
+1. Search people across two campaigns: no second charge.
+2. A title-gate miss is not charged. Tiles and Get more update. Stop clears &#x27;buying&#x27;.
+3. Signals: &#x27;EU, Belgium, Poland&#x27; is parsed or refused. Double-click Add signal makes one watch.
+4. Estimate shows a range. Pause and Delete a watch. Wrong match on a locked row: no charge and no leak on the campaign page.
+5. Check now shows the status line. Archive the campaign: spend stops.
+
+J3 Warm pool: an Instantly stub returns status -1 at send and later. Check suppression, lead lost, refund, and that poolHealth counts it.
+
+J4 Resilience:
+- A tarpit SMTP inbox in workspace A does not delay workspace B&#x27;s sends.
+- Block /api/metrics and every page shows an error card with Retry.
+- Enter on Cancel does nothing.
+- Six concurrent /api/run calls are refused for non-ops users.
+- A forced post-send D1 error yields one email, status sent, no resend.
+
+J5 Coherence: the contacted, prospect, lead and reply-rate numbers are equal on Home, the campaign page and Results; Results filters by campaign and shows the by-angle and by-source tables; the inbox limit shown equals the limit enforced.
+
+Key D1 checks:
+- No outbound message in failed or sending older than 30 min without an incident.
+- No two leads in one campaign share lower(email).
+- No suppression value without &#x27;@&#x27;.
+- No lead with stage in (disqualified, won, booked, lost, opted_out) and a non-null lane, except winback, or with queued or needs_approval cold mail.
+- Every outbound to a suppressed address after its suppression time is 0.
+- wallet_ledger has a refund row for every bounced lead&#x27;s charge_idem.
+- No signal_people status delivered or billed for an archived campaign or with feedback wrong_match.
+- No learned_rules with status &#x27;signals&#x27; contain a locked person&#x27;s company.
+- watches active count is 25 or fewer per workspace.
+- No duplicate active watch on (campaign, kind, lower(query)).
+- EXPLAIN QUERY PLAN for the Conversations, DUE and send-dedupe queries shows SEARCH, not SCAN.
+- The heartbeats &#x27;signals&#x27; detail parses as JSON and carries phase_ms and waiting_on.
+- Incidents for pool_full and bounce resolve when cleared.
+- daily_quotas excludes preview sends.
+- Signals passes stay under maxQueries.
+- Signals phase_ms shows every phase running in each pass, with the prod-like backlog replayed.
+- npm test passes, including the new suites.</div>
+<h2 id="owner">Owner actions and what was not covered</h2>
+<ul class="tight">
+<li>Hosted Google and Microsoft inbox sign-in needs Closefast-owned, verified Google and Microsoft apps. Until then, company inboxes connect with an app password, and the new guided connect fills in the server details.</li>
+<li>The per-account cron queue needs one Cloudflare Queue created at deploy. Without it, the fair rotation fallback runs.</li>
+<li>The Instantly bounce field is coded defensively and will be confirmed against the one known bounced lead after deploy.</li>
+<li>Dodo refund and dispute payloads were not seen live, so they are handled defensively.</li>
+<li>Not exercised live: real Signals buys, real people-search buys, follow-ups over real days, and account mode.</li>
+<li>24 P3 polish items are in the backlog. The cheap and safe ones are included in the packages.</li>
+</ul>
+<h2 id="all">All findings</h2>
+<details open><summary>P0 (10)</summary><div class="tw"><table><tr><th>ID</th><th>Finding</th><th>Area</th><th>Package</th></tr>
+<tr><td class="id">CF-001</td><td>One workspace can sink the whole cron pass: every tenant shares one sequential invocation and the send loop alone can run about 2,500 D1 queries for one workspace</td><td class="pk">Cron isolation</td><td class="id">WP1</td></tr>
+<tr><td class="id">CF-002</td><td>Do-not-contact entries typed as a bare domain are saved but never block anyone; bad entries vanish and &#x27;Added&#x27; miscounts</td><td class="pk">Do not contact</td><td class="id">WP5</td></tr>
+<tr><td class="id">CF-003</td><td>Removing an inbox stops reading its replies, stalls campaigns that use it, moves mid-thread prospects to another sender, and the dialog promises the opposite</td><td class="pk">Inboxes</td><td class="id">WP1</td></tr>
+<tr><td class="id">CF-004</td><td>No timeouts on mail sockets or vendor fetches: one silent mail server hangs the connect test and every cron pass for every workspace after it</td><td class="pk">Mail I/O timeouts</td><td class="id">WP1</td></tr>
+<tr><td class="id">CF-005</td><td>Unsubscribing through our own List-Unsubscribe mailto is classed as an auto-reply, so follow-ups keep going</td><td class="pk">Replies and stop rules</td><td class="id">WP2</td></tr>
+<tr><td class="id">CF-006</td><td>An email the provider accepted is recorded as &#x27;failed&#x27; if any DB write after the send throws; the step is re-drafted and sent twice, and &#x27;sending&#x27; rows are never reconciled</td><td class="pk">Send path</td><td class="id">WP2</td></tr>
+<tr><td class="id">CF-007</td><td>One hanging email lookup starves every later Signals phase on every pass (the production 0-delivered stall); the stuck person and failing posts are retried first forever and late answers are bought again</td><td class="pk">Signals engine</td><td class="id">WP3</td></tr>
+<tr><td class="id">CF-008</td><td>Signals delivery ignores the query ceiling: about 40 counted queries per prospect plus uncounted addToPipeline queries, so one batch of 25 can break the whole cron invocation</td><td class="pk">Signals engine</td><td class="id">WP3</td></tr>
+<tr><td class="id">CF-009</td><td>Prospects of an archived campaign are still charged 40 credits and delivered into it, and its watches keep buying searches</td><td class="pk">Signals engine</td><td class="id">WP3</td></tr>
+<tr><td class="id">CF-010</td><td>Instantly bounces never reach Closefast: follow-ups continue to bounced addresses, nothing is suppressed or refunded, and the bounce auto-pause is blind</td><td class="pk">Warm pool (Instantly)</td><td class="id">WP1</td></tr>
+</table></div></details>
+<details><summary>P1 (34)</summary><div class="tw"><table><tr><th>ID</th><th>Finding</th><th>Area</th><th>Package</th></tr>
+<tr><td class="id">CF-011</td><td>Bounced prospects from people search (8 credits) and Signals (40 credits) are never refunded, although Credits and Help promise it</td><td class="pk">Billing</td><td class="id">WP2</td></tr>
+<tr><td class="id">CF-012</td><td>Connecting a company-domain inbox fails with &#x27;We do not know this provider&#x27;, and the hosted product has no Google or Microsoft sign-in</td><td class="pk">Bring your own inbox</td><td class="id">WP1</td></tr>
+<tr><td class="id">CF-013</td><td>The CSV parser only understands commas and splits on every newline: semicolon or tab files import nobody with a green success, and quoted multi-line cells break people into junk rows that are sent to paid research</td><td class="pk">Bring your own list</td><td class="id">WP4</td></tr>
+<tr><td class="id">CF-014</td><td>A CSV whose email column is called &#x27;Work Email&#x27; (or Business Email, Email 1, Primary Email, E-mail) is ignored, so every row goes to paid email research and the address given is dropped</td><td class="pk">Bring your own list</td><td class="id">WP4</td></tr>
+<tr><td class="id">CF-015</td><td>The Upload your list result hides skipped rows, duplicates, rows not read in time and the per-row problems the server returns</td><td class="pk">Bring your own list</td><td class="id">WP4</td></tr>
+<tr><td class="id">CF-016</td><td>The daily import limit counts each 150-row batch as a &#x27;list&#x27;, so one file over about 3,000 rows fails mid-way and the error hides what already landed</td><td class="pk">Bring your own list</td><td class="id">WP4</td></tr>
+<tr><td class="id">CF-017</td><td>Windows-1252 CSVs (Excel &#x27;CSV&#x27; on Windows) garble accented names, which then go into email greetings</td><td class="pk">Bring your own list</td><td class="id">WP4</td></tr>
+<tr><td class="id">CF-018</td><td>Choosing &#x27;Our warm inboxes&#x27; in Send from is silently ignored once an own inbox was picked</td><td class="pk">Campaign sending</td><td class="id">WP5</td></tr>
+<tr><td class="id">CF-019</td><td>Live cold emails go out with no postal address in the footer</td><td class="pk">Compliance</td><td class="id">WP6</td></tr>
+<tr><td class="id">CF-020</td><td>messages has no usable index on lead_id, so hot per-lead queries scan every message on the platform (the 16 Nov outage class)</td><td class="pk">Database performance</td><td class="id">WP1</td></tr>
+<tr><td class="id">CF-021</td><td>Writing checks misfire for sellers whose product involves calendars, calls or meetings, so most drafts are flagged and autopilot holds people for hours</td><td class="pk">Drafting and approvals</td><td class="id">WP2</td></tr>
+<tr><td class="id">CF-022</td><td>A DNS lookup error during import marks good emails as failed forever (the failure is cached) and nothing ever re-checks them</td><td class="pk">Email checks</td><td class="id">WP4</td></tr>
+<tr><td class="id">CF-023</td><td>&#x27;Unticked, they wait in your Pipeline until you start them&#x27; is false: the campaign&#x27;s Who starts rule starts them, and the result still says &#x27;waiting to start&#x27;</td><td class="pk">Enrollment</td><td class="id">WP4</td></tr>
+<tr><td class="id">CF-024</td><td>Nobody is told when a live campaign is about to run out of people</td><td class="pk">Home and runway</td><td class="id">WP4</td></tr>
+<tr><td class="id">CF-025</td><td>Removed, won, booked or lost-by-hand leads keep their follow-up lane, so the agent drafts follow-ups for them every cycle forever</td><td class="pk">Lead lifecycle</td><td class="id">WP5</td></tr>
+<tr><td class="id">CF-026</td><td>Stage failures are swallowed: Home shows the agent running while every pass fails, and nobody is alerted</td><td class="pk">Observability</td><td class="id">WP1</td></tr>
+<tr><td class="id">CF-027</td><td>Email identity is case-sensitive: the same person can be two leads in one campaign and be emailed twice, and an opt-out on one spelling does not protect the other</td><td class="pk">Pipeline intake</td><td class="id">WP4</td></tr>
+<tr><td class="id">CF-028</td><td>Cancelling a first email, or Take over then Hand back, leaves the person &#x27;In outreach&#x27; forever with nothing coming, and Pipeline cannot restart them</td><td class="pk">Pipeline state</td><td class="id">WP2</td></tr>
+<tr><td class="id">CF-029</td><td>Credit coverage shows only the acquisition price; the real cost per contacted prospect from warm inboxes is about 3x higher</td><td class="pk">Pricing clarity</td><td class="id">WP4</td></tr>
+<tr><td class="id">CF-030</td><td>An erasure request leaves the person&#x27;s data in most tables</td><td class="pk">Privacy</td><td class="id">WP1</td></tr>
+<tr><td class="id">CF-031</td><td>Warm replies from a colleague or a new thread are marked &#x27;unmatched&#x27; and hidden from the owner</td><td class="pk">Replies</td><td class="id">WP2</td></tr>
+<tr><td class="id">CF-032</td><td>On autopilot the agent agrees meeting times for the owner without any calendar or booking link</td><td class="pk">Replies</td><td class="id">WP2</td></tr>
+<tr><td class="id">CF-033</td><td>Pause sending or campaign Pause, then Resume, moves every scheduled email (approved and autopilot ones too) into Approvals for good, freezing autopilot sequences</td><td class="pk">Safety controls</td><td class="id">WP1</td></tr>
+<tr><td class="id">CF-034</td><td>Pause sending also stops reading replies: interested replies, opt-outs and bounces are not processed while paused and can be lost after a long pause</td><td class="pk">Safety controls</td><td class="id">WP1</td></tr>
+<tr><td class="id">CF-035</td><td>People search charges 8 credits again for someone already in another campaign&#x27;s Pipeline, then the outreach engine parks them</td><td class="pk">Search people</td><td class="id">WP4</td></tr>
+<tr><td class="id">CF-036</td><td>Temporary send errors (greylisting 451, 429, 5xx, quota) fail the email for good; RCPT 550 is not treated as a bounce; inbox-level errors burn the queue; there is no Retry</td><td class="pk">Send path</td><td class="id">WP2</td></tr>
+<tr><td class="id">CF-037</td><td>Typing EU, Europe or most country names in &#x27;Only these countries&#x27; silently breaks Signals for the campaign</td><td class="pk">Signals buyer rules</td><td class="id">WP3</td></tr>
+<tr><td class="id">CF-038</td><td>Pausing a campaign&#x27;s only watch drops its waiting people as &#x27;campaign archived&#x27; and crashes the judge phase for every campaign</td><td class="pk">Signals engine</td><td class="id">WP3</td></tr>
+<tr><td class="id">CF-039</td><td>A paused watch keeps spending: its posts keep getting paid engagement re-reads, and its people keep being enriched, delivered and charged</td><td class="pk">Signals engine</td><td class="id">WP3</td></tr>
+<tr><td class="id">CF-040</td><td>&#x27;Wrong match&#x27; does not stop the charge: a rejected qualified or locked prospect is still bought for 40 credits</td><td class="pk">Signals feedback</td><td class="id">WP3</td></tr>
+<tr><td class="id">CF-041</td><td>&#x27;Wrong match&#x27; on a hidden (locked) prospect reveals their company on the campaign page, bypassing the paywall (SEC-17)</td><td class="pk">Signals feedback</td><td class="id">WP3</td></tr>
+<tr><td class="id">CF-042</td><td>Nobody can see why Signals delivers nothing: no run status in the UI, a 3-field heartbeat, a misleading stopped_at, a green pill, and &#x27;Done: 0 new prospects&#x27; after a timed-out run</td><td class="pk">Signals health</td><td class="id">WP3</td></tr>
+<tr><td class="id">CF-043</td><td>Test previews silently go nowhere until the signup email is confirmed, and the page tells the user to add an email they already gave</td><td class="pk">Test mode and onboarding</td><td class="id">WP6</td></tr>
+<tr><td class="id">CF-044</td><td>One $100 platform data cap against $50 per paying workspace: two paying customers silently stop prospect search and Signals for everyone</td><td class="pk">Vendor caps</td><td class="id">WP3</td></tr>
+</table></div></details>
+<details><summary>P2 (58)</summary><div class="tw"><table><tr><th>ID</th><th>Finding</th><th>Area</th><th>Package</th></tr>
+<tr><td class="id">CF-045</td><td>The Alerts &#x27;Email&#x27; field on Sending saves a value nothing reads</td><td class="pk">Alerts</td><td class="id">WP6</td></tr>
+<tr><td class="id">CF-046</td><td>Approvals shows at most 100 drafts as the total, the counter goes stale, the page goes blank after the last one, and there is no bulk approve or nav badge</td><td class="pk">Approvals</td><td class="id">WP5</td></tr>
+<tr><td class="id">CF-047</td><td>Signature edits made in Approvals are silently thrown away at send</td><td class="pk">Approvals</td><td class="id">WP5</td></tr>
+<tr><td class="id">CF-048</td><td>List rows without an email vanish when the company is judged &#x27;not a fit&#x27;, when its domain already has a lead, or when two people at one company are listed; stuck &#x27;processing&#x27; rows stay &#x27;finding&#x27; forever</td><td class="pk">Bring your own list</td><td class="id">WP4</td></tr>
+<tr><td class="id">CF-049</td><td>Imported lists skip the checks every other source applies (own team, named rivals, consent-first countries); role addresses are lumped with failed emails and get a made-up Fit score</td><td class="pk">Bring your own list</td><td class="id">WP4</td></tr>
+<tr><td class="id">CF-050</td><td>Email-only rows are greeted with the lowercase mailbox name (&#x27;Hi sam,&#x27;), freemail domains become the company, the company name is dropped without a website, and non-English titles are tagged &#x27;Other&#x27;</td><td class="pk">Bring your own list</td><td class="id">WP4</td></tr>
+<tr><td class="id">CF-051</td><td>Each 150-row import batch runs about 1,050 sequential D1 queries, at the per-invocation query limit</td><td class="pk">Bring your own list</td><td class="id">WP4</td></tr>
+<tr><td class="id">CF-052</td><td>The Who starts role picker lacks Sales, Operations, Finance and Product or tech</td><td class="pk">Campaign rules</td><td class="id">WP5</td></tr>
+<tr><td class="id">CF-053</td><td>Learned rules cannot be removed and only the newest 12 are used, though all are listed</td><td class="pk">Campaign rules</td><td class="id">WP5</td></tr>
+<tr><td class="id">CF-054</td><td>An email signup who skips onboarding never gets the 1,500 welcome credits the Credits page promises</td><td class="pk">Credits</td><td class="id">WP6</td></tr>
+<tr><td class="id">CF-055</td><td>Most pages hang on &#x27;Loading...&#x27; forever if one API call fails</td><td class="pk">Dashboard resilience</td><td class="id">WP5</td></tr>
+<tr><td class="id">CF-056</td><td>Buttons can double-submit and several handlers ignore errors (Approve, Import, brief Save, SMTP connect, Remove inbox, Remove person, Add signal, Estimate)</td><td class="pk">Dashboard resilience</td><td class="id">WP5</td></tr>
+<tr><td class="id">CF-057</td><td>The do-not-contact list has no remove and no search</td><td class="pk">Do not contact</td><td class="id">WP5</td></tr>
+<tr><td class="id">CF-058</td><td>The Who starts rule applies only on arrival: people held back by the daily cap, or waiting when the rule is turned on, never start</td><td class="pk">Enrollment</td><td class="id">WP4</td></tr>
+<tr><td class="id">CF-059</td><td>Pipeline export opens garbled in Excel (no UTF-8 BOM), drops the customer&#x27;s own columns and silently stops at 20,000 rows</td><td class="pk">Export</td><td class="id">WP4</td></tr>
+<tr><td class="id">CF-060</td><td>Escalated help questions reach nobody, but the customer is told the team will email them</td><td class="pk">Help chat</td><td class="id">WP6</td></tr>
+<tr><td class="id">CF-061</td><td>Inbox auto-refresh wipes an unsent reply or note once focus leaves the box</td><td class="pk">Inbox</td><td class="id">WP5</td></tr>
+<tr><td class="id">CF-062</td><td>Inbox and Pipeline use the same words for different states, and Inbox labels and lists confuse (people never emailed, &#x27;lead&#x27;, &#x27;lost&#x27;, &#x27;replied 1x&#x27;)</td><td class="pk">Inbox and Pipeline</td><td class="id">WP5</td></tr>
+<tr><td class="id">CF-063</td><td>Inbox settings cannot be edited after connecting (From name, signature, daily limit, pause, resume after a bounce pause), and an inbox without a From name sends with a bare address</td><td class="pk">Inboxes</td><td class="id">WP6</td></tr>
+<tr><td class="id">CF-064</td><td>Sending and Results show a higher daily limit than the sender enforces, and Google inboxes are left out of inbox health</td><td class="pk">Inboxes</td><td class="id">WP5</td></tr>
+<tr><td class="id">CF-065</td><td>After connecting an own inbox, campaigns keep sending from paid warm inboxes, and Upload your list claims &#x27;free with your inbox&#x27; without checking the chosen campaign</td><td class="pk">Inboxes</td><td class="id">WP4</td></tr>
+<tr><td class="id">CF-066</td><td>Reconnecting an inbox lifts a bounce pause; one-click unsubscribe leaves outreach &#x27;active&#x27;; an out-of-office does not hold a follow-up already queued</td><td class="pk">Inboxes</td><td class="id">WP2</td></tr>
+<tr><td class="id">CF-067</td><td>The Microsoft 365 driver sends no List-Unsubscribe, does not thread follow-ups, and polls only the oldest 100 messages</td><td class="pk">Inboxes</td><td class="id">WP1</td></tr>
+<tr><td class="id">CF-068</td><td>Some incidents never clear: &#x27;waiting for a warm inbox&#x27;, &#x27;inbox paused for bounces&#x27; and &#x27;model failing&#x27; stay after the problem is fixed</td><td class="pk">Incidents</td><td class="id">WP1</td></tr>
+<tr><td class="id">CF-069</td><td>Numbers disagree across Home, Campaigns and Results (contacted, prospects, leads, reply rate, rounding)</td><td class="pk">Metrics</td><td class="id">WP5</td></tr>
+<tr><td class="id">CF-070</td><td>Workspaces that skipped setup land on &#x27;Set up from your website&#x27; at every login, even with a live campaign</td><td class="pk">Onboarding</td><td class="id">WP6</td></tr>
+<tr><td class="id">CF-071</td><td>Onboarding pre-ticks all 5 LinkedIn signals and adds them with no budget, so one click can auto-spend the welcome credits</td><td class="pk">Onboarding</td><td class="id">WP6</td></tr>
+<tr><td class="id">CF-072</td><td>Dodo refunds and disputes never take credits back, and a payment that matches no workspace leaves no trace</td><td class="pk">Payments</td><td class="id">WP1</td></tr>
+<tr><td class="id">CF-073</td><td>Starting or importing people into a draft, paused or inbox-less campaign says &#x27;Started&#x27; and the person panel promises a send that never comes</td><td class="pk">Pipeline</td><td class="id">WP5</td></tr>
+<tr><td class="id">CF-074</td><td>&#x27;Finding email&#x27; shows forever for list rows when the account has no credits</td><td class="pk">Pipeline</td><td class="id">WP4</td></tr>
+<tr><td class="id">CF-075</td><td>Imported people rejected by email checks show no reason and cannot be overridden</td><td class="pk">Pipeline</td><td class="id">WP4</td></tr>
+<tr><td class="id">CF-076</td><td>The product reads as an ecommerce tool: Klaviyo and Shopify placeholders everywhere, store fields on every buyer form, and onboarding&#x27;s tailored signal proposals are not offered on Signals</td><td class="pk">Positioning</td><td class="id">WP3</td></tr>
+<tr><td class="id">CF-077</td><td>Every email in a connected personal inbox is stored, including mail unrelated to outreach</td><td class="pk">Privacy</td><td class="id">WP2</td></tr>
+<tr><td class="id">CF-078</td><td>A clear meeting request was classed &#x27;question&#x27;, and interested replies alert only by Slack</td><td class="pk">Replies</td><td class="id">WP2</td></tr>
+<tr><td class="id">CF-079</td><td>A referral reply promises to contact the colleague even when the colleague was not added</td><td class="pk">Replies</td><td class="id">WP2</td></tr>
+<tr><td class="id">CF-080</td><td>Replying &#x27;no&#x27; to the footer gets another email with the same footer, the address is not suppressed, and win-backs are drafted forever but never sent</td><td class="pk">Replies and stop rules</td><td class="id">WP2</td></tr>
+<tr><td class="id">CF-081</td><td>Results has no per-campaign view and no breakdown by angle or source, so an owner cannot learn why nobody replied</td><td class="pk">Results</td><td class="id">WP5</td></tr>
+<tr><td class="id">CF-082</td><td>Meeting campaigns demand their own booking link though Sending says the workspace link applies, no-show notes skip the workspace link, and &#x27;$5,000&#x27; deal values are dropped</td><td class="pk">Results and meetings</td><td class="id">WP5</td></tr>
+<tr><td class="id">CF-083</td><td>Pressing Enter on the focused Cancel button confirms destructive dialogs</td><td class="pk">Safety controls</td><td class="id">WP6</td></tr>
+<tr><td class="id">CF-084</td><td>Back to test mode silently stops follow-ups and replies to real prospects mid-sequence</td><td class="pk">Safety controls</td><td class="id">WP6</td></tr>
+<tr><td class="id">CF-085</td><td>Bought prospects who fail the customer&#x27;s own title filter are charged full price</td><td class="pk">Search people</td><td class="id">WP4</td></tr>
+<tr><td class="id">CF-086</td><td>After buying, step 3 tiles go stale and &#x27;Get more&#x27; does nothing; Stop or closing the tab leaves the search &#x27;buying&#x27; forever</td><td class="pk">Search people</td><td class="id">WP4</td></tr>
+<tr><td class="id">CF-087</td><td>Web research: the requests table does not refresh after Start looking, every extra click tops up the order, and the coverage line ignores caps and budgets</td><td class="pk">Search people</td><td class="id">WP4</td></tr>
+<tr><td class="id">CF-088</td><td>The people search estimate for a niche query shows mostly off-target companies with a 100% pass rate, and the size column echoes the filter</td><td class="pk">Search people</td><td class="id">WP4</td></tr>
+<tr><td class="id">CF-089</td><td>Follow-ups thread under the prospect&#x27;s auto-reply instead of our last email, and References carries only one id</td><td class="pk">Sending</td><td class="id">WP2</td></tr>
+<tr><td class="id">CF-090</td><td>Cold emails leave one inbox in bursts, several in the same second</td><td class="pk">Sending</td><td class="id">WP2</td></tr>
+<tr><td class="id">CF-091</td><td>Prospects in Japan, Korea, China and Nigeria get no timezone, so &#x27;their local hours&#x27; uses the owner&#x27;s clock</td><td class="pk">Sending window</td><td class="id">WP2</td></tr>
+<tr><td class="id">CF-092</td><td>Agencies default to &#x27;owners only&#x27; even when a buyer group is agencies, so the consultants and developers the brief targets are dropped</td><td class="pk">Signals buyer rules</td><td class="id">WP3</td></tr>
+<tr><td class="id">CF-093</td><td>Support says Signals only switch on after sending does, but signals read, buy and charge on a draft campaign in test mode</td><td class="pk">Signals copy</td><td class="id">WP3</td></tr>
+<tr><td class="id">CF-094</td><td>Locks that two passes can both take, and /api/run and /api/poll open to every customer: overlapping passes double model spend, replies and summaries</td><td class="pk">Signals engine</td><td class="id">WP1</td></tr>
+<tr><td class="id">CF-095</td><td>A keyword watch whose second results page fails throws away page 1 and buys it again every pass for a day, then pauses blaming the source</td><td class="pk">Signals engine</td><td class="id">WP3</td></tr>
+<tr><td class="id">CF-096</td><td>The Signals estimate always promises about 540 prospects a month for any busy keyword, and creator or rival-page estimates are invented</td><td class="pk">Signals estimate</td><td class="id">WP3</td></tr>
+<tr><td class="id">CF-097</td><td>Near misses and no-email people are dead ends, and the feed shows only 150 rows with no status filter</td><td class="pk">Signals feed</td><td class="id">WP3</td></tr>
+<tr><td class="id">CF-098</td><td>Locked Signals rows say &#x27;add credits&#x27; when the weekly budget or monthly cap blocks them, and budget locks expire before the week resets</td><td class="pk">Signals feed</td><td class="id">WP3</td></tr>
+<tr><td class="id">CF-099</td><td>There is no way to delete a signal, and paused or old watches pile up forever</td><td class="pk">Signals watches</td><td class="id">WP3</td></tr>
+<tr><td class="id">CF-100</td><td>Add signal can be double clicked into duplicate paid watches, Estimate stays clickable, and Resume and auto-tracked creators bypass the 25 active watch cap</td><td class="pk">Signals watches</td><td class="id">WP3</td></tr>
+<tr><td class="id">CF-101</td><td>Editing a watch&#x27;s search words keeps the old name, the old stats and no fresh backfill</td><td class="pk">Signals watches</td><td class="id">WP3</td></tr>
+<tr><td class="id">CF-102</td><td>Pool replies are routed by sender address only, so after the 60-day handover they can land in the wrong workspace</td><td class="pk">Warm pool (Instantly)</td><td class="id">WP1</td></tr>
+</table></div></details>
+<details><summary>P3 (24)</summary><div class="tw"><table><tr><th>ID</th><th>Finding</th><th>Area</th><th>Package</th></tr>
+<tr><td class="id">CF-103</td><td>Short reject reasons are silently not learned</td><td class="pk">Approvals</td><td class="id">backlog</td></tr>
+<tr><td class="id">CF-104</td><td>Sample emails show a raw model error</td><td class="pk">Campaign page</td><td class="id">backlog</td></tr>
+<tr><td class="id">CF-105</td><td>Big tables are never pruned and per-pass aggregates over them keep growing</td><td class="pk">Data retention</td><td class="id">backlog</td></tr>
+<tr><td class="id">CF-106</td><td>README describes a different product (self-hosted, setup under $10)</td><td class="pk">Docs</td><td class="id">backlog</td></tr>
+<tr><td class="id">CF-107</td><td>Find hub counts people whose email failed checks as &#x27;not started&#x27;</td><td class="pk">Find prospects hub</td><td class="id">backlog</td></tr>
+<tr><td class="id">CF-108</td><td>Help &#x27;Learn more&#x27; links are swallowed while an answer is pending</td><td class="pk">Help chat</td><td class="id">backlog</td></tr>
+<tr><td class="id">CF-109</td><td>Activity feed shows local times labelled UTC</td><td class="pk">Home / Recent activity</td><td class="id">backlog</td></tr>
+<tr><td class="id">CF-110</td><td>Copy bug: &#x27;Nothing to do. The our reply goes out...&#x27;</td><td class="pk">Inbox</td><td class="id">backlog</td></tr>
+<tr><td class="id">CF-111</td><td>Internal terms leak into the UI (&#x27;quality holds: 1&#x27;, &#x27;Sent followup 1&#x27;)</td><td class="pk">Inbox / activity</td><td class="id">backlog</td></tr>
+<tr><td class="id">CF-112</td><td>Onboarding hides per-group pain and angle, shows no sample email, and names a multi-group campaign after group 1</td><td class="pk">Onboarding</td><td class="id">backlog</td></tr>
+<tr><td class="id">CF-113</td><td>Pipeline row actions are cut off at 1280 to 1366 px and long values break the table</td><td class="pk">Pipeline</td><td class="id">backlog</td></tr>
+<tr><td class="id">CF-114</td><td>Fit score is a bare number with its reason in a tooltip</td><td class="pk">Pipeline</td><td class="id">backlog</td></tr>
+<tr><td class="id">CF-115</td><td>Mark call booked without a time stores &#x27;now&#x27; and lists it under Calls coming up</td><td class="pk">Results / Meetings</td><td class="id">backlog</td></tr>
+<tr><td class="id">CF-116</td><td>Results export is the conversation list, and new workspaces default to New York time</td><td class="pk">Results / Settings</td><td class="id">backlog</td></tr>
+<tr><td class="id">CF-117</td><td>Pause button and campaign header do not update after the action</td><td class="pk">Safety controls / Campaign</td><td class="id">backlog</td></tr>
+<tr><td class="id">CF-118</td><td>Archived searches vanish with no way back</td><td class="pk">Search people</td><td class="id">backlog</td></tr>
+<tr><td class="id">CF-119</td><td>Small rough edges on Search people and Credits</td><td class="pk">Search people / Credits</td><td class="id">backlog</td></tr>
+<tr><td class="id">CF-120</td><td>Saving the Workspace card gives no confirmation</td><td class="pk">Settings</td><td class="id">backlog</td></tr>
+<tr><td class="id">CF-121</td><td>Signals feedback buttons ignore errors and the page has no campaign filter</td><td class="pk">Signals</td><td class="id">WP3</td></tr>
+<tr><td class="id">CF-122</td><td>Add signal editor: saving pays for the estimate again, and the header button wipes the draft</td><td class="pk">Signals</td><td class="id">WP3</td></tr>
+<tr><td class="id">CF-123</td><td>First visit lands on a &#x27;Welcome back&#x27; login, signup has no Terms or Privacy link, and &#x27;Free forever&#x27; sits next to credits that expire in 30 days</td><td class="pk">Signup</td><td class="id">backlog</td></tr>
+<tr><td class="id">CF-124</td><td>Test previews eat a new inbox&#x27;s day-one sending room</td><td class="pk">Test mode</td><td class="id">backlog</td></tr>
+<tr><td class="id">CF-125</td><td>Test mode is one switch for the whole workspace and never previews follow-ups</td><td class="pk">Test mode</td><td class="id">backlog</td></tr>
+<tr><td class="id">CF-126</td><td>No tests on the riskiest platform paths</td><td class="pk">Tests</td><td class="id">backlog</td></tr>
+</table></div></details>
+<p class="sub" style="margin-top:40px">Status updates land on this page as packages merge and ship.</p></main></body></html>
