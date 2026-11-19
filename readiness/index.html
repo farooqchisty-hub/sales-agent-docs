@@ -41,20 +41,44 @@ td.pk{font:12px var(--mono);color:var(--mute);min-width:90px;word-break:break-wo
 @media (max-width:600px){td,th{padding:7px 6px}}
 </style></head><body><main>
 <h1>Closefast production readiness</h1>
-<p class="sub">Audit and fix plan, 19 Nov 2026. Covers Closefast Cloud as a new customer meets it, and the Brevo Ecom campaign running on it.</p>
-<nav class="toc"><a href="#verdict">Verdict</a><a href="#brevo">Brevo Ecom</a><a href="#how">How we audited</a><a href="#p0">P0 issues</a><a href="#packages">Fix packages</a><a href="#concurrency">Many users at once</a><a href="#features">New features</a><a href="#verify">Verification</a><a href="#owner">Owner actions</a><a href="#all">All findings</a></nav>
+<p class="sub">Audit, fixes and release, 19 Nov 2026. Covers Closefast Cloud as a new customer meets it, and the Brevo Ecom campaign running on it.</p>
+<nav class="toc"><a href="#verdict">Verdict</a><a href="#release">Release results</a><a href="#brevo">Brevo Ecom</a><a href="#how">How we audited</a><a href="#p0">P0 issues</a><a href="#packages">Fix packages</a><a href="#concurrency">Many users at once</a><a href="#features">New features</a><a href="#verify">Verification</a><a href="#owner">Owner actions</a><a href="#all">All findings</a></nav>
 <h2 id="verdict">Verdict</h2>
-<div class="call warn"><b>Not production ready today.</b> The audit found 10 P0 issues: things that send email people asked us not to send, send the same email twice, charge without delivering, or let one account stall everyone. None of them is hard to fix. All are being fixed now, together with 34 P1 and 58 P2 issues, before anything ships.</div>
-<p class="lede">Release gate: every P0 and P1 fixed and reviewed. The full test suite green. The multi-tenant battle test passing every invariant under load and injected failures. A new-customer browser walkthrough clean at desktop and phone width. A production smoke check after deploy.</p>
+<div class="call"><b>Shipped to production on 19 Nov 2026 at 06:28 UTC, with a hotfix at 06:41.</b> Every P0 and P1 from the audit is fixed and verified, along with the P2s that touch money, privacy or a core journey. The first production crons after the deploy ran clean for all three accounts.</div>
+<p class="lede">What changed for customers: no email goes to someone who opted out, bounced or was removed. No step is sent twice. Charges and refunds are exact. One account can no longer slow down or stall another. Signals runs every phase in every pass. The email confirm link works in real browsers (it did not before).</p>
 <div class="kpis"><div class="kpi"><b>10</b><span>P0, must fix before customers</span></div><div class="kpi"><b>34</b><span>P1, breaks a core journey</span></div><div class="kpi"><b>58</b><span>P2, rough edge or trust issue</span></div><div class="kpi"><b>24</b><span>P3, polish (backlog)</span></div></div>
+<h2 id="release">Release results</h2>
+<div class="kpis"><div class="kpi"><b>983</b><span>automated tests, all passing, security suite included</span></div><div class="kpi"><b>126 + 51</b><span>audit findings, plus 51 found later by the final reviews, walkthroughs, battle runs and the first production cron</span></div><div class="kpi"><b>18</b><span>database migrations, rehearsed on a copy of production first</span></div><div class="kpi"><b>932</b><span>most D1 queries in one cron pass (limit 1,000; old code reached 5,609)</span></div></div>
+<h3>How it was checked</h3>
+<ul class="tight">
+<li>Seven fix packages, then four integration engineers, each with an independent reviewer until clean.</li>
+<li>Three final reviewers (send path, Signals and billing, platform and front end). Every finding was proven with a failing test, then fixed with that test kept.</li>
+<li>Two new-customer browser walkthroughs at 1366 px and 375 px in light and dark, then a re-walk of every fix. Both found real bugs that tests could not see, and all P0 and P1 ones are fixed.</li>
+<li>The writer's quality exam on real models: first emails 10 of 10, follow-ups 9 of 9, no truth or safety failures.</li>
+</ul>
+<h3>Battle test: 30 accounts at once for 10 minutes</h3>
+<div class="tw"><table><tr><th>Run</th><th>Result</th><th>Notes</th></tr>
+<tr><td>Calm</td><td>20 pass, 0 fail</td><td>Every account served within 3 cron waves.</td></tr>
+<tr><td>Mail servers hang</td><td>19 pass, 1 fail</td><td>No double send, lost reply, leak, stuck email or money error. The strict "served within 3 waves" rule failed: worst gap 4 to 6 waves (old code: 19). Every account is served equally.</td></tr>
+<tr><td>Faults without hangs</td><td>19 pass, 1 fail</td><td>Same: worst gap 4 waves, equal for everyone.</td></tr>
+</table></div>
+<p class="lede">The harness fires the cron every 20 seconds, so 3 waves is 60 seconds. Production fires every 5 minutes, and every account still gets a pass on each one. The remaining gap is capacity. The per-account queue removes it, and it is worth switching on before about 30 active accounts (3 today). One check, a double click on Buy, cannot be proven locally without a vendor key.</p>
+<h3>Production smoke check</h3>
+<ul class="tight">
+<li>The site, the API and the new front end answer. All three accounts ran their cron passes on the new code.</li>
+<li>Workspace 3 had not had a pass since 10 Nov (the old scheduler starved it). It now runs every cron.</li>
+<li>The first cron showed one real bug: the delivery check bound 101 values, one over D1's limit of 100. It was fixed and redeployed 13 minutes later. The test database now enforces D1's limit, so this kind of bug fails in tests.</li>
+<li>The delivery check then found the known warm-inbox bounce. The address was put on do-not-contact, the lead was marked lost, the 15-credit Signals charge was refunded and the 9-credit hold released.</li>
+<li>Rollback points were recorded before the deploy: the D1 time-travel bookmark and the previous Worker version.</li>
+</ul>
 <h2 id="brevo">Brevo Ecom outreach</h2>
 <p class="lede">Production numbers for workspace 1, as of 18 Nov 2026 about 20:15 UTC.</p>
 <div class="kpis"><div class="kpi"><b>135</b><span>emails sent to 76 people</span></div><div class="kpi"><b>76 / 59</b><span>openers / follow-ups</span></div><div class="kpi"><b>0</b><span>positive replies</span></div><div class="kpi"><b>1 / 1 / 1</b><span>out of office / unsubscribe / bounce</span></div><div class="kpi"><b>5</b><span>drafts waiting for approval</span></div><div class="kpi"><b>18</b><span>prospects left to email</span></div></div>
 <ul class="tight">
 <li>Sending has been steady since the 16 Nov fix: 27, 25 and 19 emails on 16, 17 and 18 Nov.</li>
-<li>Signals delivered no new prospects from 16 Nov because one email lookup hung on every pass. We parked that prospect by hand on 18 Nov and Signals moved again, but a slow company check now uses most of each pass, so new posts are still not being collected. The durable fix is in flight (package WP3).</li>
+<li>Signals delivered no new prospects from 16 Nov because one email lookup hung on every pass. Since the release, every phase runs in every pass, from collecting posts to delivering prospects.</li>
 <li>With 18 prospects left and Signals starved, the campaign runs dry soon. The fixes add a runway warning so this never happens silently again.</li>
-<li>The one known bounce came from a warm inbox. Today those bounces never reach Closefast, so the address is not suppressed and nothing is refunded. Fixed in WP1 and WP2.</li>
+<li>The one known bounce came from a warm inbox and was never seen by the old code. The new delivery check caught it on its first run: suppressed, marked lost and refunded.</li><li>Waiting on you: 5 drafts in Approvals, and 21 checked prospects to start (the campaign starts people by hand).</li>
 </ul>
 <h2 id="how">How we audited</h2>
 <div class="parts">
@@ -77,13 +101,13 @@ td.pk{font:12px var(--mono);color:var(--mute);min-width:90px;word-break:break-wo
 <tr><td class="id">CF-010</td><td>Instantly bounces never reach Closefast: follow-ups continue to bounced addresses, nothing is suppressed or refunded, and the bounce auto-pause is blind</td><td class="id">WP1</td></tr>
 </table></div>
 <h2 id="packages">Fix packages</h2><p class="lede">Each package is built in its own branch by one engineer agent, then reviewed by an independent adversarial reviewer, fixed, and reviewed again until it passes. Then the packages are merged one at a time, with the full test suite run after each merge.</p><div class="parts">
-<div class="part"><b>WP1 Platform: cron isolation, mail I/O, inbox lifecycle, pool and money</b>Make the cron and the mail layer bounded and fail-safe. Each workspace gets its own time and query budget. Every network wait gets a timeout. Removing or pausing an inbox never loses a reply, and stop/resume no longer rewrites the queue. Instantly bounces feed back into Closefast. Hot tables get indexes. Failing stages raise incidents and operator alerts, and incidents clear when fixed. Erasure removes the data.<div class="status" style="margin-top:8px">15 findings &middot; building</div></div>
-<div class="part"><b>WP2 Outreach engine: send durability, replies and stop rules</b>Never lose a send and never send twice. Retry temporary errors and treat recipient rejections as bounces. Honour every way of saying stop (mailto unsubscribe, &#x27;no&#x27;). Surface warm replies and refund bounced prospects whatever the source. Keep the agent from booking times without a link. Thread correctly, space cold sends, fix the writing gates for meeting-adjacent sellers, and finish the small stop-rule gaps.<div class="status" style="margin-top:8px">16 findings &middot; building</div></div>
-<div class="part"><b>WP3 Signals: durability, spend control and clarity</b>Make every Signals phase run every pass under a hard time and query budget, with poison-item backoff. Stop all spending for paused watches, archived campaigns and rejected people. Close the locked-row leak. Parse buyer countries correctly. Give owners a one-line health status and honest estimates. Add delete and dedupe for watches, near-miss actions, correct lock reasons, and brief-aware copy.<div class="status" style="margin-top:8px">20 findings &middot; building</div></div>
-<div class="part"><b>WP4 Lists, import, sourcing and pipeline backend</b>Make bring-your-own-list bulletproof: a real CSV parser (delimiters, quoted newlines, encodings, header aliases), the full result summary with a preview and column mapping (FT-05), upload-id limits, DNS-failure-safe checks, case-insensitive identity, gates on imports, list rows that never vanish, and enrollment that matches its copy. Fix people-search charging (workspace dedupe, title gate) and its stale UI.<div class="status" style="margin-top:8px">24 findings &middot; building</div></div>
-<div class="part"><b>WP5 Campaign, Pipeline, Inbox, Approvals and Results (views.js and api.js)</b>Make every campaign-level control do what it says. Fix do-not-contact domains plus remove and search. Make Send from clear correctly. Closing a lead stops its sequence. Approvals gets true totals, bulk approve and keyboard review (FT-03). Pages and buttons become resilient (error cards, busy states). Inbox drafts survive refresh. Use one vocabulary and one metric definition everywhere, with capFor shown as enforced.<div class="status" style="margin-top:8px">17 findings &middot; building</div></div>
-<div class="part"><b>WP6 App shell, onboarding, Sending and Settings, Credits and Help</b>Make the first-run journey seamless. Confirming your email has a clear banner, a resend and a checklist step. The postal address is required before real sending. Alerts settings mean what they say. Inboxes can be edited after connecting. Dialogs are keyboard-safe. Switching back to test mode warns. Skip-setup is remembered. Welcome credits are always granted. Onboarding no longer auto-spends on five signals.<div class="status" style="margin-top:8px">10 findings &middot; building</div></div>
-<div class="part"><b>WP7 Multi-tenant concurrency</b>A load and chaos harness that runs many customers at once, plus race tests and fixes. See the next section.<div class="status" style="margin-top:8px">new &middot; building</div></div></div>
+<div class="part"><b>WP1 Platform: cron isolation, mail I/O, inbox lifecycle, pool and money</b>Make the cron and the mail layer bounded and fail-safe. Each workspace gets its own time and query budget. Every network wait gets a timeout. Removing or pausing an inbox never loses a reply, and stop/resume no longer rewrites the queue. Instantly bounces feed back into Closefast. Hot tables get indexes. Failing stages raise incidents and operator alerts, and incidents clear when fixed. Erasure removes the data.<div class="status" style="margin-top:8px">15 findings &middot; shipped</div></div>
+<div class="part"><b>WP2 Outreach engine: send durability, replies and stop rules</b>Never lose a send and never send twice. Retry temporary errors and treat recipient rejections as bounces. Honour every way of saying stop (mailto unsubscribe, &#x27;no&#x27;). Surface warm replies and refund bounced prospects whatever the source. Keep the agent from booking times without a link. Thread correctly, space cold sends, fix the writing gates for meeting-adjacent sellers, and finish the small stop-rule gaps.<div class="status" style="margin-top:8px">16 findings &middot; shipped</div></div>
+<div class="part"><b>WP3 Signals: durability, spend control and clarity</b>Make every Signals phase run every pass under a hard time and query budget, with poison-item backoff. Stop all spending for paused watches, archived campaigns and rejected people. Close the locked-row leak. Parse buyer countries correctly. Give owners a one-line health status and honest estimates. Add delete and dedupe for watches, near-miss actions, correct lock reasons, and brief-aware copy.<div class="status" style="margin-top:8px">20 findings &middot; shipped</div></div>
+<div class="part"><b>WP4 Lists, import, sourcing and pipeline backend</b>Make bring-your-own-list bulletproof: a real CSV parser (delimiters, quoted newlines, encodings, header aliases), the full result summary with a preview and column mapping (FT-05), upload-id limits, DNS-failure-safe checks, case-insensitive identity, gates on imports, list rows that never vanish, and enrollment that matches its copy. Fix people-search charging (workspace dedupe, title gate) and its stale UI.<div class="status" style="margin-top:8px">24 findings &middot; shipped</div></div>
+<div class="part"><b>WP5 Campaign, Pipeline, Inbox, Approvals and Results (views.js and api.js)</b>Make every campaign-level control do what it says. Fix do-not-contact domains plus remove and search. Make Send from clear correctly. Closing a lead stops its sequence. Approvals gets true totals, bulk approve and keyboard review (FT-03). Pages and buttons become resilient (error cards, busy states). Inbox drafts survive refresh. Use one vocabulary and one metric definition everywhere, with capFor shown as enforced.<div class="status" style="margin-top:8px">17 findings &middot; shipped</div></div>
+<div class="part"><b>WP6 App shell, onboarding, Sending and Settings, Credits and Help</b>Make the first-run journey seamless. Confirming your email has a clear banner, a resend and a checklist step. The postal address is required before real sending. Alerts settings mean what they say. Inboxes can be edited after connecting. Dialogs are keyboard-safe. Switching back to test mode warns. Skip-setup is remembered. Welcome credits are always granted. Onboarding no longer auto-spends on five signals.<div class="status" style="margin-top:8px">10 findings &middot; shipped</div></div>
+<div class="part"><b>WP7 Multi-tenant concurrency</b>A load and chaos harness that runs many customers at once, plus race tests and fixes. See the next section.<div class="status" style="margin-top:8px">new &middot; shipped</div></div></div>
 <h2 id="concurrency">Many users at once</h2>
 <p class="lede">Goal: when many customers use Closefast at the same time, none of them can slow down, starve or break another. None can see or change another's data. Races can never cause a double send, a double charge, a lost reply or a stuck state. Any failure stays inside the account it belongs to.</p>
 <div class="parts">
@@ -158,12 +182,13 @@ Key D1 checks:
 - npm test passes, including the new suites.</div>
 <h2 id="owner">Owner actions and what was not covered</h2>
 <ul class="tight">
-<li>Hosted Google and Microsoft inbox sign-in needs Closefast-owned, verified Google and Microsoft apps. Until then, company inboxes connect with an app password, and the new guided connect fills in the server details.</li>
-<li>The per-account cron queue needs one Cloudflare Queue created at deploy. Without it, the fair rotation fallback runs.</li>
-<li>The Instantly bounce field is coded defensively and will be confirmed against the one known bounced lead after deploy.</li>
-<li>Dodo refund and dispute payloads were not seen live, so they are handled defensively.</li>
-<li>Not exercised live: real Signals buys, real people-search buys, follow-ups over real days, and account mode.</li>
-<li>24 P3 polish items are in the backlog. The cheap and safe ones are included in the packages.</li>
+<li>Set where operator mail goes: OPS_EMAIL (Help questions the assistant passes to the team) and OPS_ALERT_EMAIL or OPS_ALERT_WEBHOOK (stuck stages, warm inbox problems, data spend near the cap, refunds and disputes). Today none is set, so these only show in admin.</li>
+<li>Hosted Google and Microsoft inbox sign-in needs Closefast-owned, verified Google and Microsoft apps. Until then, company inboxes connect with an app password, and the guided connect fills in the server details.</li>
+<li>Terms and Privacy pages do not exist yet, and the signup should link to them.</li>
+<li>The monthly data ceiling is max($100, $50 per paying account). Confirm or change it.</li>
+<li>Switch on the per-account cron queue before about 30 active accounts (one Cloudflare Queue and two config blocks).</li>
+<li>Not exercised live: real Signals and people-search buys end to end, model-written replies in the walkthroughs (no model locally), follow-ups over real days, and account mode.</li>
+<li>Next small batch (P2): show a colleague's opt-out on the colleague, not the prospect; drop a false check warning on approved colleague replies; let replies go out when cold emails have used the day's limit; clearer guidance after an inbox is removed; a few cosmetic items.</li>
 </ul>
 <h2 id="all">All findings</h2>
 <details open><summary>P0 (10)</summary><div class="tw"><table><tr><th>ID</th><th>Finding</th><th>Area</th><th>Package</th></tr>
@@ -300,4 +325,4 @@ Key D1 checks:
 <tr><td class="id">CF-125</td><td>Test mode is one switch for the whole workspace and never previews follow-ups</td><td class="pk">Test mode</td><td class="id">backlog</td></tr>
 <tr><td class="id">CF-126</td><td>No tests on the riskiest platform paths</td><td class="pk">Tests</td><td class="id">backlog</td></tr>
 </table></div></details>
-<p class="sub" style="margin-top:40px">Status updates land on this page as packages merge and ship.</p></main></body></html>
+<p class="sub" style="margin-top:40px">Released 19 Nov 2026. Production version e7645ff6.</p></main></body></html>
