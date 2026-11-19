@@ -42,12 +42,45 @@ td.pk{font:12px var(--mono);color:var(--mute);min-width:90px;word-break:break-wo
 </style></head><body><main>
 <h1>Closefast production readiness</h1>
 <p class="sub">Audit, fixes and release, 19 Nov 2026. Covers Closefast Cloud as a new customer meets it, and the Brevo Ecom campaign running on it.</p>
-<nav class="toc"><a href="#verdict">Verdict</a><a href="#release">Release results</a><a href="#brevo">Brevo Ecom</a><a href="#how">How we audited</a><a href="#p0">P0 issues</a><a href="#packages">Fix packages</a><a href="#concurrency">Many users at once</a><a href="#features">New features</a><a href="#verify">Verification</a><a href="#owner">Owner actions</a><a href="#all">All findings</a></nav>
+<nav class="toc"><a href="#verdict">Verdict</a><a href="#release2">Second release</a><a href="#release">First release</a><a href="#brevo">Brevo Ecom</a><a href="#how">How we audited</a><a href="#p0">P0 issues</a><a href="#packages">Fix packages</a><a href="#concurrency">Many users at once</a><a href="#features">New features</a><a href="#verify">Verification</a><a href="#owner">Owner actions</a><a href="#all">All findings</a></nav>
 <h2 id="verdict">Verdict</h2>
-<div class="call"><b>Shipped to production on 19 Nov 2026 at 06:28 UTC, with a hotfix at 06:41.</b> Every P0 and P1 from the audit is fixed and verified, along with the P2s that touch money, privacy or a core journey. The first production crons after the deploy ran clean for all three accounts.</div>
+<div class="call"><b>Shipped to production on 19 Nov 2026: the first release at 06:28 UTC (hotfix 06:41), and a second at 19:47 UTC that fixed every remaining issue the walkthroughs found.</b> Every P0 and P1 from the audit is fixed and verified, and so is every P2 and P3 the later walkthroughs found. The production crons after each deploy ran clean for all three accounts.</div>
 <p class="lede">What changed for customers: no email goes to someone who opted out, bounced or was removed. No step is sent twice. Charges and refunds are exact. One account can no longer slow down or stall another. Signals runs every phase in every pass. The email confirm link works in real browsers (it did not before).</p>
 <div class="kpis"><div class="kpi"><b>10</b><span>P0, must fix before customers</span></div><div class="kpi"><b>34</b><span>P1, breaks a core journey</span></div><div class="kpi"><b>58</b><span>P2, rough edge or trust issue</span></div><div class="kpi"><b>24</b><span>P3, polish (backlog)</span></div></div>
-<h2 id="release">Release results</h2>
+<h2 id="release2">Second release, 19 Nov 2026 at 19:47 UTC</h2>
+<p class="lede">Everything the QA re-walk and the final browser walkthrough found after the first release, plus the gaps the engineers found while fixing them: 41 fixes for customers and operators, each with a test that fails without it, and 2 timing-sensitive tests made reliable.</p>
+<div class="kpis"><div class="kpi"><b>1,124</b><span>automated tests, all passing (983 at the first release)</span></div><div class="kpi"><b>41</b><span>fixes, each with a test that fails without it</span></div><div class="kpi"><b>0</b><span>database migrations needed</span></div><div class="kpi"><b>876</b><span>most D1 queries in one cron pass under load (limit 1,000)</span></div></div>
+<h3>What changed for customers</h3>
+<ul class="tight">
+<li><b>Colleagues in a prospect's thread.</b> A colleague's "remove me" removes only the colleague: the prospect stays in outreach, is not tagged opted out, and the reply counts leave it out. Replies to a colleague name who receives them (Approvals, thread, summary), are checked against that person (no false greeting warning), and the Reply box can write to the prospect or any colleague who wrote, nobody else. If our answer to a colleague bounces, only the colleague is suppressed: the prospect is never closed or refunded by it, and nothing is shown as owed to someone we can't reach. An email the owner links by hand is the prospect's own.</li>
+<li><b>Sending.</b> An approved reply goes out the same day even when cold emails used the inbox's daily limit (replies stop at a higher safety ceiling, and both share one counter, so two passes can never overshoot). Every approve says truthfully when the email will go: the window, the daily limit, test mode, a paused or removed inbox, credits. What's next in a thread says the same, and promises follow-ups only when one is coming. The test-mode-off dialog counts what the day's limit and spacing really allow.</li>
+<li><b>Guidance.</b> When an inbox is removed and its campaign pauses, Home, the thread, the notice (with an Open button) and the summary email all say so and where to fix it. Home shows failed email checks whenever there are any. Every rate on Results names what it is a share of. The summary, Home and Results count replies the same way, by person.</li>
+<li><b>Hand back after Take over</b> writes a fresh reply for each person still owed one, once, however many clicks or tabs.</li>
+<li><b>Plain words.</b> No raw error text reaches a customer (inbox errors, web research, previews, Signals, imports and 20 more places), intents read as words ("asked to be removed", not "unsubscribe"), plurals are right, and a person with no name shows by email everywhere.</li>
+<li><b>Phones and pages.</b> A Not matched email opens on a phone so it can be linked. The email confirm and unsubscribe pages follow dark mode. A second confirm click logs nothing more. The Inbox list updates as soon as you take over or hand back.</li>
+<li><b>Operator console.</b> Its requests carry their real Origin in every browser (Firefox and Safari would have been refused), and its confirm dialog keeps keyboard focus inside.</li>
+</ul>
+<h3>How it was checked</h3>
+<ul class="tight">
+<li>Three engineers in parallel branches, then two follow-up rounds, each merged with the full suite run after every merge. Every send-path change was reviewed line by line before merging.</li>
+<li>A fresh browser walkthrough of every fix at 1366 px and 375 px, light and dark, on a frozen copy of the final code: all 16 checks passed end to end, and the 14 new problems it found were fixed and checked in the browser again.</li>
+<li>Two test-only flakes were found and fixed: one test failed after 8 am UTC (the daily jobs run from then), and one depended on which of two parallel passes reached its inbox first.</li>
+<li>The writer's files did not change, so its passing exam still holds.</li>
+</ul>
+<h3>Battle test on the final code: 30 accounts at once for 10 minutes</h3>
+<div class="tw"><table><tr><th>Run</th><th>Result</th><th>Notes</th></tr>
+<tr><td>Calm</td><td>20 pass, 0 fail</td><td>Every account served within 2 cron waves. 15 of 15 injected replies handled.</td></tr>
+<tr><td>Mail servers hang</td><td>19 pass, 1 fail</td><td>No double send, lost reply, leak, stuck email or money error. Strict fairness rule only: worst gap 4 to 7 waves, the same for every account (first release: 4 to 6).</td></tr>
+<tr><td>Faults without hangs</td><td>19 pass, 1 fail</td><td>Same rule only: worst gap 4 to 5 waves (first release: 4).</td></tr>
+</table></div>
+<p class="lede">Queries per pass are the same as the first release, and core page response times are unchanged (every 95th percentile under 70 ms locally). The fairness gap is capacity at the harness's 20-second cron; production fires every 5 minutes and served every account on each cron after the deploy.</p>
+<h3>Production check</h3>
+<ul class="tight">
+<li>Version 35f72da0 is live. The new front end, the admin page's same-origin policy and the dark unsubscribe page are served; the API asks for sign-in and a cross-site post is refused.</li>
+<li>All three accounts ran their passes on the new code at 19:55 and 19:56 UTC: no stage failures, no error lines, no incidents.</li>
+<li>Rollback points were recorded first: the previous Worker version e7645ff6 and a D1 time-travel bookmark.</li>
+</ul>
+<h2 id="release">First release, 19 Nov 2026 at 06:28 UTC</h2>
 <div class="kpis"><div class="kpi"><b>983</b><span>automated tests, all passing, security suite included</span></div><div class="kpi"><b>126 + 51</b><span>audit findings, plus 51 found later by the final reviews, walkthroughs, battle runs and the first production cron</span></div><div class="kpi"><b>18</b><span>database migrations, rehearsed on a copy of production first</span></div><div class="kpi"><b>932</b><span>most D1 queries in one cron pass (limit 1,000; old code reached 5,609)</span></div></div>
 <h3>How it was checked</h3>
 <ul class="tight">
@@ -188,7 +221,7 @@ Key D1 checks:
 <li>The monthly data ceiling is max($100, $50 per paying account). Confirm or change it.</li>
 <li>Switch on the per-account cron queue before about 30 active accounts (one Cloudflare Queue and two config blocks).</li>
 <li>Not exercised live: real Signals and people-search buys end to end, model-written replies in the walkthroughs (no model locally), follow-ups over real days, and account mode.</li>
-<li>Next small batch (P2): show a colleague's opt-out on the colleague, not the prospect; drop a false check warning on approved colleague replies; let replies go out when cold emails have used the day's limit; clearer guidance after an inbox is removed; a few cosmetic items.</li>
+<li>Also not exercised locally: a web research error shown on the campaign page (it would have needed outside network calls), and delivery-report bounces from Gmail, Microsoft or Instantly for a colleague (send-time refusals were tested).</li>
 </ul>
 <h2 id="all">All findings</h2>
 <details open><summary>P0 (10)</summary><div class="tw"><table><tr><th>ID</th><th>Finding</th><th>Area</th><th>Package</th></tr>
@@ -325,4 +358,4 @@ Key D1 checks:
 <tr><td class="id">CF-125</td><td>Test mode is one switch for the whole workspace and never previews follow-ups</td><td class="pk">Test mode</td><td class="id">backlog</td></tr>
 <tr><td class="id">CF-126</td><td>No tests on the riskiest platform paths</td><td class="pk">Tests</td><td class="id">backlog</td></tr>
 </table></div></details>
-<p class="sub" style="margin-top:40px">Released 19 Nov 2026. Production version e7645ff6.</p></main></body></html>
+<p class="sub" style="margin-top:40px">Released 19 Nov 2026 at 06:28 UTC, and again at 19:47 UTC. Production version 35f72da0.</p></main></body></html>
