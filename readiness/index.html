@@ -42,11 +42,31 @@ td.pk{font:12px var(--mono);color:var(--mute);min-width:90px;word-break:break-wo
 </style></head><body><main>
 <h1>Closefast production readiness</h1>
 <p class="sub">Audit, fixes and release, 19 Nov 2026. Covers Closefast Cloud as a new customer meets it, and the Brevo Ecom campaign running on it.</p>
-<nav class="toc"><a href="#verdict">Verdict</a><a href="#release3">Third release</a><a href="#release2">Second release</a><a href="#release">First release</a><a href="#brevo">Brevo Ecom</a><a href="#how">How we audited</a><a href="#p0">P0 issues</a><a href="#packages">Fix packages</a><a href="#concurrency">Many users at once</a><a href="#features">New features</a><a href="#verify">Verification</a><a href="#owner">Owner actions</a><a href="#all">All findings</a></nav>
+<nav class="toc"><a href="#verdict">Verdict</a><a href="#release4">Fourth release</a><a href="#release3">Third release</a><a href="#release2">Second release</a><a href="#release">First release</a><a href="#brevo">Brevo Ecom</a><a href="#how">How we audited</a><a href="#p0">P0 issues</a><a href="#packages">Fix packages</a><a href="#concurrency">Many users at once</a><a href="#features">New features</a><a href="#verify">Verification</a><a href="#owner">Owner actions</a><a href="#all">All findings</a></nav>
 <h2 id="verdict">Verdict</h2>
 <div class="call"><b>Shipped to production on 19 Nov 2026: the first release at 06:28 UTC (hotfix 06:41), and a second at 19:47 UTC that fixed every remaining issue the walkthroughs found.</b> Every P0 and P1 from the audit is fixed and verified, and so is every P2 and P3 the later walkthroughs found. The production crons after each deploy ran clean for all three accounts.</div>
 <p class="lede">What changed for customers: no email goes to someone who opted out, bounced or was removed. No step is sent twice. Charges and refunds are exact. One account can no longer slow down or stall another. Signals runs every phase in every pass. The email confirm link works in real browsers (it did not before).</p>
 <div class="kpis"><div class="kpi"><b>10</b><span>P0, must fix before customers</span></div><div class="kpi"><b>34</b><span>P1, breaks a core journey</span></div><div class="kpi"><b>58</b><span>P2, rough edge or trust issue</span></div><div class="kpi"><b>24</b><span>P3, polish (backlog)</span></div></div>
+<h2 id="release4">Fourth release, 21 Nov 2026 at 17:31 UTC</h2>
+<p class="lede">A new brand, an app that always shows what is running and where results land, a Help chat that answers from the product docs, and live payments.</p>
+<div class="kpis"><div class="kpi"><b>1,408</b><span>automated tests, all passing</span></div><div class="kpi"><b>56 / 56</b><span>Help chat exam on the real free model (55 of 56 on paid)</span></div><div class="kpi"><b>2</b><span>database migrations, applied to production</span></div><div class="kpi"><b>4</b><span>credit packs on sale: $10, $25, $50 and $100</span></div></div>
+<h3>What changed</h3>
+<ul class="tight">
+<li><b>Brand.</b> A new Closefast mark and colours in the app and on the landing page, with self-hosted fonts.</li>
+<li><b>Activity.</b> Every long job (prospect search, web research, imports, site reads, signal runs) is now a task with live progress, a tray at the bottom of every page and its own Activity page. People search keeps going on the server when the tab closes, and the owner gets an email when a long job finishes.</li>
+<li><b>Navigation.</b> Back links and breadcrumbs on every inner page, page changes that never show the wrong page, and toasts after every action.</li>
+<li><b>Pipeline.</b> Rebuilt as a sortable, filterable table that says where each person is and what happens next, including people waiting to start.</li>
+<li><b>Campaign, Inbox and Approvals.</b> The campaign page has tabs and a pre-flight check. Long previews and plans run in the background. Inbox and Approvals were tidied and show the real send time.</li>
+<li><b>Help chat.</b> Answers from 51 KB of product articles, and hands the conversation to a person by email when that is what the user needs.</li>
+<li><b>Payments.</b> Checkout runs on Dodo in live mode, so customers can buy credit packs.</li>
+</ul>
+<h3>Checks</h3>
+<ul class="tight">
+<li>Battle test on the final code: calm 20 pass, 1 warning; mail servers hanging fails only the strict fairness rule, as before (worst gap 8 cycles). No double sends, lost replies or money errors. At most 877 database queries per pass, under the limit of 1,000.</li>
+<li>Production after the deploy: all four accounts ran every cron on the new version with no failing stages and no errors. 52 Brevo e-commerce emails are written and queued for Monday, since the campaign sends Monday to Friday.</li>
+<li>No real purchase has been made yet, so the crediting step after a live payment is proven only in test mode.</li>
+<li>Rollback point recorded before the migrations and the deploy.</li>
+</ul>
 <h2 id="release3">Third release, 21 Nov 2026 at 00:30 and 01:46 UTC</h2>
 <p class="lede">Autopilot made fully hands-off, the Brevo e-commerce campaign rewritten in a casual voice, the AI checked on the real production models, and the data limits fixed so paying customers are limited by their credits alone.</p>
 <div class="kpis"><div class="kpi"><b>1,213</b><span>automated tests, all passing</span></div><div class="kpi"><b>25 / 25</b><span>reply exam on the real models, both account tiers</span></div><div class="kpi"><b>86% / 92%</b><span>writer exam on the real models: first emails / follow-ups</span></div><div class="kpi"><b>1</b><span>database migration, applied to production</span></div></div>
@@ -377,4 +397,4 @@ Key D1 checks:
 <tr><td class="id">CF-125</td><td>Test mode is one switch for the whole workspace and never previews follow-ups</td><td class="pk">Test mode</td><td class="id">backlog</td></tr>
 <tr><td class="id">CF-126</td><td>No tests on the riskiest platform paths</td><td class="pk">Tests</td><td class="id">backlog</td></tr>
 </table></div></details>
-<p class="sub" style="margin-top:40px">Released 19 Nov 2026 at 06:28 and 19:47 UTC, and 21 Nov at 00:30 and 01:46 UTC. Production version 0e9245b7.</p></main></body></html>
+<p class="sub" style="margin-top:40px">Released 19 Nov 2026 at 06:28 and 19:47 UTC, and 21 Nov at 00:30, 01:46 and 17:31 UTC. Production version da2bd99d.</p></main></body></html>
