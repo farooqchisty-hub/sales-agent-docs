@@ -47,14 +47,14 @@ td.pk{font:12px var(--mono);color:var(--mute);min-width:90px;word-break:break-wo
 <div class="call"><b>Shipped to production on 19 Nov 2026: the first release at 06:28 UTC (hotfix 06:41), and a second at 19:47 UTC that fixed every remaining issue the walkthroughs found.</b> Every P0 and P1 from the audit is fixed and verified, and so is every P2 and P3 the later walkthroughs found. The production crons after each deploy ran clean for all three accounts.</div>
 <p class="lede">What changed for customers: no email goes to someone who opted out, bounced or was removed. No step is sent twice. Charges and refunds are exact. One account can no longer slow down or stall another. Signals runs every phase in every pass. The email confirm link works in real browsers (it did not before).</p>
 <div class="kpis"><div class="kpi"><b>10</b><span>P0, must fix before customers</span></div><div class="kpi"><b>34</b><span>P1, breaks a core journey</span></div><div class="kpi"><b>58</b><span>P2, rough edge or trust issue</span></div><div class="kpi"><b>24</b><span>P3, polish (backlog)</span></div></div>
-<h2 id="release5">Fifth release, 23 Nov 2026 at 00:15 UTC</h2>
+<h2 id="release5">Fifth release, 23 Nov 2026 at 00:09 and 00:14 UTC</h2>
 <p class="lede">From a real email signup that found nothing: setup reads the exact site typed, signals that actually find posts, sorting that never sticks, email confirmation before the app, and every signed-in page reworked for phones.</p>
 <div class="kpis"><div class="kpi"><b>1,426</b><span>automated tests, all passing</span></div><div class="kpi"><b>20 / 21</b><span>battle test checks pass, 1 known warning, 0 failures</span></div><div class="kpi"><b>34</b><span>pages and 20 states checked at 7 widths, light and dark</span></div><div class="kpi"><b>0</b><span>database migrations</span></div></div>
 <h3>What a test signup showed</h3>
 <ul class="tight">
 <li><b>Wrong site read.</b> magicfit.pushowl.com was read as pushowl.com, so the campaign described the wrong product. Setup now reads the address as typed; welcome credits still go once per main domain.</li>
 <li><b>The default signal never found a post, on any account.</b> LinkedIn search allows 5 AND/OR/NOT words and the rival search had 7 to 8. Proposals now fit, older signals are searched in a cut-down form, and new searches over the limit are refused with a plain reason. The business's own brand is never proposed as a rival, and long pain phrases that never match are not proposed.</li>
-<li><b>Sorting stuck.</b> One post in LinkedIn's "bold" letters made the model refuse the whole batch every run. Letters are now made plain, a refused batch is split, and a post that fails alone 3 times is set aside. The test account's 97 posts were all sorted after the release.</li>
+<li><b>Sorting stuck.</b> One post in LinkedIn's "bold" letters made the model refuse the whole batch every run. Letters are now made plain, a refused batch is split, and a post that fails alone 3 times is set aside. On the test account the slower backup models had sorted the 97 posts after about an hour, before this release went out.</li>
 <li><b>Zero credits not explained.</b> Setup, Credits and the activity feed now say why (the website's welcome credits went to another account, or the confirm link is not clicked yet), with Resend and Buy credits.</li>
 </ul>
 <h3>Email confirmation</h3>
@@ -425,4 +425,4 @@ Key D1 checks:
 <tr><td class="id">CF-125</td><td>Test mode is one switch for the whole workspace and never previews follow-ups</td><td class="pk">Test mode</td><td class="id">backlog</td></tr>
 <tr><td class="id">CF-126</td><td>No tests on the riskiest platform paths</td><td class="pk">Tests</td><td class="id">backlog</td></tr>
 </table></div></details>
-<p class="sub" style="margin-top:40px">Released 19 Nov 2026 at 06:28 and 19:47 UTC, and 21 Nov at 00:30, 01:46 and 17:31 UTC, and 23 Nov at 00:15 UTC. Production version 573c6a24.</p></main></body></html>
+<p class="sub" style="margin-top:40px">Released 19 Nov 2026 at 06:28 and 19:47 UTC, and 21 Nov at 00:30, 01:46 and 17:31 UTC, and 23 Nov at 00:09 and 00:14 UTC. Production version 573c6a24.</p></main></body></html>
