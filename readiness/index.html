@@ -73,7 +73,16 @@ td.pk{font:12px var(--mono);color:var(--mute);min-width:90px;word-break:break-wo
 <li>Battle test (calm, 30 tenants): 20 pass, 1 known warning (a double Buy is inconclusive without a vendor token), 0 failures; at most 873 database queries per pass.</li>
 <li>Production: versions 2d91fda7 (signup and Signals) and 573c6a24 (phones). The live sign-in pages load at 375 and 1440 with no errors and no sideways scroll.</li>
 <li>Four colleague-reply tests failed every Sunday (replies go out Monday to Saturday); fixed in the tests, nothing in the product.</li>
-<li>Not verified live: the Check your inbox flow on production (no new signup was made there), and the 11-column "Where the agent looks" table on a phone with real rows.</li>
+<li>Not verified live: the Check your inbox flow on production (no new signup was made there).</li>
+</ul>
+<h3>Full check after the release, 23 Nov 04:20 UTC (version e52f545c)</h3>
+<ul class="tight">
+<li><b>Who the email gate holds.</b> Only the test signup. The other 4 production accounts signed up with Google and are confirmed. An unconfirmed account cannot reach setup, so it never claims a website's welcome credits.</li>
+<li><b>Production health.</b> The cron ran for all 5 accounts every 5 minutes; no incidents since the release; 7 minutes of live logs showed no errors or exceptions.</li>
+<li><b>Fixed: company pages queued as people.</b> A company page that reacts to a post ("Daily Sales, 84,605 followers") was looked up as a person: two paid calls, always empty (10 of the test account's 193 engagers, 37 of 6,538 across production). They are now skipped when engagers are read.</li>
+<li><b>Fixed: "Where the agent looks" on tablets.</b> At 768 px the table hid Checked, Usable and No site off to the side. Below 900 px of room each place is now a card with all 9 numbers; on a phone they sit three to a row (cards a quarter shorter). Checked with real rows at 360, 375 dark, 768 and 1440.</li>
+<li><b>Test account.</b> 0 credits until the confirm link is clicked (then 500). Its Signals cost the platform $0.39 in lookups since signup; its old rival search now runs in a cut-down form (4 operators).</li>
+<li>1,426 tests pass. Battle test: calm 20 pass, 1 known warning, 0 failures; with mail faults the 3-wave fairness check fails as on earlier runs (worst gap 4 to 7 waves, every tenant advanced 8 to 9 times).</li>
 </ul>
 <h2 id="release4">Fourth release, 21 Nov 2026 at 17:31 UTC</h2>
 <p class="lede">A new brand, an app that always shows what is running and where results land, a Help chat that answers from the product docs, and live payments.</p>
